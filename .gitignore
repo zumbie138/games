@@ -1,0 +1,5 @@
+**/dist
+**/build
+*.pyc
+*.spec
+demon_exodus/ambiente/
