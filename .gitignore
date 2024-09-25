@@ -2,4 +2,4 @@
 **/build
 *.pyc
 *.spec
-demon_exodus/ambiente/
+ambiente/
