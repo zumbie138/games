@@ -1,8 +1,8 @@
-from core.start_character import CharacterStarter
+from core.game_core import GameCore
 
 class AppMenus():
     def __init__(self):
-        self.char_start = CharacterStarter()
+        self.game_core = GameCore()
         
     def initial_menu(self):
         print('Welcome to the game: DemoN ExoduS !!!')
@@ -20,20 +20,20 @@ class AppMenus():
                 print('invalid choice.')
     
     def new_char_menu(self):
-        class_select={'Humano':{'1':'guerreiro','2':'mago','3':'clerigo'},
-                'Elfo':{'1':'ranger','2':'feiticeiro','3':'druida'},
-                'Orc':{'1':'barbaro','2':'bruxo','3':'shaman'}}
-        race_select={'1':'Humano','2':'Elfo','3':'Orc'}
-        print('!!TELA DE CRIAÇÃO DE PERSONAGEM!!')
-        name = str(input('Coloque o nome do seu personagem: '))
-        race_choice = str(input('Escolha sua raça: \n [ 1 ] - Humano.\n [ 2 ] - Elfo.\n [ 3 ] - Orc.\n'))
+        class_select={'human':{'1':'warrior','2':'wizard','3':'cleric'},
+                'elf':{'1':'ranger','2':'sorcerer','3':'druid'},
+                'orc':{'1':'barbarian','2':'witch','3':'shaman'}}
+        race_select={'1':'human','2':'elf','3':'orc'}
+        print('!!CHARACTER CREATION!!')
+        name = str(input('Character name: '))
+        race_choice = str(input('Choose your race: \n [ 1 ] - Human.\n [ 2 ] - Elf.\n [ 3 ] - Orc.\n'))
         choosen_race = race_select[race_choice]
-        class_choice = str(input(f'Escolha sua classe: \n [ 1 ] - {class_select[choosen_race]["1"].title()}.\n [ 2 ] - {class_select[choosen_race]["2"].title()}.\n [ 3 ] - {class_select[choosen_race]["3"].title()}.\n'))
+        class_choice = str(input(f'Choose your class: \n [ 1 ] - {class_select[choosen_race]["1"].title()}.\n [ 2 ] - {class_select[choosen_race]["2"].title()}.\n [ 3 ] - {class_select[choosen_race]["3"].title()}.\n'))
         choosen_class = class_select[choosen_race][class_choice]
-        self.char_start.new_character(name,choosen_race, choosen_class)
+        self.game_core.new_character(name,choosen_race, choosen_class)
                 
     def load_choices(self):
-        self.char_start.saved_character()
+        self.game_core.saved_character()
         
     def player_menu(self):
         print('Welcome player')

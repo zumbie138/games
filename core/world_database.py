@@ -1,4 +1,5 @@
 import pandas as pd
+
 class WorldDatabase():
     def __init__(self):
         self.classes_database = {
@@ -12,6 +13,8 @@ class WorldDatabase():
             '7':{'race':'orc',  'class':'witch',    'strg':2,'agi':1,'vit':2,'int':5,  'char':3},
             '8':{'race':'orc',  'class':'shaman',   'strg':2,'agi':1,'vit':2,'int':4,  'char':4},
         }
+    def classes_dataframe(self) -> pd.DataFrame:
+        return pd.DataFrame.from_dict(self.classes_database, orient='index')
         
 # wd = WorldDatabase()
 # classes_database = wd.classes_database
