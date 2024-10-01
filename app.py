@@ -30,10 +30,10 @@ class AppMenus():
         choosen_race = race_select[race_choice]
         class_choice = str(input(f'Choose your class: \n [ 1 ] - {class_select[choosen_race]["1"].title()}.\n [ 2 ] - {class_select[choosen_race]["2"].title()}.\n [ 3 ] - {class_select[choosen_race]["3"].title()}.\n'))
         choosen_class = class_select[choosen_race][class_choice]
-        self.game_core.new_character(name,choosen_race, choosen_class)
+        self.game_core.new_character(name, choosen_race, choosen_class)
                 
     def load_choices(self):
-        self.game_core.saved_character()
+        self.game_core.load_character()
         
     def player_menu(self):
         print('Welcome player')
