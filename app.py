@@ -45,11 +45,13 @@ class AppMenus():
                 self.adventure_menu()
             elif choice == '3':
                 print('Youre home')
+                self.game_core.show_character()
             elif choice == '4':
                 break
             else:
                 print('Invalid choice.')
     def city_menu(self):
         print('Welcome to the city')
+
     def adventure_menu(self):
         print('Where you want to hunt?')
