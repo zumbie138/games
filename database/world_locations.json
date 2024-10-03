@@ -1,0 +1,27 @@
+{
+    "001":{
+        "name":"Great Meadow",
+        "type":"city",
+        "min lvl":1,
+        "monsters":{"rat":45,"bat":45,"bandit":10}
+    },
+    "002":{
+        "name":"grassland",
+        "type":"open field",
+        "min lvl":1,
+        "monsters":{"rat":30,"wolf":40, "troll":25, "bear":5}
+    },
+    "003":{
+        "name":"Great Meadow graveyard",
+        "type":"open field",
+        "min lvl":2,
+        "monsters":{"rat zombie":40,"bat":30, "skeleton":20, "ghost": 10}
+    },
+    "004":{
+        "name":"cave",
+        "type":"dungeon",
+        "min lvl":2,
+        "monster":{}
+
+    }
+}

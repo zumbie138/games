@@ -1,4 +1,5 @@
 from app import AppMenus
 
-_app = AppMenus()
-_app.initial_menu()
+if __name__ == "__main__":
+    app = AppMenus()
+    app.run()

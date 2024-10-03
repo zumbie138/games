@@ -1,2 +1,2 @@
 from .game_core import GameCore
-from .world_database import WorldDatabase
+from .creatures_info import MonsterInfos, PlayerInfos

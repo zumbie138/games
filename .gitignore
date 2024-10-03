@@ -3,3 +3,4 @@
 *.pyc
 *.spec
 ambiente/
+__pycache__/

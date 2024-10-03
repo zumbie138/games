@@ -1,0 +1,12 @@
+
+    {
+    "0":{"race":"human","class":"warrior",  "strg":4.0,"agi":3.0,"vit":5.0,"int":0.5,"char":0.5},
+    "1":{"race":"human","class":"wizard",   "strg":1.0,"agi":1.0,"vit":1.0,"int":5.0,"char":5.0},
+    "2":{"race":"human","class":"cleric",   "strg":1.0,"agi":1.0,"vit":2.0,"int":4.0,"char":5.0},
+    "3":{"race":"elf",  "class":"ranger",   "strg":3.0,"agi":6.0,"vit":1.0,"int":1.0,"char":2.0},
+    "4":{"race":"elf",  "class":"sorcerer", "strg":1.0,"agi":2.0,"vit":1.0,"int":5.0,"char":4.0},
+    "5":{"race":"elf",  "class":"druid",    "strg":1.0,"agi":2.0,"vit":2.0,"int":3.0,"char":5.0},
+    "6":{"race":"orc",  "class":"barbarian","strg":5.0,"agi":5.0,"vit":2.0,"int":0.5,"char":0.5},
+    "7":{"race":"orc",  "class":"witch",    "strg":2.0,"agi":1.0,"vit":2.0,"int":5.0,"char":3.0},
+    "8":{"race":"orc",  "class":"shaman",   "strg":2.0,"agi":1.0,"vit":2.0,"int":4.0,"char":4.0}
+    }

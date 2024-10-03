@@ -4,7 +4,7 @@ class AppMenus():
     def __init__(self):
         self.game_core = GameCore()
         
-    def initial_menu(self):
+    def run(self):
         print('Welcome to the game: DemoN ExoduS !!!')
         while True:
             choice = str(input('[ 1 ] - New Game.\n[ 2 ] - Load Game.\n[ 3 ] - Quit.\n'))
@@ -55,3 +55,4 @@ class AppMenus():
 
     def adventure_menu(self):
         print('Where you want to hunt?')
+        

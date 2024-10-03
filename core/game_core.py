@@ -1,10 +1,14 @@
-from .world_database import WorldDatabase
+from database import WorldDatabase
 from .creatures_info import MonsterInfos, PlayerInfos
 import pandas as pd
 import math
-class GameCore(WorldDatabase):
+
+class GameCore():
     def __init__(self):
-        self.df_classes = self.classes_dataframe()
+        world_database = WorldDatabase()
+        self.df_classes = world_database.get_classes_dataframe()
+        self.monster_df = world_database.get_monster_dataframe()
+        self.df_spells = world_database.get_spell_dataframe()
         self.player = None
         self.monster = None
         
@@ -12,8 +16,7 @@ class GameCore(WorldDatabase):
         return tuple(dataframe.iloc[0])
         
     def _spells_by_class_lvl(self,player_class:str,player_lvl:int)->list:
-        df_spells = self.spell_dataframe()
-        class_spells = df_spells[(df_spells['class'] == player_class) & (df_spells['lvl'] <= player_lvl)]
+        class_spells = self.df_spells[(self.df_spells['class'] == player_class) & (self.df_spells['lvl'] <= player_lvl)]
         return class_spells['name'].to_list()
     
     def _generate_character(self,char_data: tuple):
@@ -25,26 +28,25 @@ class GameCore(WorldDatabase):
         player_lvl = 1
         spell_list = self._spells_by_class_lvl(player_class,player_lvl)
         self.player = PlayerInfos(
-            player_name=self.player_name,
-            player_lvl=player_lvl,
-            player_race=player_race,
-            player_class=player_class,
-            player_life=player_life,
-            player_mana=player_mana,
-            player_str=player_str,
-            player_agi=player_agi,
-            player_vit=player_vit,
-            player_int=player_int,
-            player_cha=player_cha,
-            player_atk=player_atk,
-            player_def=player_def,
-            player_spell=spell_list,
-            player_inventory={}
+            name=self.player_name,
+            level=player_lvl,
+            race=player_race,
+            class_type=player_class,
+            life=player_life,
+            mana=player_mana,
+            strength=player_str,
+            agility=player_agi,
+            vitality=player_vit,
+            intelligence=player_int,
+            charisma=player_cha,
+            attack=player_atk,
+            defense=player_def,
+            spells=spell_list
         )
       
     def _generate_monster(self):
-        monster_df = self.monster_dataframe()
-        self._dataframe_to_tuple(monster_df)
+        
+        self._dataframe_to_tuple(self.monster_df)
     
     def new_character(self, name:str, race:str, clas:str):
         print('Starting new character.')
@@ -59,7 +61,7 @@ class GameCore(WorldDatabase):
         
     def show_character(self):
         print('You see yourself in the mirror:')
-        print(f'Your name is: {self.player.player_name}, you are an {self.player.player_race} {self.player.player_class}')
-        print(f'HP: {self.player.player_life}/{self.player.player_life}\nMANA: {self.player.player_mana}/{self.player.player_mana}')
-        print(f'You are level {self.player.player_lvl} and your atributes are:\nStrength: {self.player.player_str}\nAgility: {self.player.player_agi}\nVitality: {self.player.player_vit}\nInteligence: {self.player.player_int}\nCharisma: {self.player.player_cha}')
-        print(f'Your list of spells: {self.player.player_spell}')
+        print(f'Your name is: {self.player.name}, you are an {self.player.race} {self.player.class_type}')
+        print(f'HP: {self.player.life}/{self.player.life}\nMANA: {self.player.mana}/{self.player.mana}')
+        print(f'You are level {self.player.level} and your atributes are:\nStrength: {self.player.strength}\nAgility: {self.player.agility}\nVitality: {self.player.vitality}\nInteligence: {self.player.intelligence}\nCharisma: {self.player.charisma}')
+        print(f'Your list of spells: {self.player.spells}')
