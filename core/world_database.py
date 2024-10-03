@@ -17,7 +17,15 @@ class WorldDatabase():
 
     def monster_dataframe(self)-> pd.DataFrame:
         MONSTER_DATABASE = {
-            
+            '000':{'monster':'rat','type':'creature','atribute':  [0.0, 2.0, 0.0, 0.1, 0.1],'life':20,'attack':0.5,'defense':2.0},
+            '001':{'monster':'snake','type':'creature','atribute':[0.0, 2.0, 0.0, 0.0, 0.1],'life':30,'attack':2,'defense':1.5},
+            '002':{'monster':'bat','type':'creature','atribute':  [0.0, 5.0, 0.0, 0.1, 0.1],'life':30,'attack':2,'defense':1.5},
+            '003':{'monster':'wolf','type':'creature','atribute': [3.0, 2.0, 3.0, 0.2, 0.2],'life':30,'attack':2,'defense':1.5},
+            '004':{'monster':'bear','type':'creature','atribute': [10.0, 3.0, 10.0, 0.2, 0.2],'life':30,'attack':2,'defense':1.5},
+            '005':{'monster':'spider','type':'creature','atribute': [5.0, 4.0, 6.0, 0.1, 0.0],'life':30,'attack':2,'defense':1.5},
+            '006':{'monster':'troll','type':'humanoid','atribute': [3.0, 2.0, 2.0, 0.3, 0.3],'life':30,'attack':2,'defense':1.5},
+            '007':{'monster':'rat zombie','type':'undead','atribute': [1.0, 3.0, 1.0, 0.0, 0.0],'life':30,'attack':2,'defense':1.5},
+            '008':{'monster':'skeleton','type':'undead','atribute': [6.0, 5.0, 7.0, 0.0, 0.0],'life':30,'attack':2,'defense':1.5},
         }
         return pd.DataFrame.from_dict(MONSTER_DATABASE, orient='index')
     

@@ -3,16 +3,21 @@ from dataclasses import dataclass
 @dataclass
 
 class PlayerInfos():
-    char_name: str
-    char_class: str
-    char_race: str
-    char_strg: float
-    char_agi: float
-    char_vit: float
-    char_int: float
-    char_char: float
-    char_level: int
-    char_life: int
+    player_name: str
+    player_lvl: int
+    player_race: str
+    player_class: str
+    player_life: int
+    player_mana: int
+    player_str: float
+    player_agi: float
+    player_vit: float
+    player_int: float
+    player_cha: float
+    player_atk: float
+    player_def: float
+    player_spell: list
+    player_inventory: dict
 
     
 class MonsterInfos():
@@ -21,5 +26,5 @@ class MonsterInfos():
     monster_agi: float
     monster_vit: float
     monster_int: float
-    monster_char: float
+    monster_player: float
     monster_life: int
