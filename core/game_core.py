@@ -1,23 +1,23 @@
 from database import WorldDatabase
 from .creatures_info import MonsterInfos, PlayerInfos
-import pandas as pd
 import math
 
-class GameCore():
+class GameCore(WorldDatabase):
     def __init__(self):
-        world_database = WorldDatabase()
-        self.df_classes = world_database.get_classes_dataframe()
-        self.monster_df = world_database.get_monster_dataframe()
-        self.df_spells = world_database.get_spell_dataframe()
+        self.df_classes = self.get_database_dataframe('class_database.json')
+        self.monster_df = self.get_database_dataframe('monster_database.json')
+        self.df_spells = self.get_database_dataframe('spells_database.json')
+        self.locations_df = self.get_database_dataframe('locations_database.json')
         self.player = None
-        self.monster = None
-        
-    def _dataframe_to_tuple(self, dataframe:pd.DataFrame)->tuple:
-        return tuple(dataframe.iloc[0])
+        self.monster = None       
         
     def _spells_by_class_lvl(self,player_class:str,player_lvl:int)->list:
         class_spells = self.df_spells[(self.df_spells['class'] == player_class) & (self.df_spells['lvl'] <= player_lvl)]
         return class_spells['name'].to_list()
+    
+    def _locations_by_lvl(self,player_lvl:int)->list:
+        locations = self.locations_df[self.locations_df['min lvl'] <= player_lvl]
+        return locations['name'].to_list()
     
     def _generate_character(self,char_data: tuple):
         player_race, player_class, player_str, player_agi, player_vit, player_int, player_cha = char_data
@@ -44,16 +44,16 @@ class GameCore():
             spells=spell_list
         )
       
-    def _generate_monster(self):
-        
-        self._dataframe_to_tuple(self.monster_df)
     
+    def locations_allowed(self)->list:
+        return self._locations_by_lvl(self.player.level)
+        
     def new_character(self, name:str, race:str, clas:str):
         print('Starting new character.')
         self.player_name = name
         print(f'Name: {name}\nRace: {race}\nClass: {clas}')
         class_info = self.df_classes[self.df_classes['class'] == clas]
-        class_info_tuple = self._dataframe_to_tuple(class_info)
+        class_info_tuple = self.dataframe_to_tuple(class_info)
         self._generate_character(class_info_tuple)
     
     def load_character(self):

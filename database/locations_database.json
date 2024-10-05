@@ -1,0 +1,46 @@
+{
+    "001":{
+        "name":"Great Meadow",
+        "type":"city",
+        "min lvl":1,
+        "world":"tier 1",
+        "monsters":{"rat":45,"bat":45,"bandit":10}
+    },
+    "002":{
+        "name":"grassland",
+        "type":"open field",
+        "min lvl":1,
+        "world":"tier 1",
+        "monsters":{"rat":30,"snake":40, "troll":25, "goblin":5}
+    },
+    "003":{
+        "name":"forest",
+        "type":"open field",
+        "min lvl":2,
+        "world":"tier 1",
+        "monsters":{"spider":30,"wolf":40, "snake":25, "bear":5}
+    },
+    "004":{
+        "name":"Great Meadow graveyard",
+        "type":"open field",
+        "min lvl":4,
+        "world":"tier 1",
+        "monsters":{"rat zombie":30,"bat":40, "skeleton":20, "ghost": 10}
+    },
+    "005":{
+        "name":"cave",
+        "type":"dungeon",
+        "min lvl":5,
+        "world":"tier 1",
+        "monster":{}
+
+    },
+    "006":{
+        "name":"cut road",
+        "type":"open field",
+        "min lvl":5,
+        "world":"tier 1",
+        "monster":{}
+
+    }
+}

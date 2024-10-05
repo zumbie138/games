@@ -1,58 +1,55 @@
-from core.game_core import GameCore
+from core import GameCore
+from graph import GraficMenus
 
 class AppMenus():
     def __init__(self):
         self.game_core = GameCore()
+        self.graph_menu = GraficMenus()
         
-    def run(self):
-        print('Welcome to the game: DemoN ExoduS !!!')
+    def run_game(self):
+        self.graph_menu.starting_animation()
         while True:
-            choice = str(input('[ 1 ] - New Game.\n[ 2 ] - Load Game.\n[ 3 ] - Quit.\n'))
-            if choice == '1':
-                self.new_char_menu()
-                self.player_menu()
-            elif choice == '2':
-                self.load_choices()
-                self.player_menu()
-            elif choice == '3':
-                break
-            else:
-                print('invalid choice.')
+            choice = self.graph_menu.initial_menu()
+            match choice:
+                case '1':
+                    self.run_new_char()
+                    self.run_player_menu()
+                case '2':
+                    self.run_load_character()
+                    self.run_player_menu()
+                case '3':
+                    break
+                case _:
+                    print('invalid choice.')
     
-    def new_char_menu(self):
-        class_select={'human':{'1':'warrior','2':'wizard','3':'cleric'},
-                'elf':{'1':'ranger','2':'sorcerer','3':'druid'},
-                'orc':{'1':'barbarian','2':'witch','3':'shaman'}}
-        race_select={'1':'human','2':'elf','3':'orc'}
-        print('!!CHARACTER CREATION!!')
-        name = str(input('Character name: '))
-        race_choice = str(input('Choose your race: \n [ 1 ] - Human.\n [ 2 ] - Elf.\n [ 3 ] - Orc.\n'))
-        choosen_race = race_select[race_choice]
-        class_choice = str(input(f'Choose your class: \n [ 1 ] - {class_select[choosen_race]["1"].title()}.\n [ 2 ] - {class_select[choosen_race]["2"].title()}.\n [ 3 ] - {class_select[choosen_race]["3"].title()}.\n'))
-        choosen_class = class_select[choosen_race][class_choice]
-        self.game_core.new_character(name, choosen_race, choosen_class)
+    def run_new_char(self):
+        character = self.graph_menu.new_character_menu()
+        self.game_core.new_character(*character)
                 
-    def load_choices(self):
+    def run_load_character(self):
         self.game_core.load_character()
         
-    def player_menu(self):
-        print('Welcome player')
+    def run_player_menu(self):
         while True:
-            choice = str(input('[ 1 ] - Cidade.\n[ 2 ] - Aventura.\n[ 3 ] - Refúgio.\n[ 4 ] - Sair.'))
-            if choice == '1':
-                self.city_menu()
-            elif choice == '2':
-                self.adventure_menu()
-            elif choice == '3':
-                print('Youre home')
-                self.game_core.show_character()
-            elif choice == '4':
-                break
-            else:
-                print('Invalid choice.')
-    def city_menu(self):
+            choice = self.graph_menu.player_menu()
+            match choice:
+                case '1':
+                    self.run_city_menu()
+                case '2':
+                    self.run_adventure_menu()
+                case '3':
+                    print('Youre home')
+                    self.game_core.show_character()
+                case '4':
+                    print('not yet')
+                case '5':
+                    break
+                case _:
+                    print('invalid choice.')
+                    
+    def run_city_menu(self):
         print('Welcome to the city')
 
-    def adventure_menu(self):
+    def run_adventure_menu(self):
         print('Where you want to hunt?')
         
