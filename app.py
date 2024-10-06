@@ -38,7 +38,6 @@ class AppMenus():
                 case '2':
                     self.run_adventure_menu()
                 case '3':
-                    print('Youre home')
                     self.game_core.show_character()
                 case '4':
                     print('not yet')
@@ -51,5 +50,7 @@ class AppMenus():
         print('Welcome to the city')
 
     def run_adventure_menu(self):
-        print('Where you want to hunt?')
+        loc_allowed = self.game_core.locations_allowed()
+        loc_choose = self.graph_menu.adventure_menu(loc_allowed)
+        self.game_core.monster_encounter(loc_choose)
         

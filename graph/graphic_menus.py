@@ -49,6 +49,20 @@ class GraficMenus():
                     print('Invalid choice.')
             else:
                 print('Invalid choice.')
+    
+    def adventure_menu(self,locations:list)->str:
+        print('Where you wish to explore?') 
+        for index, location in enumerate(locations):
+            print(f'[ {index+1} ] - {location}')
+        choice = str(input('Choose a place:\n'))
+        if choice.isnumeric():
+            choice = int(choice)
+            if 1 <= choice <= len(locations):
+                return locations[choice-1]
+            else:
+                print('Invalid choice.')
+        else:
+            print('Invalid choice.')       
                 
     def worldmap_menu(self):
         print('Not working yet.')

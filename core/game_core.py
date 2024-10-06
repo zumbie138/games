@@ -1,6 +1,7 @@
 from database import WorldDatabase
 from .creatures_info import MonsterInfos, PlayerInfos
 import math
+import random
 
 class GameCore(WorldDatabase):
     def __init__(self):
@@ -19,6 +20,32 @@ class GameCore(WorldDatabase):
         locations = self.locations_df[self.locations_df['min lvl'] <= player_lvl]
         return locations['name'].to_list()
     
+    def _get_encounter_rate(self,location:str)->dict:
+        df_encounter=self.locations_df[self.locations_df['name'] == location]
+        return df_encounter.iloc[0]['monsters']
+    
+    def _get_encounter_monster(self, monster_rate:dict)->str:
+        for monster, rate in monster_rate.items():
+            dice_roll = random.randint(0, 100)
+            if dice_roll <= rate:
+                return monster
+    
+    def _generate_monster(self,monster_data:tuple,name:str):
+        monster_name, monster_type, monster_life, monster_mana, monster_str, monster_agi, monster_vit, monster_int, monster_cha, monster_atk, monster_def = monster_data
+        self.monster = MonsterInfos(
+            name=monster_name,
+            type=monster_type,
+            life=monster_life,
+            mana=monster_mana,
+            strength=monster_str,
+            agility=monster_agi,
+            vitality=monster_vit,
+            intelligence=monster_int,
+            charisma=monster_cha,
+            attack=monster_atk,
+            defense=monster_def
+        )
+                    
     def _generate_character(self,char_data: tuple):
         player_race, player_class, player_str, player_agi, player_vit, player_int, player_cha = char_data
         player_atk = player_str/2+player_agi/10+player_int/20+player_cha/50
@@ -65,3 +92,12 @@ class GameCore(WorldDatabase):
         print(f'HP: {self.player.life}/{self.player.life}\nMANA: {self.player.mana}/{self.player.mana}')
         print(f'You are level {self.player.level} and your atributes are:\nStrength: {self.player.strength}\nAgility: {self.player.agility}\nVitality: {self.player.vitality}\nInteligence: {self.player.intelligence}\nCharisma: {self.player.charisma}')
         print(f'Your list of spells: {self.player.spells}')
+        
+    def monster_encounter(self,location:str):
+        monster_rate = self._get_encounter_rate(location)
+        monster_name = self._get_encounter_monster(monster_rate)
+        monster_info = self.monster_df[self.monster_df['monster'] == monster_name]
+        monster_info_tuple = self.dataframe_to_tuple(monster_info)
+        self._generate_monster(monster_info_tuple)
+        print(monster_name)
+        

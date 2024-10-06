@@ -4,3 +4,4 @@
 *.spec
 ambiente/
 __pycache__/
+.vscode/
