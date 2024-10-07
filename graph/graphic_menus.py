@@ -41,7 +41,7 @@ class GraficMenus():
                 
     def city_menu(self)->str:
         while True:
-            choice = str(input('[ 1 ] - Tavern.\n[ 2 ] - Market.\n[ 3 ] - Temple.\n[ 4 ] - Blacksmith.\n[ 5 ] - Exit.'))
+            choice = str(input('[ 1 ] - Tavern.\n[ 2 ] - Market.\n[ 3 ] - Temple.\n[ 4 ] - Blacksmith.\n[ 5 ] - Exit.\n'))
             if choice.isnumeric():
                 if 1 <= int(choice) <= 5:
                     return choice
@@ -66,3 +66,27 @@ class GraficMenus():
                 
     def worldmap_menu(self):
         print('Not working yet.')
+        
+    def refuge_menu(self)->str:
+         while True:
+            print('Welcome to your home. What do you wish to do?')
+            choice = str(input('[ 1 ] - Sleep in bed.\n[ 2 ] - Train.\n[ 3 ] - Wardobe.\n[ 4 ] - look in to the mirror.\n[ 5 ] - Exit house.\n'))
+            if choice.isnumeric():
+                if 1 <= int(choice) <= 5:
+                    return choice
+                else:
+                    print('Invalid choice.')
+            else:
+                print('Invalid choice.')
+                
+    def train_skill_menu(self)->str:
+        while True:
+            print('what skill do you want to train')
+            choice = str(input('[ 1 ] - Strenght.\n[ 2 ] - Agility.\n[ 3 ] - Vitality.\n[ 4 ] - intelligence.\n[ 5 ] - charisma.\n[ 6 ] - Exit.\n'))
+            if choice.isnumeric():
+                if 1 <= int(choice) <= 6:
+                    return choice
+                else:
+                    print('Invalid choice.')
+            else:
+                print('Invalid choice.')

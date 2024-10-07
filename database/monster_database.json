@@ -1,14 +1,14 @@
 {
-    "000":{"monster":"rat","type":"creature","atribute":  [0.0, 2.0, 0.0, 0.1, 0.1],"life":20,"attack":0.5,"defense":2.0},
-    "001":{"monster":"snake","type":"creature","atribute":[0.0, 2.0, 0.0, 0.0, 0.1],"life":30,"attack":2,"defense":1.5},
-    "002":{"monster":"bat","type":"creature","atribute":  [0.0, 5.0, 0.0, 0.1, 0.1],"life":30,"attack":2,"defense":1.5},
-    "003":{"monster":"wolf","type":"creature","atribute": [3.0, 2.0, 3.0, 0.2, 0.2],"life":30,"attack":2,"defense":1.5},
-    "004":{"monster":"bear","type":"creature","atribute": [10.0, 3.0, 10.0, 0.2, 0.2],"life":30,"attack":2,"defense":1.5},
-    "005":{"monster":"spider","type":"creature","atribute": [5.0, 4.0, 6.0, 0.1, 0.0],"life":30,"attack":2,"defense":1.5},
-    "006":{"monster":"troll","type":"humanoid","atribute": [3.0, 2.0, 2.0, 0.3, 0.3],"life":30,"attack":2,"defense":1.5},
-    "007":{"monster":"bandit","type":"humanoid","atribute": [4.0, 4.0, 2.0, 1, 2],"life":30,"attack":2,"defense":1.5},
-    "008":{"monster":"goblin","type":"humanoid","atribute": [2.0, 3.0, 1.0, 0.5, 0.3],"life":30,"attack":2,"defense":1.5},
-    "009":{"monster":"rat zombie","type":"undead","atribute": [1.0, 3.0, 1.0, 0.0, 0.0],"life":30,"attack":2,"defense":1.5},
-    "010":{"monster":"skeleton","type":"undead","atribute": [6.0, 5.0, 7.0, 0.0, 0.0],"life":30,"attack":2,"defense":1.5},
-    "011":{"monster":"ghost","type":"undead","atribute": [0.0, 0.0, 0.0, 5.0, 10.0],"life":30,"attack":2,"defense":1.5}
+    "000":{"monster":"rat",       "type":"creature","strg":0.0, "agi":2.0, "vit":0.0, "int":0.1, "char":0.1, "life":20,"attack":0.5,"defense":2.0},
+    "001":{"monster":"snake",     "type":"creature","strg":0.0, "agi":2.0, "vit":0.0, "int":0.0, "char":0.1, "life":30,"attack":2,"defense":1.5},
+    "002":{"monster":"bat",       "type":"creature","strg":0.0, "agi":5.0, "vit":0.0, "int":0.1, "char":0.1, "life":30,"attack":2,"defense":1.5},
+    "003":{"monster":"wolf",      "type":"creature","strg":3.0, "agi":2.0, "vit":3.0, "int":0.2, "char":0.2, "life":30,"attack":2,"defense":1.5},
+    "004":{"monster":"bear",      "type":"creature","strg":10.0,"agi":3.0, "vit":10.0,"int":0.2, "char":0.2, "life":30,"attack":2,"defense":1.5},
+    "005":{"monster":"spider",    "type":"creature","strg":5.0, "agi":4.0, "vit":6.0, "int":0.1, "char":0.0, "life":30,"attack":2,"defense":1.5},
+    "006":{"monster":"troll",     "type":"humanoid","strg":3.0, "agi":2.0, "vit":2.0, "int":0.3, "char":0.3, "life":30,"attack":2,"defense":1.5},
+    "007":{"monster":"bandit",    "type":"humanoid","strg":4.0, "agi":4.0, "vit":2.0, "int":1.0, "char":2.0, "life":30,"attack":2,"defense":1.5},
+    "008":{"monster":"goblin",    "type":"humanoid","strg":2.0, "agi":3.0, "vit":1.0, "int":0.5, "char":0.3, "life":30,"attack":2,"defense":1.5},
+    "009":{"monster":"rat zombie","type":"undead",  "strg":1.0, "agi":3.0, "vit":1.0, "int":0.0, "char":0.0, "life":30,"attack":2,"defense":1.5},
+    "010":{"monster":"skeleton",  "type":"undead",  "strg":6.0, "agi":5.0, "vit":7.0, "int":0.0, "char":0.0, "life":30,"attack":2,"defense":1.5},
+    "011":{"monster":"ghost",     "type":"undead",  "strg":0.0, "agi":0.0, "vit":0.0, "int":5.0, "char":10.0,"life":30,"attack":2,"defense":1.5}
 }

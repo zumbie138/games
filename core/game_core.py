@@ -30,18 +30,18 @@ class GameCore(WorldDatabase):
             if dice_roll <= rate:
                 return monster
     
-    def _generate_monster(self,monster_data:tuple,name:str):
-        monster_name, monster_type, monster_life, monster_mana, monster_str, monster_agi, monster_vit, monster_int, monster_cha, monster_atk, monster_def = monster_data
+    def _generate_monster(self,monster_data:tuple):
+        monster_name, monster_type, monster_str, monster_agi, monster_vit, monster_int, monster_cha, monster_life, monster_atk, monster_def = monster_data
         self.monster = MonsterInfos(
             name=monster_name,
             type=monster_type,
-            life=monster_life,
-            mana=monster_mana,
             strength=monster_str,
             agility=monster_agi,
             vitality=monster_vit,
             intelligence=monster_int,
             charisma=monster_cha,
+            life=monster_life,
+            max_life=monster_life,
             attack=monster_atk,
             defense=monster_def
         )
@@ -60,6 +60,7 @@ class GameCore(WorldDatabase):
             race=player_race,
             class_type=player_class,
             life=player_life,
+            max_life=player_life,
             mana=player_mana,
             strength=player_str,
             agility=player_agi,
@@ -99,5 +100,5 @@ class GameCore(WorldDatabase):
         monster_info = self.monster_df[self.monster_df['monster'] == monster_name]
         monster_info_tuple = self.dataframe_to_tuple(monster_info)
         self._generate_monster(monster_info_tuple)
-        print(monster_name)
-        
+
+    
