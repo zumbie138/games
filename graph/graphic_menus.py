@@ -1,19 +1,9 @@
 
 class GraficMenus():
     def starting_animation(self):
-        print('Welcome to the game Demon Exodus')
-        
-    def initial_menu(self)->str:
-        while True:
-            choice = str(input('[ 1 ] - New Game.\n[ 2 ] - Load Game.\n[ 3 ] - Quit.\n'))
-            if choice.isnumeric(): 
-                if 1 <= int(choice) <= 3:
-                    return choice
-                else:
-                    print('invalid choice.')                    
-            else:
-                print('invalid choice.')
-    
+        print('=+=+=+=+=+=+= DEMON EXODUS =+=+=+=+=+=+=')
+
+          
     def new_character_menu(self)->tuple:
         class_select={'human':{'1':'warrior','2':'wizard','3':'cleric'},
                 'elf':{'1':'ranger','2':'sorcerer','3':'druid'},
@@ -27,66 +17,15 @@ class GraficMenus():
         choosen_class = class_select[choosen_race][class_choice]
         return (name, choosen_race, choosen_class)
     
-    def player_menu(self)->str:
-        print('Welcome player')
-        while True:
-            choice = str(input('[ 1 ] - City.\n[ 2 ] - Adventure.\n[ 3 ] - Refugee.\n[ 4 ] - World Map.\n[ 5 ] - Exit.'))
-            if choice.isnumeric():
-                if 1 <= int(choice) <= 5:
-                    return choice
-                else:
-                    print('Invalid choice.')
-            else:
-                print('Invalid choice.')
-                
-    def city_menu(self)->str:
-        while True:
-            choice = str(input('[ 1 ] - Tavern.\n[ 2 ] - Market.\n[ 3 ] - Temple.\n[ 4 ] - Blacksmith.\n[ 5 ] - Exit.\n'))
-            if choice.isnumeric():
-                if 1 <= int(choice) <= 5:
-                    return choice
-                else:
-                    print('Invalid choice.')
-            else:
-                print('Invalid choice.')
     
-    def adventure_menu(self,locations:list)->str:
-        print('Where you wish to explore?') 
-        for index, location in enumerate(locations):
-            print(f'[ {index+1} ] - {location}')
-        choice = str(input('Choose a place:\n'))
+    def generate_menu(self,menu_text:str,options:list)->str:
+        print(menu_text) 
+        for index, option in enumerate(options):
+            print(f'[ {index+1} ] - {option}')
+        choice = str(input('Choose a option:\n'))
         if choice.isnumeric():
-            choice = int(choice)
-            if 1 <= choice <= len(locations):
-                return locations[choice-1]
-            else:
-                print('Invalid choice.')
-        else:
-            print('Invalid choice.')       
+            if 1 <= int(choice) <= len(options):
+                return choice
                 
     def worldmap_menu(self):
         print('Not working yet.')
-        
-    def refuge_menu(self)->str:
-         while True:
-            print('Welcome to your home. What do you wish to do?')
-            choice = str(input('[ 1 ] - Sleep in bed.\n[ 2 ] - Train.\n[ 3 ] - Wardobe.\n[ 4 ] - look in to the mirror.\n[ 5 ] - Exit house.\n'))
-            if choice.isnumeric():
-                if 1 <= int(choice) <= 5:
-                    return choice
-                else:
-                    print('Invalid choice.')
-            else:
-                print('Invalid choice.')
-                
-    def train_skill_menu(self)->str:
-        while True:
-            print('what skill do you want to train')
-            choice = str(input('[ 1 ] - Strenght.\n[ 2 ] - Agility.\n[ 3 ] - Vitality.\n[ 4 ] - intelligence.\n[ 5 ] - charisma.\n[ 6 ] - Exit.\n'))
-            if choice.isnumeric():
-                if 1 <= int(choice) <= 6:
-                    return choice
-                else:
-                    print('Invalid choice.')
-            else:
-                print('Invalid choice.')

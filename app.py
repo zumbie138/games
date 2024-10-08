@@ -7,9 +7,11 @@ class AppMenus():
         self.graph_menu = GraficMenus()
         
     def run_game(self):
+        start_menu = ['New Game.', 'Load Game.', 'Exit.']
+        start_text = '=+=+=+=+=+=+==+=+=+=+=+=+==+=+=+=+=+=+='
         self.graph_menu.starting_animation()
         while True:
-            choice = self.graph_menu.initial_menu()
+            choice = self.graph_menu.generate_menu(start_text,start_menu)
             match choice:
                 case '1':
                     self.run_new_char()
@@ -30,8 +32,10 @@ class AppMenus():
         self.game_core.load_character()
         
     def run_player_status(self):
+        choice_text = 'Welcome player, where you want to go?'
+        choice_options = ['City.','Adventure.','Refuge.','World Map.','Exit.']
         while True:
-            choice = self.graph_menu.player_menu()
+            choice = self.graph_menu.generate_menu(choice_text, choice_options)
             match choice:
                 case '1':
                     self.run_city_status()
@@ -47,17 +51,37 @@ class AppMenus():
                     print('invalid choice.')
                     
     def run_city_status(self):
-        city_choice = self.graph_menu.city_menu()
-        print(city_choice)
+        choice_text = 'You are inside the city, where you like to go?'
+        choice_options = ['Tavern.','Market.','Temple.','Blacksmith.','Exit.']
+        while True:
+            choice = self.graph_menu.generate_menu(choice_text, choice_options)
+            match choice:
+                case '1':
+                    print('youre in tavern')
+                case '2':
+                    print('youre in market')
+                case '3':
+                    print('youre in temple')
+                case '4':
+                    print('youre in blacksmith')
+                case '5':
+                    break
+                case _:
+                    print('invalid choice.')
 
     def run_adventure_status(self):
+        choice_text = 'Where you want to hunt?'
         loc_allowed = self.game_core.locations_allowed()
-        loc_choose = self.graph_menu.adventure_menu(loc_allowed)
-        self.game_core.monster_encounter(loc_choose)
+        loc_choose = self.graph_menu.generate_menu(choice_text, loc_allowed)
+        loc_choose = int(loc_choose)-1
+        self.game_core.monster_encounter(loc_allowed[loc_choose])
+        self.game_core.battle_core()
     
     def run_refuge_status(self):
+        choice_text = 'Welcome to your home. What do you wish to do?'
+        choice_options = ['Sleep in bed.','Train.','Wardobe.','look in to the mirror.','Exit house..']
         while True:
-            refuge_choice = self.graph_menu.refuge_menu()
+            refuge_choice = self.graph_menu.generate_menu(choice_text,choice_options)
             match refuge_choice:
                 case '1':
                     self.run_sleep_status()
@@ -69,12 +93,15 @@ class AppMenus():
                     self.game_core.show_character()
                 case '5':
                     break
+                
     def run_sleep_status(self):
         print('zzzzzzzzzz')            
              
     def run_train_status(self):
+        choice_text = 'what skill do you want to train?'
+        choice_options = ['Strenght.','Agility.','Vitality.','intelligence.','charisma.','Exit.']
         while True:
-            train_choice = self.graph_menu.train_skill_menu()
+            train_choice = self.graph_menu.generate_menu(choice_text,choice_options)
             match train_choice:
                 case '1':
                     print('up strength')

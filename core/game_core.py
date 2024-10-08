@@ -2,6 +2,8 @@ from database import WorldDatabase
 from .creatures_info import MonsterInfos, PlayerInfos
 import math
 import random
+import threading
+import time
 
 class GameCore(WorldDatabase):
     def __init__(self):
@@ -48,7 +50,7 @@ class GameCore(WorldDatabase):
                     
     def _generate_character(self,char_data: tuple):
         player_race, player_class, player_str, player_agi, player_vit, player_int, player_cha = char_data
-        player_atk = player_str/2+player_agi/10+player_int/20+player_cha/50
+        player_atk = player_str+player_agi/2+player_int/20+player_cha/50
         player_def = player_vit/2+player_agi/10+player_str/10
         player_life = int(math.ceil(100+(player_vit*2+player_str)/2))
         player_mana = int(math.ceil(10+(player_int*2+player_vit)/2))
@@ -72,7 +74,6 @@ class GameCore(WorldDatabase):
             spells=spell_list
         )
       
-    
     def locations_allowed(self)->list:
         return self._locations_by_lvl(self.player.level)
         
@@ -101,4 +102,33 @@ class GameCore(WorldDatabase):
         monster_info_tuple = self.dataframe_to_tuple(monster_info)
         self._generate_monster(monster_info_tuple)
 
-    
+    def player_battle_loop(self):
+        while self.player.life > 0:
+            random_damage = random.randint(0,3)
+            player_damage = self.player.attack*0.7 + random_damage*0.3 - self.monster.defense
+            self.monster.life = self.monster.life - player_damage
+            time.sleep(1)
+            print(f'You deal {player_damage} damage.')
+            if self.monster.life < 0:
+                break
+            
+    def monster_battle_loop(self):
+        while self.monster.life > 0:
+            random_damage = random.randint(0,3)
+            monster_damage = self.monster.attack*0.7 + random_damage*0.3 - self.player.defense
+            self.player.life = self.player.life - monster_damage
+            time.sleep(2)
+            print(f'You take {monster_damage} damage')
+            if self.player.life < 0:
+                break
+
+    def battle_core(self):
+        print(f'You will battle a {self.monster.name}')
+        player_thread = threading.Thread(target=self.player_battle_loop)
+        monster_thread = threading.Thread(target=self.monster_battle_loop)
+
+        player_thread.start()
+        monster_thread.start()
+        player_thread.join()
+        monster_thread.join()
+        print(f'HP:{self.player.life}/{self.player.max_life}')
