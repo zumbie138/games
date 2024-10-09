@@ -91,7 +91,7 @@ class GameCore(WorldDatabase):
     def show_character(self):
         print('You see yourself in the mirror:')
         print(f'Your name is: {self.player.name}, you are an {self.player.race} {self.player.class_type}')
-        print(f'HP: {self.player.life}/{self.player.life}\nMANA: {self.player.mana}/{self.player.mana}')
+        print(f'HP: {self.player.life}/{self.player.max_life}\nMANA: {self.player.mana}/{self.player.mana}')
         print(f'You are level {self.player.level} and your atributes are:\nStrength: {self.player.strength}\nAgility: {self.player.agility}\nVitality: {self.player.vitality}\nInteligence: {self.player.intelligence}\nCharisma: {self.player.charisma}')
         print(f'Your list of spells: {self.player.spells}')
         
@@ -103,32 +103,58 @@ class GameCore(WorldDatabase):
         self._generate_monster(monster_info_tuple)
 
     def player_battle_loop(self):
-        while self.player.life > 0:
+        while self.player.life >= 0:
+            if self.monster.life <= 0:
+                break
             random_damage = random.randint(0,3)
-            player_damage = self.player.attack*0.7 + random_damage*0.3 - self.monster.defense
+            player_damage = math.ceil(self.player.attack*0.7 + random_damage*0.3 - self.monster.defense)
+            player_damage = max(player_damage, 0)
             self.monster.life = self.monster.life - player_damage
             time.sleep(1)
             print(f'You deal {player_damage} damage.')
-            if self.monster.life < 0:
-                break
             
     def monster_battle_loop(self):
-        while self.monster.life > 0:
+        while self.monster.life >= 0:
+            if self.player.life <= 0:
+                break
             random_damage = random.randint(0,3)
-            monster_damage = self.monster.attack*0.7 + random_damage*0.3 - self.player.defense
+            monster_damage = math.ceil(self.monster.attack*0.7 + random_damage*0.3 - self.player.defense)
+            monster_damage = max(monster_damage, 0)
             self.player.life = self.player.life - monster_damage
             time.sleep(2)
             print(f'You take {monster_damage} damage')
-            if self.player.life < 0:
-                break
 
-    def battle_core(self):
+    
+    def battle_turn_loop(self):
+        turn = 1
+        while True:
+            if self.player.life <= 0:
+                print('You are defeated')
+                break
+            elif self.monster.life <=0:
+                print('you kill the monster')
+                break
+            else:
+                time.sleep(5)
+                print(f'Turn {turn} ends.')
+                turn +=1
+
+    def battle_core(self)->bool:
         print(f'You will battle a {self.monster.name}')
+        
         player_thread = threading.Thread(target=self.player_battle_loop)
         monster_thread = threading.Thread(target=self.monster_battle_loop)
+        turn_thread = threading.Thread(target=self.battle_turn_loop)
 
         player_thread.start()
         monster_thread.start()
+        turn_thread.start()
         player_thread.join()
         monster_thread.join()
+        turn_thread.join()
         print(f'HP:{self.player.life}/{self.player.max_life}')
+
+        if self.player.life <= 0:
+            return True
+        else:
+            return False

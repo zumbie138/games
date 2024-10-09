@@ -1,5 +1,6 @@
 from core import GameCore
 from graph import GraficMenus
+import keyboard
 
 class AppMenus():
     def __init__(self):
@@ -74,8 +75,10 @@ class AppMenus():
         loc_allowed = self.game_core.locations_allowed()
         loc_choose = self.graph_menu.generate_menu(choice_text, loc_allowed)
         loc_choose = int(loc_choose)-1
-        self.game_core.monster_encounter(loc_allowed[loc_choose])
-        self.game_core.battle_core()
+        stop_battle = False
+        while not stop_battle:
+            self.game_core.monster_encounter(loc_allowed[loc_choose])
+            stop_battle = self.game_core.battle_core()
     
     def run_refuge_status(self):
         choice_text = 'Welcome to your home. What do you wish to do?'
