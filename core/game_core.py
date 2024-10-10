@@ -12,7 +12,9 @@ class GameCore(WorldDatabase):
         self.df_spells = self.get_database_dataframe('spells_database.json')
         self.locations_df = self.get_database_dataframe('locations_database.json')
         self.player = None
-        self.monster = None       
+        self.monster = None    
+        self.equips = {}
+        self.inventory = {}   
         
     def _spells_by_class_lvl(self,player_class:str,player_lvl:int)->list:
         class_spells = self.df_spells[(self.df_spells['class'] == player_class) & (self.df_spells['lvl'] <= player_lvl)]
@@ -124,7 +126,6 @@ class GameCore(WorldDatabase):
             time.sleep(2)
             print(f'You take {monster_damage} damage')
 
-    
     def battle_turn_loop(self):
         turn = 1
         while True:
@@ -139,9 +140,12 @@ class GameCore(WorldDatabase):
                 print(f'Turn {turn} ends.')
                 turn +=1
 
+    def monster_loot(self):
+        loot_rate = self.get_rate_by_name(self.monster.name)
+        
     def battle_core(self)->bool:
         print(f'You will battle a {self.monster.name}')
-        
+
         player_thread = threading.Thread(target=self.player_battle_loop)
         monster_thread = threading.Thread(target=self.monster_battle_loop)
         turn_thread = threading.Thread(target=self.battle_turn_loop)
@@ -157,4 +161,5 @@ class GameCore(WorldDatabase):
         if self.player.life <= 0:
             return True
         else:
+            self.monster_loot()
             return False

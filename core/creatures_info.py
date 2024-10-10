@@ -20,6 +20,19 @@ class PlayerInfos():
     spells: list
 
 @dataclass
+
+class PlayerEquips():
+    max_life: int
+    mana: int
+    strength: float
+    agility: float
+    vitality: float
+    intelligence: float
+    charisma: float
+    attack: float
+    defense: float
+
+@dataclass
     
 class MonsterInfos():
     name: str

@@ -15,6 +15,9 @@ class WorldDatabase():
     def dataframe_to_tuple(self, dataframe:pd.DataFrame)->tuple:
         return tuple(dataframe.iloc[0])
     
+    def get_rate_by_name(self, key_name:str,columm_name:str,data_base:pd.DataFrame):
+        df_resulting=data_base[data_base['name'] == key_name]
+        return df_resulting.iloc[0][columm_name]
 # wd = WorldDatabase()
 # classes_database = wd.classes_database
 # df_classe_database = pd.DataFrame.from_dict(classes_database, orient='index')

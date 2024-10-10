@@ -1,14 +1,14 @@
 {
-    "000":{"monster":"rat",       "type":"creature","strg":0.0, "agi":2.0, "vit":0.0, "int":0.1, "char":0.1, "life":20,"attack":5.5,"defense":3.0},
-    "001":{"monster":"snake",     "type":"creature","strg":0.0, "agi":2.0, "vit":0.0, "int":0.0, "char":0.1, "life":30,"attack":8.0,"defense":2.5},
-    "002":{"monster":"bat",       "type":"creature","strg":0.0, "agi":5.0, "vit":0.0, "int":0.1, "char":0.1, "life":30,"attack":11.0,"defense":2.5},
-    "003":{"monster":"wolf",      "type":"creature","strg":3.0, "agi":2.0, "vit":3.0, "int":0.2, "char":0.2, "life":100,"attack":10.0,"defense":5.0},
-    "004":{"monster":"bear",      "type":"creature","strg":10.0,"agi":3.0, "vit":10.0,"int":0.2, "char":0.2, "life":200,"attack":20.0,"defense":6.0},
-    "005":{"monster":"spider",    "type":"creature","strg":5.0, "agi":4.0, "vit":6.0, "int":0.1, "char":0.0, "life":30,"attack":11.0,"defense":3.5},
-    "006":{"monster":"troll",     "type":"humanoid","strg":3.0, "agi":2.0, "vit":2.0, "int":0.3, "char":0.3, "life":80,"attack":9.0,"defense":4.0},
-    "007":{"monster":"bandit",    "type":"humanoid","strg":4.0, "agi":4.0, "vit":2.0, "int":1.0, "char":2.0, "life":110,"attack":11.0,"defense":5.0},
-    "008":{"monster":"goblin",    "type":"humanoid","strg":2.0, "agi":3.0, "vit":1.0, "int":0.5, "char":0.3, "life":70,"attack":8.5,"defense":3.5},
-    "009":{"monster":"rat zombie","type":"undead",  "strg":1.0, "agi":3.0, "vit":1.0, "int":0.0, "char":0.0, "life":90,"attack":11.0,"defense":4.5},
-    "010":{"monster":"skeleton",  "type":"undead",  "strg":6.0, "agi":5.0, "vit":7.0, "int":0.0, "char":0.0, "life":150,"attack":14.0,"defense":5.5},
-    "011":{"monster":"ghost",     "type":"undead",  "strg":0.0, "agi":0.0, "vit":0.0, "int":5.0, "char":10.0,"life":10,"attack":1.0,"defense":20.0}
+    "000":{"monster":"rat",       "type":"creature","strg":0.0, "agi":2.0, "vit":0.0, "int":0.1, "char":0.1, "life":20, "attack":5.5, "defense":3.0, "loot":{"mouse_fur":20,"broken ring":1,"leftovers":10,"cheese":15}},
+    "001":{"monster":"snake",     "type":"creature","strg":0.0, "agi":2.0, "vit":0.0, "int":0.0, "char":0.1, "life":30, "attack":8.0, "defense":2.5, "loot":{}},
+    "002":{"monster":"bat",       "type":"creature","strg":0.0, "agi":5.0, "vit":0.0, "int":0.1, "char":0.1, "life":30, "attack":11.0,"defense":2.5, "loot":{}},
+    "003":{"monster":"wolf",      "type":"creature","strg":3.0, "agi":2.0, "vit":3.0, "int":0.2, "char":0.2, "life":100,"attack":10.0,"defense":5.0, "loot":{}},
+    "004":{"monster":"bear",      "type":"creature","strg":10.0,"agi":3.0, "vit":10.0,"int":0.2, "char":0.2, "life":200,"attack":20.0,"defense":6.0, "loot":{}},
+    "005":{"monster":"spider",    "type":"creature","strg":5.0, "agi":4.0, "vit":6.0, "int":0.1, "char":0.0, "life":30, "attack":11.0,"defense":3.5, "loot":{}},
+    "006":{"monster":"troll",     "type":"humanoid","strg":3.0, "agi":2.0, "vit":2.0, "int":0.3, "char":0.3, "life":80, "attack":9.0, "defense":4.0, "loot":{}},
+    "007":{"monster":"bandit",    "type":"humanoid","strg":4.0, "agi":4.0, "vit":2.0, "int":1.0, "char":2.0, "life":110,"attack":11.0,"defense":5.0, "loot":{}},
+    "008":{"monster":"goblin",    "type":"humanoid","strg":2.0, "agi":3.0, "vit":1.0, "int":0.5, "char":0.3, "life":70, "attack":8.5, "defense":3.5, "loot":{}},
+    "009":{"monster":"rat zombie","type":"undead",  "strg":1.0, "agi":3.0, "vit":1.0, "int":0.0, "char":0.0, "life":90, "attack":11.0,"defense":4.5, "loot":{}},
+    "010":{"monster":"skeleton",  "type":"undead",  "strg":6.0, "agi":5.0, "vit":7.0, "int":0.0, "char":0.0, "life":150,"attack":14.0,"defense":5.5, "loot":{}},
+    "011":{"monster":"ghost",     "type":"undead",  "strg":0.0, "agi":0.0, "vit":0.0, "int":5.0, "char":10.0,"life":10, "attack":1.0, "defense":20.0,"loot":{}}
 }
