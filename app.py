@@ -98,23 +98,13 @@ class AppMenus():
                     break
                 
     def run_sleep_status(self):
-        print('zzzzzzzzzz')            
+        self.game_core.healing_sleeping()           
              
     def run_train_status(self):
         choice_text = 'what skill do you want to train?'
         choice_options = ['Strenght.','Agility.','Vitality.','intelligence.','charisma.','Exit.']
         while True:
             train_choice = self.graph_menu.generate_menu(choice_text,choice_options)
-            match train_choice:
-                case '1':
-                    print('up strength')
-                case '2':
-                    print('up agility')
-                case '3':
-                    print('up vitality')
-                case '4':
-                    print('up intelligence')        
-                case '5':
-                    print('up charisma')
-                case '6':
-                    break    
+            if train_choice == '6':
+                break
+            self.game_core.training_atributes(train_choice)

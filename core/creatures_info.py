@@ -46,3 +46,10 @@ class MonsterInfos():
     max_life: int
     attack: float
     defense: float
+    loot: dict
+    
+@dataclass
+
+class InventoryInfos():
+    inventory: dict
+    wearing: dict
