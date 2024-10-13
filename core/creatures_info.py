@@ -10,25 +10,26 @@ class PlayerInfos():
     life: int
     max_life: int
     mana: int
+    max_mana: int
     strength: float
     agility: float
     vitality: float
     intelligence: float
     charisma: float
     attack: float
+    attack_speed: float
     defense: float
     spells: list
+    experience: int
+    inventory: dict
+    wearing: dict
+    atribute_cap: int
 
 @dataclass
 
 class PlayerEquips():
     max_life: int
-    mana: int
-    strength: float
-    agility: float
-    vitality: float
-    intelligence: float
-    charisma: float
+    max_mana: int
     attack: float
     defense: float
 
@@ -45,11 +46,8 @@ class MonsterInfos():
     life: int
     max_life: int
     attack: float
+    attack_speed: float
     defense: float
+    experience: int
     loot: dict
-    
-@dataclass
 
-class InventoryInfos():
-    inventory: dict
-    wearing: dict
