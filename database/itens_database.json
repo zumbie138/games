@@ -1,3 +1,17 @@
 {
-    "001":{"name":"","type":"","description":"","valor":""}
+    "001":{"name":"fur","type":"","description":"","valor":""},
+    "002":{"name":"fang","type":"","description":"","valor":""},
+    "003":{"name":"scale","type":"","description":"","valor":""},
+    "004":{"name":"claw","type":"","description":"","valor":""},
+    "005":{"name":"vampire teeth","type":"","description":"","valor":""},
+    "006":{"name":"sharp teeth","type":"","description":"","valor":""},
+    "007":{"name":"hide","type":"","description":"","valor":""},
+    "008":{"name":"bat wings","type":"","description":"","valor":""},
+    "009":{"name":"leftovers","type":"","description":"","valor":""},
+    "010":{"name":"cheese","type":"","description":"","valor":""},
+    "011":{"name":"meat","type":"","description":"","valor":""},
+    "012":{"name":"bread","type":"","description":"","valor":""},
+    "013":{"name":"bone","type":"","description":"","valor":""},
+    "014":{"name":"bone","type":"","description":"","valor":""},
+    "010654":{"name":"","type":"","description":"","valor":""}
 }

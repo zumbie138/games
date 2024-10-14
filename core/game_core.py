@@ -19,11 +19,11 @@ class GameCore(WorldDatabase):
     def _spells_by_class_lvl(self,player_class:str,player_lvl:int)->list:
         class_spells = self.df_spells[(self.df_spells['class'] == player_class) & (self.df_spells['lvl'] <= player_lvl)]
         return class_spells['name'].to_list()
-    
+
     def _locations_by_lvl(self,player_lvl:int)->list:
         locations = self.locations_df[self.locations_df['min lvl'] <= player_lvl]
         return locations['name'].to_list()
-    
+
     def _get_encounter_rate(self,location:str)->dict:
         df_encounter=self.locations_df[self.locations_df['name'] == location]
         return df_encounter.iloc[0]['monsters']
@@ -52,12 +52,16 @@ class GameCore(WorldDatabase):
             experience=monster_exp,
             loot=monster_loot
         )
-    
+
     def _update_character(self):
         self.player.attack = self.player.strength+self.player.agility/2+self.player.intelligence/20+self.player.charisma/50
         self.player.defense = self.player.vitality/2+self.player.agility/10+self.player.strength/10
-        
-                            
+        self.player.attack_speed = (100/(22.2222+self.player.agility))+0.5
+        self.player.life = int(math.ceil(100+(self.player.vitality*2+self.player.strength)/2))
+        self.player.mana = int(math.ceil(10+(self.player.intelligence*2+self.player.vitality)/2))
+        self.player.spells = self._spells_by_class_lvl(self.player.class_type,self.player.level)
+        self.player.atribute_cap = 13 + (self.player.level*7)         
+                   
     def _generate_character(self,char_data: tuple):
         player_race, player_class, player_str, player_agi, player_vit, player_int, player_cha, player_name, player_lvl, player_exp, player_inv, player_wear = char_data
         player_atk = player_str+player_agi/2+player_int/20+player_cha/50
@@ -90,16 +94,13 @@ class GameCore(WorldDatabase):
             wearing=player_wear,
             atribute_cap=atribute_cap
         )
-    
 
-      
     def locations_allowed(self)->list:
         return self._locations_by_lvl(self.player.level)
-        
+
     def new_character(self, name:str, race:str, clas:str):
         inventory={}
-        wearing={
-                'head':None,
+        wearing={'head':None,
                 'neck':None,
                 'torso':None,
                 'arms':None,
@@ -110,8 +111,7 @@ class GameCore(WorldDatabase):
                 'foot':None,
                 'finger':None,
                 'wrist':None,
-                'ears':None,
-            }
+                'ears':None,}
         print('Starting new character.')
         print(f'Name: {name}\nRace: {race}\nClass: {clas}')
         class_info = self.df_classes[self.df_classes['class'] == clas]
@@ -119,10 +119,10 @@ class GameCore(WorldDatabase):
         new_tuple = (name, 1, 0, inventory, wearing)
         class_info_tuple = class_info_tuple + new_tuple
         self._generate_character(class_info_tuple)
-    
+
     def load_character(self):
         print('Load saved characters.')
-        
+
     def show_character(self):
         print('You see yourself in the mirror:')
         print(f'Your name is: {self.player.name}, you are an {self.player.race} {self.player.class_type}')
@@ -130,7 +130,7 @@ class GameCore(WorldDatabase):
         print(f'You are level {self.player.level} and your atributes are:\nStrength: {self.player.strength}\nAgility: {self.player.agility}\nVitality: {self.player.vitality}\nInteligence: {self.player.intelligence}\nCharisma: {self.player.charisma}')
         print(f'Your list of spells: {self.player.spells}')
         print(f'inventory:{self.player.inventory}')
-        
+
     def monster_encounter(self,location:str):
         monster_rate = self._get_encounter_rate(location)
         monster_name = self._get_encounter_monster(monster_rate)
@@ -148,7 +148,7 @@ class GameCore(WorldDatabase):
             self.monster.life = self.monster.life - player_damage
             time.sleep(self.player.attack_speed)
             print(f'You deal {player_damage} damage.')
-            
+
     def monster_battle_loop(self):
         while self.monster.life > 0:
             if self.player.life <= 0:
@@ -158,8 +158,8 @@ class GameCore(WorldDatabase):
             monster_damage = max(monster_damage, 0)
             self.player.life = self.player.life - monster_damage
             self.player.life = max(self.player.life, 0)
-            time.sleep(2)
-            print(f'You take {monster_damage} damage')
+            time.sleep(5)
+            print(f'You take {monster_damage} damage.')
 
     def battle_turn_loop(self):
         turn = 1
@@ -176,27 +176,27 @@ class GameCore(WorldDatabase):
                 turn +=1
 
     def random_exp_monster(self)->int:
-        return random.randint(self.monster.experience)
-    
+        return random.randint(*self.monster.experience)
+
     def level_up_character(self):
         self.player.level +=1
         self._update_character()
-    
+
     def verify_experience(self):
         level_up = {1:100,2:400,3:1000,4:1800,5:2800,6:4000,7:7500,8:10000}
         if level_up[self.player.level] <= self.player.experience:
             self.level_up_character()
-    
+
     def monster_reward(self):
         self.player.experience = self.player.experience + self.random_exp_monster()
+        self.verify_experience()
         for item, (rate,min_qty,max_qty) in self.monster.loot.items():
             dice_roll = random.randint(0,100)
             quantity = random.randint(min_qty,max_qty)
             if rate >= dice_roll:
                 self.player.inventory[item]=self.player.inventory.get(item, 0)+quantity
                 print(f'you put on backpack: {quantity} x {item}')
-                
-        
+
     def battle_core(self)->bool:
         print(f'You will battle a {self.monster.name}')
 
@@ -217,7 +217,7 @@ class GameCore(WorldDatabase):
         else:
             self.monster_reward()
             return False
-        
+
     def healing_sleeping(self):
         while self.player.life < self.player.max_life:
             random_heal = random.randint(1,5)
@@ -226,8 +226,8 @@ class GameCore(WorldDatabase):
             if self.player.life > self.player.max_life:
                 self.player.life = self.player.max_life
             print(f'You heal {heal} points of life, HP: {self.player.life}/{self.player.max_life}')
-            time.sleep(2.5)
-            
+            # time.sleep(2.5)
+
     def training_atributes(self,choice:str):
         while self.player.life > 0:
             sum_atributes = self.player.strength+self.player.agility+self.player.vitality+self.player.intelligence+self.player.charisma
@@ -251,8 +251,8 @@ class GameCore(WorldDatabase):
                 case '5':
                     text = 'charisma'
                     self.player.charisma = self.player.charisma + train 
-            self.player.life = self.player.life - 10
-            self.player.life = max(self.player.life, 0)
-            time.sleep(1)
+            # self.player.life = self.player.life - 10
+            # self.player.life = max(self.player.life, 0)
+            # time.sleep(1)
             print(f'You train {train} points of {text}.')
             self._update_character()
