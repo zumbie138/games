@@ -4,14 +4,14 @@
         "type":"city",
         "min lvl":1,
         "world":"tier 1",
-        "monsters":{"bandit":10,"rat":45,"bat":100}
+        "monsters":{"bandit":5,"rat":50,"bat":100}
     },
     "002":{
         "name":"grassland",
         "type":"open field",
         "min lvl":1,
         "world":"tier 1",
-        "monsters":{"goblin":5,"troll":25,"rat":30,"snake":100}
+        "monsters":{"goblin":5,"troll":5,"rat":40,"snake":100}
     },
     "003":{
         "name":"forest",

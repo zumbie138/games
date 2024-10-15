@@ -1,11 +1,11 @@
-from database import WorldDatabase
+from database import GameBase
 from .creatures_info import MonsterInfos, PlayerInfos, PlayerEquips
 import math
 import random
 import threading
 import time
 
-class GameCore(WorldDatabase):
+class GameCore(GameBase):
     def __init__(self):
         self.df_classes = self.get_database_dataframe('class_database.json')
         self.monster_df = self.get_database_dataframe('monster_database.json')
@@ -57,11 +57,12 @@ class GameCore(WorldDatabase):
         self.player.attack = self.player.strength+self.player.agility/2+self.player.intelligence/20+self.player.charisma/50
         self.player.defense = self.player.vitality/2+self.player.agility/10+self.player.strength/10
         self.player.attack_speed = (100/(22.2222+self.player.agility))+0.5
-        self.player.life = int(math.ceil(100+(self.player.vitality*2+self.player.strength)/2))
-        self.player.mana = int(math.ceil(10+(self.player.intelligence*2+self.player.vitality)/2))
+        self.player.max_life = int(math.ceil(100+(self.player.vitality*2+self.player.strength)/2))
+        self.player.max_mana = int(math.ceil(10+(self.player.intelligence*2+self.player.vitality)/2))
         self.player.spells = self._spells_by_class_lvl(self.player.class_type,self.player.level)
         self.player.atribute_cap = 13 + (self.player.level*7)         
-                   
+        self.save_character(self.player)
+        
     def _generate_character(self,char_data: tuple):
         player_race, player_class, player_str, player_agi, player_vit, player_int, player_cha, player_name, player_lvl, player_exp, player_inv, player_wear = char_data
         player_atk = player_str+player_agi/2+player_int/20+player_cha/50
@@ -119,9 +120,12 @@ class GameCore(WorldDatabase):
         new_tuple = (name, 1, 0, inventory, wearing)
         class_info_tuple = class_info_tuple + new_tuple
         self._generate_character(class_info_tuple)
+        self.save_character(self.player)
 
-    def load_character(self):
-        print('Load saved characters.')
+    def load_character(self,char_data:dict):
+        print('Load saved character.')
+        self.player = PlayerInfos(**char_data)
+        self._update_character()
 
     def show_character(self):
         print('You see yourself in the mirror:')
@@ -196,6 +200,7 @@ class GameCore(WorldDatabase):
             if rate >= dice_roll:
                 self.player.inventory[item]=self.player.inventory.get(item, 0)+quantity
                 print(f'you put on backpack: {quantity} x {item}')
+        self.save_character(self.player)
 
     def battle_core(self)->bool:
         print(f'You will battle a {self.monster.name}')

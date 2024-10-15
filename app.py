@@ -30,7 +30,12 @@ class AppMenus():
         self.game_core.new_character(*character)
                 
     def run_load_character(self):
-        self.game_core.load_character()
+        text = 'What character want to load?'
+        save_list = self.game_core.get_list_load_character()
+        choice = self.graph_menu.generate_menu(text, save_list)
+        choice = int(choice)-1
+        char_data = self.game_core.get_char_from_json(save_list[choice])
+        self.game_core.load_character(char_data)
         
     def run_player_status(self):
         choice_text = 'Welcome player, where you want to go?'
