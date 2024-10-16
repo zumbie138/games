@@ -87,7 +87,7 @@ class AppMenus():
     
     def run_refuge_status(self):
         choice_text = 'Welcome to your home. What do you wish to do?'
-        choice_options = ['Sleep in bed.','Train.','Wardobe.','look in to the mirror.','Exit house..']
+        choice_options = ['Sleep in bed.','Train.','Wardobe.','look in to the mirror.','Exit house.']
         while True:
             refuge_choice = self.graph_menu.generate_menu(choice_text,choice_options)
             match refuge_choice:
@@ -101,7 +101,16 @@ class AppMenus():
                     self.game_core.show_character()
                 case '5':
                     break
-                
+    
+    def run_wardobe_status(self):
+        choice_text = 'What part you want to equip a item?'
+        choice_options = ['head','neck','torso','arms','right hand','left hand','waist','legs','foot','finger','wrist','ears','back','Exit.']
+        while True:
+            choice = self.graph_menu.generate_menu(choice_text,choice_options)
+            choice = int(choice)-1
+            part_choose = choice_options[choice]
+            if choice == '14':
+                break
     def run_sleep_status(self):
         self.game_core.healing_sleeping()           
              

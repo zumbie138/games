@@ -112,7 +112,8 @@ class GameCore(GameBase):
                 'foot':None,
                 'finger':None,
                 'wrist':None,
-                'ears':None,}
+                'ears':None,
+                'back':None}
         print('Starting new character.')
         print(f'Name: {name}\nRace: {race}\nClass: {clas}')
         class_info = self.df_classes[self.df_classes['class'] == clas]
@@ -130,8 +131,9 @@ class GameCore(GameBase):
     def show_character(self):
         print('You see yourself in the mirror:')
         print(f'Your name is: {self.player.name}, you are an {self.player.race} {self.player.class_type}')
-        print(f'HP: {self.player.life}/{self.player.max_life}\nMANA: {self.player.mana}/{self.player.mana}')
-        print(f'You are level {self.player.level} and your atributes are:\nStrength: {self.player.strength}\nAgility: {self.player.agility}\nVitality: {self.player.vitality}\nInteligence: {self.player.intelligence}\nCharisma: {self.player.charisma}')
+        print(f'HP: {self.player.life}/{self.player.max_life}\nMANA: {self.player.mana}/{self.player.max_mana}')
+        print(f'You are level {self.player.level}, with {self.player.experience} of experience and your atributes are:\nStrength: {self.player.strength}\nAgility: {self.player.agility}\nVitality: {self.player.vitality}\nInteligence: {self.player.intelligence}\nCharisma: {self.player.charisma}')
+        print(f'Attack:{self.player.attack} Defense:{self.player.defense} attack speed:{self.player.attack_speed}')
         print(f'Your list of spells: {self.player.spells}')
         print(f'inventory:{self.player.inventory}')
 

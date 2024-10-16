@@ -31,6 +31,7 @@ class PlayerEquips():
     max_life: int
     max_mana: int
     attack: float
+    attack_speed: float
     defense: float
 
 @dataclass

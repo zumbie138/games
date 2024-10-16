@@ -33,7 +33,6 @@ class GameBase():
         with open(file_path, 'r') as json_file:
             return json.load(json_file)
 
-        
     def save_character(self,data_char):
         name = data_char.name
         save_dirs = f'{os.getcwd()}\\save'
