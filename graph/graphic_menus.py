@@ -22,10 +22,12 @@ class GraficMenus():
         print(menu_text) 
         for index, option in enumerate(options):
             print(f'[ {index+1} ] - {option}')
-        choice = str(input('Choose a option:\n'))
-        if choice.isnumeric():
-            if 1 <= int(choice) <= len(options):
-                return choice
+        print(f'[ {len(options) + 1} ] - Exit.')
+        while True:
+            choice = str(input('Choose a option:\n'))
+            if choice.isnumeric():
+                if 1 <= int(choice) <= len(options)+1:
+                    return choice
                 
     def worldmap_menu(self):
         print('Not working yet.')

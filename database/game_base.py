@@ -42,6 +42,15 @@ class GameBase():
         save_path = f'{save_dirs}\\{name}.json'
         with open(save_path, 'w') as json_file:
             json.dump(save_char, json_file)
+    
+    def list_keys_dictonary(self,dict_in:dict)->list:
+        return list(dict_in.keys())
+
+    def filter_dataframe_from_list(self,list_in:list,dataframe_in:pd.DataFrame,columm_name:str)->pd.DataFrame:
+        return dataframe_in[dataframe_in[columm_name].isin(list_in)]
+    
+    def filter_dataframe_by_name(dataframe_in:pd.DataFrame,name:str,columm_name:str)->list:
+        return dataframe_in[dataframe_in[columm_name] == name]    
 # wd = WorldDatabase()
 # classes_database = wd.classes_database
 # df_classe_database = pd.DataFrame.from_dict(classes_database, orient='index')

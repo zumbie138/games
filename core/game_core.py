@@ -11,6 +11,7 @@ class GameCore(GameBase):
         self.monster_df = self.get_database_dataframe('monster_database.json')
         self.df_spells = self.get_database_dataframe('spells_database.json')
         self.locations_df = self.get_database_dataframe('locations_database.json')
+        self.itens_df = self.get_database_dataframe('itens_database.json')
         self.player = None
         self.monster = None    
         self.player_itens = None
@@ -263,3 +264,11 @@ class GameCore(GameBase):
             # time.sleep(1)
             print(f'You train {train} points of {text}.')
             self._update_character()
+            
+    def list_wering_equipment(self, body_part:str)->list:
+        inventory_itens = self.list_keys_dictonary(self.player.inventory)
+        df_inv_itens = self.filter_dataframe_from_list(inventory_itens, self.itens_df, 'name')
+        return self.filter_dataframe_by_name(df_inv_itens,body_part,'wearing')
+    
+    def equip_item(self,iten_name:str,body_part:str):
+        self.player.wearing[body_part] = iten_name
