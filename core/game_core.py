@@ -16,25 +16,7 @@ class GameCore(GameBase):
         self.monster = None    
         self.player_itens = None
         self.equips = None 
-        
-    def _spells_by_class_lvl(self,player_class:str,player_lvl:int)->list:
-        class_spells = self.df_spells[(self.df_spells['class'] == player_class) & (self.df_spells['lvl'] <= player_lvl)]
-        return class_spells['name'].to_list()
 
-    def _locations_by_lvl(self,player_lvl:int)->list:
-        locations = self.locations_df[self.locations_df['min lvl'] <= player_lvl]
-        return locations['name'].to_list()
-
-    def _get_encounter_rate(self,location:str)->dict:
-        df_encounter=self.locations_df[self.locations_df['name'] == location]
-        return df_encounter.iloc[0]['monsters']
-    
-    def _get_encounter_monster(self, monster_rate:dict)->str:
-        for monster, rate in monster_rate.items():
-            dice_roll = random.randint(0, 100)
-            if dice_roll <= rate:
-                return monster
-    
     def _generate_monster(self,monster_data:tuple):
         monster_name, monster_type, monster_str, monster_agi, monster_vit, monster_int, monster_cha, monster_life, monster_atk, monster_atk_spd, monster_def, monster_exp, monster_loot = monster_data
         self.monster = MonsterInfos(
@@ -60,7 +42,7 @@ class GameCore(GameBase):
         self.player.attack_speed = (100/(22.2222+self.player.agility))+0.5
         self.player.max_life = int(math.ceil(100+(self.player.vitality*2+self.player.strength)/2))
         self.player.max_mana = int(math.ceil(10+(self.player.intelligence*2+self.player.vitality)/2))
-        self.player.spells = self._spells_by_class_lvl(self.player.class_type,self.player.level)
+        self.player.spells = self.get_list_by_name_and_number(self.player.class_type,self.player.level,'class','lvl','name',self.df_spells)
         self.player.atribute_cap = 13 + (self.player.level*7)         
         self.save_character(self.player)
         
@@ -71,7 +53,7 @@ class GameCore(GameBase):
         player_atk_spd = (100/(22.2222+player_agi))+0.5
         player_life = int(math.ceil(100+(player_vit*2+player_str)/2))
         player_mana = int(math.ceil(10+(player_int*2+player_vit)/2))
-        spell_list = self._spells_by_class_lvl(player_class,player_lvl)
+        spell_list = self.get_list_by_name_and_number(player_class,player_lvl,'class','lvl','name',self.df_spells)
         atribute_cap = 13 + (player_lvl*7)
         self.player = PlayerInfos(
             name=player_name,
@@ -98,7 +80,7 @@ class GameCore(GameBase):
         )
 
     def locations_allowed(self)->list:
-        return self._locations_by_lvl(self.player.level)
+        return self.get_list_by_number(self.player.level, 'min lvl', 'name', self.locations_df)
 
     def new_character(self, name:str, race:str, clas:str):
         inventory={}
@@ -139,8 +121,8 @@ class GameCore(GameBase):
         print(f'inventory:{self.player.inventory}')
 
     def monster_encounter(self,location:str):
-        monster_rate = self._get_encounter_rate(location)
-        monster_name = self._get_encounter_monster(monster_rate)
+        monster_rate = self.get_dict_by_name_from_column(location,'name','monsters',self.locations_df)
+        monster_name = self.get_name_by_rate_probability(monster_rate)
         monster_info = self.monster_df[self.monster_df['monster'] == monster_name]
         monster_info_tuple = self.dataframe_to_tuple(monster_info)
         self._generate_monster(monster_info_tuple)
@@ -267,8 +249,9 @@ class GameCore(GameBase):
             
     def list_wering_equipment(self, body_part:str)->list:
         inventory_itens = self.list_keys_dictonary(self.player.inventory)
-        df_inv_itens = self.filter_dataframe_from_list(inventory_itens, self.itens_df, 'name')
-        return self.filter_dataframe_by_name(df_inv_itens,body_part,'wearing')
+        df_inv_itens = self.filter_dataframe_with_list_in_column(inventory_itens, self.itens_df, 'name')
+        df_wearble = self.filter_dataframe_by_name(df_inv_itens,body_part,'wearing')
+        return self.get_list_from_dataframe_columm('name',df_wearble)
     
     def equip_item(self,iten_name:str,body_part:str):
         self.player.wearing[body_part] = iten_name

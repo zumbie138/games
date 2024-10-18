@@ -1,6 +1,7 @@
 import pandas as pd
 import os
 import json
+import random
 from dataclasses import asdict
 
 class GameBase():    
@@ -15,10 +16,6 @@ class GameBase():
     
     def dataframe_to_tuple(self, dataframe:pd.DataFrame)->tuple:
         return tuple(dataframe.iloc[0])
-    
-    def get_columm_info_by_name(self, key_name:str,columm_name:str,data_base:pd.DataFrame):
-        df_resulting=data_base[data_base['name'] == key_name]
-        return df_resulting.iloc[0][columm_name]
     
     def dataclass_to_dict(self,dataclass_info)->dict:
         return asdict(dataclass_info)
@@ -46,11 +43,32 @@ class GameBase():
     def list_keys_dictonary(self,dict_in:dict)->list:
         return list(dict_in.keys())
 
-    def filter_dataframe_from_list(self,list_in:list,dataframe_in:pd.DataFrame,columm_name:str)->pd.DataFrame:
+    def filter_dataframe_with_list_in_column(self,list_in:list,dataframe_in:pd.DataFrame,columm_name:str)->pd.DataFrame:
         return dataframe_in[dataframe_in[columm_name].isin(list_in)]
     
-    def filter_dataframe_by_name(dataframe_in:pd.DataFrame,name:str,columm_name:str)->list:
-        return dataframe_in[dataframe_in[columm_name] == name]    
+    def filter_dataframe_by_name(dataframe_in:pd.DataFrame,name:str,columm_name:str)->pd.DataFrame:
+        return dataframe_in[dataframe_in[columm_name] == name]
+    
+    def get_list_by_name_and_number(self,name:str,number:int,columm_name:str,columm_number:str,columm_list:str,dataframe:pd.DataFrame)->list:
+        class_spells = dataframe[(dataframe[columm_name] == name) & (dataframe[columm_number] <= number)]
+        return class_spells[columm_list].to_list()
+    
+    def get_list_by_number(self,number:int,columm_number:str,columm_list:str,dataframe:pd.DataFrame)->list:
+        locations = dataframe[dataframe[columm_number] <= number]
+        return locations[columm_list].to_list()
+    
+    def get_dict_by_name_from_column(self,name:str,columm_name:str,columm_dict:str,dataframe:pd.DataFrame)->dict:
+        df_encounter=dataframe[dataframe[columm_name] == name]
+        return df_encounter.iloc[0][columm_dict]
+    
+    def get_name_by_rate_probability(self, dict_rate:dict)->str:
+        for name, rate in dict_rate.items():
+            percent_roll = random.randint(0, 100)
+            if percent_roll <= rate:
+                return name
+    
+    def get_list_from_dataframe_columm(self,columm_name:str,dataframe:pd.DataFrame)->list:
+        return dataframe[columm_name].to_list()
 # wd = WorldDatabase()
 # classes_database = wd.classes_database
 # df_classe_database = pd.DataFrame.from_dict(classes_database, orient='index')
