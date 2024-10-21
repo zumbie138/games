@@ -164,9 +164,6 @@ class GameCore(GameBase):
                 print(f'Turn {turn} ends.')
                 turn +=1
 
-    def random_exp_monster(self)->int:
-        return random.randint(*self.monster.experience)
-
     def level_up_character(self):
         self.player.level +=1
         self._update_character()
@@ -177,7 +174,7 @@ class GameCore(GameBase):
             self.level_up_character()
 
     def monster_reward(self):
-        self.player.experience = self.player.experience + self.random_exp_monster()
+        self.player.experience = self.player.experience + self.get_random_in_interval(self.monster.experience)
         self.verify_experience()
         for item, (rate,min_qty,max_qty) in self.monster.loot.items():
             dice_roll = random.randint(0,100)
@@ -248,10 +245,11 @@ class GameCore(GameBase):
             self._update_character()
             
     def list_wering_equipment(self, body_part:str)->list:
-        inventory_itens = self.list_keys_dictonary(self.player.inventory)
+        inventory_itens = self.get_keys_as_list(self.player.inventory)
         df_inv_itens = self.filter_dataframe_with_list_in_column(inventory_itens, self.itens_df, 'name')
-        df_wearble = self.filter_dataframe_by_name(df_inv_itens,body_part,'wearing')
+        df_wearble = self.filter_dataframe_by_name(body_part,'wearing',df_inv_itens)
         return self.get_list_from_dataframe_columm('name',df_wearble)
     
     def equip_item(self,iten_name:str,body_part:str):
         self.player.wearing[body_part] = iten_name
+        print(self.player.wearing)

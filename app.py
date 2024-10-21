@@ -45,6 +45,7 @@ class AppMenus():
         choice_text = 'Welcome player, where you want to go?'
         choice_options = ['City.','Adventure.','Refuge.','World Map.']
         while True:
+            self.game_core.save_character(self.game_core.player)
             choice = self.graph_menu.generate_menu(choice_text, choice_options)
             if int(choice) == len(choice_options)+1:
                 break
@@ -123,12 +124,13 @@ class AppMenus():
             body_part_choose = choice_options[choice]
             wearable_list = self.game_core.list_wering_equipment(body_part_choose)
             while True:
-                iten_choice = int(self.graph_menu.generate_menu(wearable_list,choice_text2))
-                if iten_choice == len(choice_options)+1:
+                iten_choice = int(self.graph_menu.generate_menu(choice_text2,wearable_list))
+                if iten_choice == len(wearable_list)+1:
                     break
                 iten_choice -= 1
                 iten_choose = wearable_list[iten_choice]
                 self.game_core.equip_item(iten_choose, body_part_choose)
+                break
             
     def run_sleep_status(self):
         self.game_core.healing_sleeping()           

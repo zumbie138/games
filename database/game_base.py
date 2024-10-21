@@ -40,14 +40,14 @@ class GameBase():
         with open(save_path, 'w') as json_file:
             json.dump(save_char, json_file)
     
-    def list_keys_dictonary(self,dict_in:dict)->list:
-        return list(dict_in.keys())
+    def get_keys_as_list(self,dictionary:dict)->list:
+        return list(dictionary.keys())
 
     def filter_dataframe_with_list_in_column(self,list_in:list,dataframe_in:pd.DataFrame,columm_name:str)->pd.DataFrame:
         return dataframe_in[dataframe_in[columm_name].isin(list_in)]
     
-    def filter_dataframe_by_name(dataframe_in:pd.DataFrame,name:str,columm_name:str)->pd.DataFrame:
-        return dataframe_in[dataframe_in[columm_name] == name]
+    def filter_dataframe_by_name(self,name:str,columm_name:str,input_dataframe:pd.DataFrame,)->pd.DataFrame:
+        return input_dataframe[input_dataframe[columm_name] == name]
     
     def get_list_by_name_and_number(self,name:str,number:int,columm_name:str,columm_number:str,columm_list:str,dataframe:pd.DataFrame)->list:
         class_spells = dataframe[(dataframe[columm_name] == name) & (dataframe[columm_number] <= number)]
@@ -69,6 +69,9 @@ class GameBase():
     
     def get_list_from_dataframe_columm(self,columm_name:str,dataframe:pd.DataFrame)->list:
         return dataframe[columm_name].to_list()
+    
+    def get_random_in_interval(self,interval_tuple:tuple)->int:
+        return random.randint(*interval_tuple)
 # wd = WorldDatabase()
 # classes_database = wd.classes_database
 # df_classe_database = pd.DataFrame.from_dict(classes_database, orient='index')
