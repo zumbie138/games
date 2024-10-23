@@ -14,7 +14,6 @@ class GameCore(GameBase):
         self.itens_df = self.get_database_dataframe('itens_database.json')
         self.player = None
         self.monster = None    
-        self.player_itens = None
         self.equips = None 
 
     def _generate_monster(self,monster_data:tuple):
@@ -36,6 +35,16 @@ class GameCore(GameBase):
             loot=monster_loot
         )
 
+    def _generate_equipments(self,equips_tuple:tuple):
+        max_life,max_mana,attack,attack_speed,defense = equips_tuple
+        self.equips = PlayerEquips(
+            max_life=max_life,
+            max_mana=max_mana,
+            attack=attack,
+            attack_speed=attack_speed,
+            defense=defense
+        )
+    
     def _update_character(self):
         self.player.attack = self.player.strength+self.player.agility/2+self.player.intelligence/20+self.player.charisma/50
         self.player.defense = self.player.vitality/2+self.player.agility/10+self.player.strength/10
@@ -249,6 +258,10 @@ class GameCore(GameBase):
         df_inv_itens = self.filter_dataframe_with_list_in_column(inventory_itens, self.itens_df, 'name')
         df_wearble = self.filter_dataframe_by_name(body_part,'wearing',df_inv_itens)
         return self.get_list_from_dataframe_columm('name',df_wearble)
+    
+    def update_wearing_status(self):
+        for itens in self.player.wearing.items():
+            self.filter_dataframe_by_name(itens)
     
     def equip_item(self,iten_name:str,body_part:str):
         self.player.wearing[body_part] = iten_name
