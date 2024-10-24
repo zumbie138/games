@@ -43,6 +43,9 @@ class GameBase():
     def get_keys_as_list(self,dictionary:dict)->list:
         return list(dictionary.keys())
 
+    def get_values_as_list(self,dictionary:dict)->list:
+        return list(dictionary.values())
+    
     def filter_dataframe_with_list_in_column(self,list_in:list,dataframe_in:pd.DataFrame,columm_name:str)->pd.DataFrame:
         return dataframe_in[dataframe_in[columm_name].isin(list_in)]
     

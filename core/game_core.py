@@ -52,7 +52,8 @@ class GameCore(GameBase):
         self.player.max_life = int(math.ceil(100+(self.player.vitality*2+self.player.strength)/2))
         self.player.max_mana = int(math.ceil(10+(self.player.intelligence*2+self.player.vitality)/2))
         self.player.spells = self.get_list_by_name_and_number(self.player.class_type,self.player.level,'class','lvl','name',self.df_spells)
-        self.player.atribute_cap = 13 + (self.player.level*7)         
+        self.player.atribute_cap = 13 + (self.player.level*7)   
+        self.update_wearing_status()      
         self.save_character(self.player)
         
     def _generate_character(self,char_data: tuple):
@@ -128,9 +129,11 @@ class GameCore(GameBase):
         print(f'Attack:{self.player.attack} Defense:{self.player.defense} attack speed:{self.player.attack_speed}')
         print(f'Your list of spells: {self.player.spells}')
         print(f'inventory:{self.player.inventory}')
+        print(f'Equipped itens:\nMax Life: {self.equips.max_life}\nMax Mana: {self.equips.max_mana}\nAttack: {self.equips.attack}\nAttack speed: {self.equips.attack_speed}\nDefense: {self.equips.defense}')
 
     def monster_encounter(self,location:str):
-        monster_rate = self.get_dict_by_name_from_column(location,'name','monsters',self.locations_df)
+        monster_rate = self.get_dict_by_name_from_column(location,'name',
+                                                         'monsters',self.locations_df)
         monster_name = self.get_name_by_rate_probability(monster_rate)
         monster_info = self.monster_df[self.monster_df['monster'] == monster_name]
         monster_info_tuple = self.dataframe_to_tuple(monster_info)
@@ -141,7 +144,9 @@ class GameCore(GameBase):
             if self.monster.life <= 0:
                 break
             random_damage = random.randint(0,3)
-            player_damage = math.ceil(self.player.attack*0.7 + random_damage*0.3 - self.monster.defense)
+            player_damage = math.ceil(self.player.attack*0.7
+                                      + random_damage*0.3 
+                                      - self.monster.defense)
             player_damage = max(player_damage, 0)
             self.monster.life = self.monster.life - player_damage
             time.sleep(self.player.attack_speed)
@@ -152,7 +157,9 @@ class GameCore(GameBase):
             if self.player.life <= 0:
                 break
             random_damage = random.randint(0,3)
-            monster_damage = math.ceil(self.monster.attack*0.7 + random_damage*0.3 - self.player.defense)
+            monster_damage = math.ceil(self.monster.attack*0.7 
+                                       + random_damage*0.3 
+                                       - self.player.defense)
             monster_damage = max(monster_damage, 0)
             self.player.life = self.player.life - monster_damage
             self.player.life = max(self.player.life, 0)
@@ -260,9 +267,16 @@ class GameCore(GameBase):
         return self.get_list_from_dataframe_columm('name',df_wearble)
     
     def update_wearing_status(self):
-        for itens in self.player.wearing.items():
-            self.filter_dataframe_by_name(itens)
-    
+        equiped_list = self.get_values_as_list(self.player.wearing)
+        df_equiped = self.filter_dataframe_with_list_in_column(equiped_list,self.itens_df,'name')
+        max_hp = df_equiped['max_life'].sum()
+        max_mana = df_equiped['max_mana'].sum()
+        attack = df_equiped['attack'].sum()
+        attack_speed = df_equiped['attack_speed'].sum()
+        defense = df_equiped['defense'].sum()
+        summary_tuple = (max_hp, max_mana, attack, attack_speed, defense)
+        self._generate_equipments(summary_tuple)
+
     def equip_item(self,iten_name:str,body_part:str):
         self.player.wearing[body_part] = iten_name
         print(self.player.wearing)
