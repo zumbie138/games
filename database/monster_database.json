@@ -1,5 +1,11 @@
 {
-    "000":{"monster":"rat",       "type":"creature","strg":0.0, "agi":2.0, "vit":0.0, "int":0.1, "char":0.1, "life":20, "attack":5.5,"speed":5 , "defense":3.0,"experience":[1,5], "loot":{"fur":[20,1,3],"broken ring":[1,1,1],"leftovers":[10,1,5],"cheese":[15,1,1],"gold":[20,1,3]}},
+    "000":{
+        "monster":"rat","type":"creature",
+        "strg":0.0, "agi":2.0, "vit":0.0, "int":0.1, "char":0.1,
+        "life":20, "attack":5.5,"speed":5 , "defense":3.0,
+        "experience":[1,5],
+        "loot":{"fur":[20,1,3],"broken ring":[1,1,1],"leftovers":[10,1,5],"cheese":[15,1,1],"gold":[20,1,3]}
+    },
     "001":{"monster":"snake",     "type":"creature","strg":0.0, "agi":2.0, "vit":0.0, "int":0.0, "char":0.1, "life":30, "attack":8.0,"speed":5 , "defense":2.5,"experience":[1,5], "loot":{"fang":[20,1,2],"scale":[15,1,10],"snake necklace":[1,1,1],"gold":[20,1,3]}},
     "002":{"monster":"bat",       "type":"creature","strg":0.0, "agi":5.0, "vit":0.0, "int":0.1, "char":0.1, "life":30, "attack":11.0,"speed":5 ,"defense":2.5,"experience":[1,6], "loot":{"bat wings":[20,1,2],"vampire teeth":[15,1,2],"rusty dagger":[1,1,1],"gold":[20,1,3]}},
     "003":{"monster":"wolf",      "type":"creature","strg":3.0, "agi":2.0, "vit":3.0, "int":0.2, "char":0.2, "life":100,"attack":10.0,"speed":5 ,"defense":5.0,"experience":[2,6], "loot":{"fang":[20,1,2],"claw":[15,1,6],"rusty sword":[1,1,1],"gold":[20,1,4]}},

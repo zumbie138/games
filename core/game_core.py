@@ -139,27 +139,26 @@ class GameCore(GameBase):
         monster_info_tuple = self.dataframe_to_tuple(monster_info)
         self._generate_monster(monster_info_tuple)
 
+    def _damage_calculator(self,attack:float,defense:float)->float:
+        min_damage = attack * 0.5
+        max_damage = attack * 1.5
+        damage = random.uniform(min_damage, max_damage)
+        final_damage = damage - defense
+        return final_damage
+    
     def player_battle_loop(self):
-        while self.player.life > 0:
-            if self.monster.life <= 0:
-                break
-            random_damage = random.randint(0,3)
-            player_damage = math.ceil(self.player.attack*0.7
-                                      + random_damage*0.3 
-                                      - self.monster.defense)
+        while self.player.life > 0 and self.monster.life > 0:
+            attack = self.player.attack + self.equips.attack
+            player_damage = self._damage_calculator(attack,self.monster.defense)
             player_damage = max(player_damage, 0)
             self.monster.life = self.monster.life - player_damage
             time.sleep(self.player.attack_speed)
             print(f'You deal {player_damage} damage.')
 
     def monster_battle_loop(self):
-        while self.monster.life > 0:
-            if self.player.life <= 0:
-                break
-            random_damage = random.randint(0,3)
-            monster_damage = math.ceil(self.monster.attack*0.7 
-                                       + random_damage*0.3 
-                                       - self.player.defense)
+        while self.monster.life > 0 and self.player.life > 0:
+            player_defense = self.player.defense + self.equips.defense
+            monster_damage = self._damage_calculator(self.monster.attack, player_defense)
             monster_damage = max(monster_damage, 0)
             self.player.life = self.player.life - monster_damage
             self.player.life = max(self.player.life, 0)
@@ -190,7 +189,9 @@ class GameCore(GameBase):
             self.level_up_character()
 
     def monster_reward(self):
-        self.player.experience = self.player.experience + self.get_random_in_interval(self.monster.experience)
+        monster_exp = self.get_random_in_interval(self.monster.experience)
+        self.player.experience = self.player.experience + monster_exp
+        print(f'You gain {monster_exp} experience.')
         self.verify_experience()
         for item, (rate,min_qty,max_qty) in self.monster.loot.items():
             dice_roll = random.randint(0,100)
@@ -222,12 +223,16 @@ class GameCore(GameBase):
             return False
 
     def healing_sleeping(self):
-        while self.player.life < self.player.max_life:
+        while self.player.life < self.player.max_life or self.player.mana < self.player.max_mana:
             random_heal = random.randint(1,5)
-            heal = random_heal+(self.player.vitality/2)
+            heal = random_heal + (self.player.vitality/2)
+            mana_regen = random_heal + (self.player.intelligence/2)
             self.player.life = self.player.life + heal
+            self.player.mana = self.player.mana + mana_regen
             if self.player.life > self.player.max_life:
                 self.player.life = self.player.max_life
+            if self.player.mana > self.player.max_mana:
+                self.player.mana = self.player.max_mana
             print(f'You heal {heal} points of life, HP: {self.player.life}/{self.player.max_life}')
             # time.sleep(2.5)
 
