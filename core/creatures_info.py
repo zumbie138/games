@@ -39,6 +39,7 @@ class PlayerEquips():
 class MonsterInfos():
     name: str
     type: str
+    level:int
     strength: float
     agility: float
     vitality: float

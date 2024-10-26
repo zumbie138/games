@@ -130,6 +130,7 @@ class AppMenus():
                 iten_choice -= 1
                 iten_choose = wearable_list[iten_choice]
                 self.game_core.equip_item(iten_choose, body_part_choose)
+                self.game_core.update_wearing_status()
                 break
             
     def run_sleep_status(self):

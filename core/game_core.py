@@ -17,10 +17,11 @@ class GameCore(GameBase):
         self.equips = None 
 
     def _generate_monster(self,monster_data:tuple):
-        monster_name, monster_type, monster_str, monster_agi, monster_vit, monster_int, monster_cha, monster_life, monster_atk, monster_atk_spd, monster_def, monster_exp, monster_loot = monster_data
+        monster_name, monster_type, monster_lvl, monster_str, monster_agi, monster_vit, monster_int, monster_cha, monster_life, monster_atk, monster_atk_spd, monster_def, monster_exp, monster_loot = monster_data
         self.monster = MonsterInfos(
             name=monster_name,
             type=monster_type,
+            level=monster_lvl,
             strength=monster_str,
             agility=monster_agi,
             vitality=monster_vit,
@@ -125,8 +126,8 @@ class GameCore(GameBase):
         print('You see yourself in the mirror:')
         print(f'Your name is: {self.player.name}, you are an {self.player.race} {self.player.class_type}')
         print(f'HP: {self.player.life}/{self.player.max_life}\nMANA: {self.player.mana}/{self.player.max_mana}')
-        print(f'You are level {self.player.level}, with {self.player.experience} of experience and your atributes are:\nStrength: {self.player.strength}\nAgility: {self.player.agility}\nVitality: {self.player.vitality}\nInteligence: {self.player.intelligence}\nCharisma: {self.player.charisma}')
-        print(f'Attack:{self.player.attack} Defense:{self.player.defense} attack speed:{self.player.attack_speed}')
+        print(f'You are level {self.player.level}, with {self.player.experience} of experience and your atributes are:\nStrength: {self.player.strength:.4}\nAgility: {self.player.agility:.4}\nVitality: {self.player.vitality:.4}\nInteligence: {self.player.intelligence:.4}\nCharisma: {self.player.charisma:.4}')
+        print(f'Attack:{self.player.attack:.4} Defense:{self.player.defense:.4} attack speed:{self.player.attack_speed:.4}')
         print(f'Your list of spells: {self.player.spells}')
         print(f'inventory:{self.player.inventory}')
         print(f'Equipped itens:\nMax Life: {self.equips.max_life}\nMax Mana: {self.equips.max_mana}\nAttack: {self.equips.attack}\nAttack speed: {self.equips.attack_speed}\nDefense: {self.equips.defense}')
@@ -135,44 +136,40 @@ class GameCore(GameBase):
         monster_rate = self.get_dict_by_name_from_column(location,'name',
                                                          'monsters',self.locations_df)
         monster_name = self.get_name_by_rate_probability(monster_rate)
-        monster_info = self.monster_df[self.monster_df['monster'] == monster_name]
+        monster_info = self.monster_df[self.monster_df['name'] == monster_name]
         monster_info_tuple = self.dataframe_to_tuple(monster_info)
         self._generate_monster(monster_info_tuple)
 
-    def _damage_calculator(self,attack:float,defense:float)->float:
-        min_damage = attack * 0.5
-        max_damage = attack * 1.5
-        damage = random.uniform(min_damage, max_damage)
-        final_damage = damage - defense
+    def _damage_calculator(self,attack:float,defense:float,level:int)->float:
+        damage = ((level * 5) / 10) + ((attack**2) / (attack + (2*defense)))
+        min_damage = damage * 0.7
+        max_damage = damage * 1.3
+        final_damage = random.uniform(min_damage, max_damage)
         return final_damage
     
     def player_battle_loop(self):
         while self.player.life > 0 and self.monster.life > 0:
             attack = self.player.attack + self.equips.attack
-            player_damage = self._damage_calculator(attack,self.monster.defense)
-            player_damage = max(player_damage, 0)
+            player_damage = self._damage_calculator(attack,self.monster.defense,self.player.level)
             self.monster.life = self.monster.life - player_damage
             time.sleep(self.player.attack_speed)
-            print(f'You deal {player_damage} damage.')
+            print(f'You deal {player_damage:.4} damage.')
 
     def monster_battle_loop(self):
         while self.monster.life > 0 and self.player.life > 0:
             player_defense = self.player.defense + self.equips.defense
-            monster_damage = self._damage_calculator(self.monster.attack, player_defense)
-            monster_damage = max(monster_damage, 0)
+            monster_damage = self._damage_calculator(self.monster.attack, player_defense,self.monster.level)
             self.player.life = self.player.life - monster_damage
             self.player.life = max(self.player.life, 0)
-            time.sleep(5)
-            print(f'You take {monster_damage} damage.')
+            time.sleep(self.monster.attack_speed)
+            print(f'You take {monster_damage:.4} damage.')
 
     def battle_turn_loop(self):
         turn = 1
         while True:
             if self.player.life <= 0:
-                print('You are defeated')
                 break
             elif self.monster.life <=0:
-                print('you kill the monster')
                 break
             else:
                 time.sleep(5)
@@ -217,8 +214,10 @@ class GameCore(GameBase):
         print(f'HP:{self.player.life}/{self.player.max_life}')
 
         if self.player.life <= 0:
+            print('Youre defeated.')
             return True
         else:
+            print('You kill the monster.')
             self.monster_reward()
             return False
 
