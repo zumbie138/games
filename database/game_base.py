@@ -60,9 +60,9 @@ class GameBase():
         locations = dataframe[dataframe[columm_number] <= number]
         return locations[columm_list].to_list()
     
-    def get_dict_by_name_from_column(self,name:str,columm_name:str,columm_dict:str,dataframe:pd.DataFrame)->dict:
-        df_encounter=dataframe[dataframe[columm_name] == name]
-        return df_encounter.iloc[0][columm_dict]
+    def get_info_by_name(self,name:str,columm_name:str,columm_info:str,dataframe:pd.DataFrame):
+        df_info=dataframe[dataframe[columm_name] == name]
+        return df_info.iloc[0][columm_info]
     
     def get_name_by_rate_probability(self, dict_rate:dict)->str:
         for name, rate in dict_rate.items():

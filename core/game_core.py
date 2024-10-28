@@ -125,15 +125,15 @@ class GameCore(GameBase):
     def show_character(self):
         print('You see yourself in the mirror:')
         print(f'Your name is: {self.player.name}, you are an {self.player.race} {self.player.class_type}')
-        print(f'HP: {self.player.life}/{self.player.max_life}\nMANA: {self.player.mana}/{self.player.max_mana}')
-        print(f'You are level {self.player.level}, with {self.player.experience} of experience and your atributes are:\nStrength: {self.player.strength:.4}\nAgility: {self.player.agility:.4}\nVitality: {self.player.vitality:.4}\nInteligence: {self.player.intelligence:.4}\nCharisma: {self.player.charisma:.4}')
-        print(f'Attack:{self.player.attack:.4} Defense:{self.player.defense:.4} attack speed:{self.player.attack_speed:.4}')
+        print(f'HP: {self.player.life:.2f}/{self.player.max_life}\nMANA: {self.player.mana}/{self.player.max_mana}')
+        print(f'You are level {self.player.level}, with {self.player.experience} of experience and your atributes are:\nStrength: {self.player.strength:.2f}\nAgility: {self.player.agility:.2f}\nVitality: {self.player.vitality:.2f}\nInteligence: {self.player.intelligence:.2f}\nCharisma: {self.player.charisma:.2f}')
+        print(f'Attack:{self.player.attack:.2f} Defense:{self.player.defense:.2f} attack speed:{self.player.attack_speed:.2f}')
         print(f'Your list of spells: {self.player.spells}')
         print(f'inventory:{self.player.inventory}')
         print(f'Equipped itens:\nMax Life: {self.equips.max_life}\nMax Mana: {self.equips.max_mana}\nAttack: {self.equips.attack}\nAttack speed: {self.equips.attack_speed}\nDefense: {self.equips.defense}')
 
     def monster_encounter(self,location:str):
-        monster_rate = self.get_dict_by_name_from_column(location,'name',
+        monster_rate = self.get_info_by_name(location,'name',
                                                          'monsters',self.locations_df)
         monster_name = self.get_name_by_rate_probability(monster_rate)
         monster_info = self.monster_df[self.monster_df['name'] == monster_name]
@@ -153,8 +153,13 @@ class GameCore(GameBase):
             player_damage = self._damage_calculator(attack,self.monster.defense,self.player.level)
             self.monster.life = self.monster.life - player_damage
             time.sleep(self.player.attack_speed)
-            print(f'You deal {player_damage:.4} damage.')
+            print(f'You deal {player_damage:.2f} damage.')
 
+    def conjuring_core(self,spell_list:list):
+        spell_list_df = self.filter_dataframe_with_list_in_column(
+            spell_list, self.df_spells, 'name')
+
+        
     def monster_battle_loop(self):
         while self.monster.life > 0 and self.player.life > 0:
             player_defense = self.player.defense + self.equips.defense
@@ -162,7 +167,7 @@ class GameCore(GameBase):
             self.player.life = self.player.life - monster_damage
             self.player.life = max(self.player.life, 0)
             time.sleep(self.monster.attack_speed)
-            print(f'You take {monster_damage:.4} damage.')
+            print(f'You take {monster_damage:.2f} damage.')
 
     def battle_turn_loop(self):
         turn = 1
