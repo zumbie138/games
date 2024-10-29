@@ -35,6 +35,16 @@ class PlayerEquips():
     defense: float
 
 @dataclass
+
+class PlayerBuffs():
+    duration: int
+    strength: float
+    agility: float
+    vitality: float
+    intelligence: float
+    charisma: float
+
+@dataclass
     
 class MonsterInfos():
     name: str
