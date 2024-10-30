@@ -1,5 +1,6 @@
 from database import GameBase
-from .creatures_info import MonsterInfos, PlayerInfos, PlayerEquips
+from .creatures_info import MonsterInfos, PlayerInfos, PlayerEquips, PlayerBuffs
+from .spells_core import ConjuringSpell
 import math
 import random
 import threading
@@ -12,9 +13,11 @@ class GameCore(GameBase):
         self.df_spells = self.get_database_dataframe('spells_database.json')
         self.locations_df = self.get_database_dataframe('locations_database.json')
         self.itens_df = self.get_database_dataframe('itens_database.json')
+        self.conjuring_spell = ConjuringSpell()
         self.player = None
         self.monster = None    
-        self.equips = None 
+        self.equips = None
+        self.buffs = None
 
     def _generate_monster(self,monster_data:tuple):
         monster_name, monster_type, monster_lvl, monster_str, monster_agi, monster_vit, monster_int, monster_cha, monster_life, monster_atk, monster_atk_spd, monster_def, monster_exp, monster_loot = monster_data
@@ -36,6 +39,16 @@ class GameCore(GameBase):
             loot=monster_loot
         )
 
+    def _generate_buffs(self, buff_tuple:tuple):
+        strength, agility, vitality, intelligence, charisma = buff_tuple
+        self.buffs = PlayerBuffs(
+            strength=strength,
+            agility=agility,
+            vitality=vitality,
+            intelligence=intelligence,
+            charisma=charisma
+        )
+    
     def _generate_equipments(self,equips_tuple:tuple):
         max_life,max_mana,attack,attack_speed,defense = equips_tuple
         self.equips = PlayerEquips(
@@ -155,11 +168,44 @@ class GameCore(GameBase):
             time.sleep(self.player.attack_speed)
             print(f'You deal {player_damage:.2f} damage.')
 
-    def conjuring_core(self,spell_list:list):
-        spell_list_df = self.filter_dataframe_with_list_in_column(
-            spell_list, self.df_spells, 'name')
-
-        
+    def conjuring_core(self,spell_list:list,inteligence:float,charisma:float):
+        for spell in spell_list:
+            rate = self.get_info_by_name(spell,'name','rate',self.df_spells)
+            final_rate = rate + charisma*1.3 + inteligence*0.3
+            roll_dice = random.randint(0,100)
+            if roll_dice <= final_rate:
+                spell_choose = spell
+        self.conjure_spell(spell_choose)
+                
+    def conjure_spell(self, spell_name:str):
+        if spell_name in self.conjuring_spell.spells_cooldown:
+            cooldown = self.conjuring_spell.spells_cooldown[spell_name]
+        else:
+            cooldown = 0
+            
+        if cooldown <= 0:
+            spell_info = self.filter_dataframe_by_name(spell_name,'name',self.df_spells)
+            spell_cooldown = spell_info['cooldown']
+            spell_duration = spell_info['duration']
+            buff_tuple = spell_info['buff']
+            mana_spell = spell_info['mana']
+            if self.player.mana >= mana_spell:
+                self.player.mana = self.player.mana - mana_spell
+                if spell_info['type'] == 'passive':
+                    self.conjuring_spell.conjure_passive()
+                    
+                elif spell_info['type'] == 'offensive':
+                    self.conjuring_spell.conjure_offensive()
+            
+                elif spell_info['type'] == 'buff':
+                        self.conjuring_spell.add_spell_timers(spell_name, spell_cooldown, spell_duration)
+                        self._generate_buffs(buff_tuple)
+                elif spell_info['type'] == 'healing':
+                    self.conjuring_spell.conjure_healing()
+            else:
+                    print('not enough mana')
+                
+                
     def monster_battle_loop(self):
         while self.monster.life > 0 and self.player.life > 0:
             player_defense = self.player.defense + self.equips.defense

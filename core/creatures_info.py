@@ -37,7 +37,6 @@ class PlayerEquips():
 @dataclass
 
 class PlayerBuffs():
-    duration: int
     strength: float
     agility: float
     vitality: float
