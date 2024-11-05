@@ -11,21 +11,21 @@ class ConjuringSpell():
     def _decrement_and_clean(self,spell_timer:dict):
         for spell in list(spell_timer.keys()):
             spell_timer[spell] -= 1
-            if spell_timer[spell] <= 0:
-                del spell_timer[spell]
+    
+    def check_duration_spell(self):
+        for spell in list(self.spells_duration.keys()):
+            if self.spells_duration[spell] <= 0:
+                del self.spells_duration[spell]
+                return spell
     
     def update_spell_timer(self):
         self._decrement_and_clean(self.spells_cooldown)
         self._decrement_and_clean(self.spells_duration)
         
-    def conjure_passive(self):
-        print('')
+    def calculate_conjured_spell(self,damage_base:int, healing_base:int, vitality:float, intelligence:float, charisma:float):
+        spell_damage = damage_base * (1 + (((intelligence  +(charisma/2)) * 3) / 10)) 
+        healing_done = healing_base * (1 + (((intelligence + (vitality/2) + (charisma/5)) * 3) / 10))
+        return spell_damage, healing_done
         
-    def conjure_offensive(self):
-        print('')
         
-    def conjure_buff(self):
-        print('')
         
-    def conjure_healing(self):
-        print('')

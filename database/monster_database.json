@@ -17,7 +17,7 @@
         "name":"bat","type":"creature","level":1,
         "strg":0.0, "agi":5.0, "vit":0.0, "int":0.1, "char":0.1,
         "life":20, "attack":5.0,"attack_speed":4.8,"defense":5.0,
-        "experience":[1,6], 
+        "experience":[1,6],
         "loot":{"bat wings":[20,1,2],"vampire teeth":[15,1,2],"rusty dagger":[1,1,1],"gold":[20,1,3]}
     },
     "003":{
