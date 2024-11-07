@@ -49,14 +49,17 @@ class GameCore(GameBase):
             charisma=charisma
         )
     
+    def _apply_buff(self, buff: tuple, multiplier: int):
+        attributes = ['strength', 'agility', 'vitality', 'intelligence', 'charisma']
+        for attr, value in zip(attributes, buff):
+            setattr(self.buffs, attr, getattr(self.buffs, attr) + value * multiplier)
+
     def _remove_buff(self, buff_removed:tuple):
-        strength, agility, vitality, intelligence, charisma = buff_removed
-        self.buffs.strength = self.buffs.strength - strength
-        self.buffs.agility = self.buffs.agility - agility
-        self.buffs.vitality = self.buffs.vitality - vitality
-        self.buffs.intelligence = self.buffs.intelligence - intelligence
-        self.buffs.charisma = self.buffs.charisma - charisma
+        self._apply_buff(buff_removed, -1)
     
+    def _add_buff(self, buff_added:tuple):
+        self._apply_buff(buff_added, 1)
+        
     def _generate_equipments(self,equips_tuple:tuple):
         max_life,max_mana,attack,attack_speed,defense = equips_tuple
         self.equips = PlayerEquips(
@@ -92,6 +95,7 @@ class GameCore(GameBase):
         player_mana = int(math.ceil(10+(player_int*2+player_vit)/2))
         spell_list = self.get_list_by_name_and_number(player_class,player_lvl,'class','lvl','name',self.df_spells)
         atribute_cap = 13 + (player_lvl*7)
+        self.buffs = PlayerBuffs(0, 0, 0, 0, 0)
         self.player = PlayerInfos(
             name=player_name,
             level=player_lvl,
@@ -202,16 +206,20 @@ class GameCore(GameBase):
                 
     def conjure_spell(self, spell_name:str, spell_info):
         mana_spell = spell_info['mana'].item()
+        damage_base = spell_info['damage'].item()
+        heal_base = spell_info['heal'].item()
         spell_cooldown = spell_info['cooldown'].item()
         spell_duration = spell_info['duration'].item()
         buff_tuple = spell_info['buff'].item()
         self.conjuring_spell.add_spell_timers(spell_name, spell_cooldown, spell_duration)
         self.player.mana = self.player.mana - mana_spell
         if spell_info['type'].item() == 'passive' or spell_info['type'].item() == 'buff':
-            self._generate_buffs(buff_tuple)
+            self._add_buff(buff_tuple)
+            print(buff_tuple)
+            print(self.buffs)
             self._update_character()
         elif spell_info['type'].item() == 'offensive' or spell_info['type'].item() == 'healing':
-            spell_result = self.conjuring_spell.calculate_conjured_spell()           
+            spell_result = self.conjuring_spell.calculate_conjured_spell(damage_base,heal_base,self.player.vitality,self.player.intelligence,self.player.charisma)           
             self.apply_magic_damage(*spell_result)
             
     def apply_magic_damage(self,magic_damage:float, healing_done:float):
@@ -220,9 +228,9 @@ class GameCore(GameBase):
         if self.player.life > self.player.max_life:
             self.player.life = self.player.max_life
         if magic_damage > 0:
-            print(f'Your magic deals {magic_damage} hit points.')
+            print(f'Your magic deals {magic_damage:.2f} hit points.')
         if healing_done > 0:
-            print(f'You heal yourself {healing_done} hit points.')
+            print(f'You heal yourself {healing_done:.2f} hit points.')
         
     def monster_battle_loop(self):
         while self.monster.life > 0 and self.player.life > 0:
@@ -232,6 +240,19 @@ class GameCore(GameBase):
             time.sleep(self.monster.attack_speed)
             print(f'You take {monster_damage:.2f} damage.')
 
+    def _check_durations(self):
+        self.conjuring_spell.update_spell_timer()
+        effect_over = self.conjuring_spell.check_duration_spell()
+        if effect_over is not None:
+            buff_removed = self.get_info_by_name(effect_over,'name','buff',self.df_spells)
+            print(buff_removed)
+            print(self.buffs)
+            self._remove_buff(buff_removed)
+            self._update_character()
+    
+    def _apply_turn_damage(self):
+        self.conjuring_spell.spells_duration
+        
     def battle_turn_loop(self):
         turn = 1
         while True:
@@ -240,11 +261,7 @@ class GameCore(GameBase):
             elif self.monster.life <=0:
                 break
             else:
-                self.conjuring_spell.update_spell_timer()
-                effect_over = self.conjuring_spell.check_duration_spell()
-                if effect_over is not None:
-                    buff_removed = self.get_info_by_name(effect_over,'name','buff',self.df_spells)
-                    self._remove_buff(buff_removed)
+                self._check_durations()
                 time.sleep(5)
                 print(f'Turn {turn} ends.')
                 turn +=1

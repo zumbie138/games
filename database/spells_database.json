@@ -1,79 +1,164 @@
 {
-    "00":{
+    "000":{
         "name":"courage","class":"warrior","type":"passive",
         "lvl":1, "rate":30,"mana":0,"duration":3,"cooldown":3,
         "damage":0,"heal":0,"turn_damage":0,"turn_heal":0,
         "buff":[3,3,3,0,0],"debuff":[]
     },
-    "01":{
+    "001":{
         "name":"focus","class":"warrior","type":"passive",
         "lvl":5, "rate":20,"mana":0,"duration":3,"cooldown":3,
         "damage":0,"heal":0,"turn_damage":0,"turn_heal":0,
         "buff":[5,5,0,0,0],"debuff":[]
     },
-    "02":{
+    "002":{
         "name":"adrenaline","class":"warrior","type":"passive",
         "lvl":10,"rate":10,"mana":0,"duration":5,"cooldown":5,
         "damage":10,"heal":0,"turn_damage":0,"turn_heal":0,
         "buff":[10,10,-5,0,0],"debuff":[]
     },
-    "03":{
+    "003":{
         "name":"spark", "class":"wizard", "type":"offensive",
-        "lvl":1, "rate":30,"mana":1,"duration":0,"cooldown":0,
-        "damage":10,"heal":0,"turn_damage":0,"turn_heal":0,
+        "lvl":1, "rate":30,"mana":1,"duration":5,"cooldown":0,
+        "damage":5,"heal":0,"turn_damage":1,"turn_heal":0,
         "buff":[0,0,0,0,0],"debuff":[]
     },
-    "04":{
+    "004":{
         "name":"thunder","class":"wizard","type":"offensive",
-        "lvl":5, "rate":20,"mana":5,"duration":0,"cooldown":1,
-        "damage":20,"heal":0,"turn_damage":0,"turn_heal":0,
+        "lvl":5, "rate":20,"mana":5,"duration":5,"cooldown":2,
+        "damage":10,"heal":0,"turn_damage":2,"turn_heal":0,
         "buff":[0,0,0,0,0],"debuff":[]
     },
-    "05":{
+    "005":{
         "name":"storm", "class":"wizard", "type":"offensive",
-        "lvl":10,"rate":10,"mana":10,"duration":0,"cooldown":5,
-        "damage":30,"heal":0,"turn_damage":0,"turn_heal":0,
+        "lvl":10,"rate":10,"mana":15,"duration":5,"cooldown":5,
+        "damage":30,"heal":0,"turn_damage":10,"turn_heal":0,
         "buff":[0,0,0,0,0],"debuff":[]
     },
-    "06":{
+    "006":{
         "name":"self heal","class":"cleric","type":"healing",
-        "lvl":1,"rate":30,"mana":2,"duration":0,"cooldown":0,
-        "damage":0,"heal":20,"turn_damage":0,"turn_heal":0,
+        "lvl":1,"rate":30,"mana":2,"duration":0,"cooldown":2,
+        "damage":0,"heal":5,"turn_damage":0,"turn_heal":0,
         "buff":[0,0,0,0,0],"debuff":[]
     },
-    "07":{
+    "007":{
         "name":"protection","class":"cleric","type":"buff",
         "lvl":5, "rate":20,"mana":4,"duration":5,"cooldown":2,
-        "damage":0,"heal":0,"turn_damage":0,"turn_heal":0,
+        "damage":0,"heal":0,"turn_damage":0,"turn_heal":2,
         "buff":[0,0,10,0,0],"debuff":[]
     },
-    "08":{
+    "008":{
         "name":"bless","class":"cleric","type":"buff",
         "lvl":10,"rate":10,"mana":6,"duration":5,"cooldown":3,
         "damage":0,"heal":0,"turn_damage":0,"turn_heal":0,
         "buff":[5,5,0,5,0],"debuff":[]
     },
-    "09":{
+    "009":{
         "name":"fast attack","class":"ranger","type":"buff",
         "lvl":1, "rate":30,"mana":2,"duration":5,"cooldown":0,
         "damage":0,"heal":0,"turn_damage":0,"turn_heal":0,
         "buff":[0,5,0,0,0],"debuff":[]
     },
-    "10":{"name":"agility",    "class":"ranger",   "type":"passive",  "lvl":5, "rate":20,"mana":0,"damage":0,"heal":0,"buff":[0,0,0,0,0],"duration":0},
-    "11":{"name":"stealth",    "class":"ranger",   "type":"buff",     "lvl":10,"rate":10,"mana":5,"damage":0,"heal":0,"buff":[0,0,0,0,0],"duration":0},
-    "12":{"name":"fire arrow", "class":"sorcerer", "type":"offensive","lvl":1, "rate":30,"mana":1,"damage":0,"heal":0,"buff":[0,0,0,0,0],"duration":0},
-    "13":{"name":"fire shower","class":"sorcerer", "type":"offensive","lvl":5, "rate":20,"mana":5,"damage":0,"heal":0,"buff":[0,0,0,0,0],"duration":0},
-    "14":{"name":"blaze",      "class":"sorcerer", "type":"offensive","lvl":10,"rate":10,"mana":10,"damage":0,"heal":0,"buff":[0,0,0,0,0],"duration":0},
-    "15":{"name":"leech life", "class":"druid",    "type":"offensive","lvl":1, "rate":30,"mana":2,"damage":0,"heal":0,"buff":[0,0,0,0,0],"duration":0},
-    "16":{"name":"stone skin", "class":"druid",    "type":"buff",     "lvl":5, "rate":20,"mana":4,"damage":0,"heal":0,"buff":[0,0,0,0,0],"duration":0},
-    "17":{"name":"wild form",  "class":"druid",    "type":"buff",     "lvl":10,"rate":10,"mana":6,"damage":0,"heal":0,"buff":[0,0,0,0,0],"duration":0},
-    "18":{"name":"rage",       "class":"barbarian","type":"buff",     "lvl":1, "rate":30,"mana":2,"damage":0,"heal":0,"buff":[0,0,0,0,0],"duration":0},
-    "19":{"name":"fatal blow", "class":"barbarian","type":"offensive","lvl":5, "rate":20,"mana":2,"damage":0,"heal":0,"buff":[0,0,0,0,0],"duration":0},
-    "20":{"name":"insanity",   "class":"barbarian","type":"buff",     "lvl":10,"rate":10,"mana":3,"damage":0,"heal":0,"buff":[0,0,0,0,0],"duration":0},
-    "21":{"name":"curse",      "class":"witch",    "type":"offensive","lvl":1, "rate":30,"mana":2,"damage":0,"heal":0,"buff":[0,0,0,0,0],"duration":0},
-    "22":{"name":"poison",     "class":"witch",    "type":"offensive","lvl":5, "rate":20,"mana":6,"damage":0,"heal":0,"buff":[0,0,0,0,0],"duration":0},
-    "23":{"name":"disease",    "class":"witch",    "type":"offensive","lvl":10,"rate":10,"mana":6,"damage":0,"heal":0,"buff":[0,0,0,0,0],"duration":0},
-    "24":{"name":"cleansing",  "class":"shaman",   "type":"healing",  "lvl":1, "rate":30,"mana":2,"damage":0,"heal":0,"buff":[0,0,0,0,0],"duration":0},
-    "25":{"name":"hex",        "class":"shaman",   "type":"offensive","lvl":5, "rate":20,"mana":5,"damage":0,"heal":0,"buff":[0,0,0,0,0],"duration":0},
-    "26":{"name":"spark armor","class":"shaman",   "type":"buff",     "lvl":10,"rate":10,"mana":5,"damage":0,"heal":0,"buff":[0,0,0,0,0],"duration":0}
+    "010":{
+        "name":"agility","class":"ranger","type":"passive",
+        "lvl":5, "rate":20,"mana":0,"duration":2,"cooldown":5,
+        "damage":0,"heal":0,"turn_damage":0,"turn_heal":0,
+        "buff":[0,20,0,0,0],"debuff":[]
+    },
+    "011":{
+        "name":"stealth","class":"ranger","type":"buff",
+        "lvl":10,"rate":10,"mana":5,"duration":0,"cooldown":5,
+        "damage":0,"heal":0,"turn_damage":0,"turn_heal":0,
+        "buff":[0,0,0,0,0],"debuff":[]
+    },
+    "012":{
+        "name":"fire arrow", "class":"sorcerer","type":"offensive",
+        "lvl":1, "rate":30,"mana":5,"duration":0,"cooldown":2,
+        "damage":10,"heal":0,"turn_damage":0,"turn_heal":0,
+        "buff":[0,0,0,0,0],"debuff":[]
+    },
+    "013":{
+        "name":"fire shower","class":"sorcerer","type":"offensive",
+        "lvl":5, "rate":20,"mana":10,"duration":5,"cooldown":7,
+        "damage":0,"heal":0,"turn_damage":10,"turn_heal":0,
+        "buff":[0,0,0,0,0],"debuff":[]
+    },
+    "014":{
+        "name":"blaze","class":"sorcerer","type":"offensive",
+        "lvl":10,"rate":10,"mana":10,"duration":5,"cooldown":10,
+        "damage":10,"heal":0,"turn_damage":10,"turn_heal":0,
+        "buff":[0,0,0,0,0],"debuff":[]
+    },
+    "015":{
+        "name":"leech life","class":"druid","type":"offensive",
+        "lvl":1, "rate":30,"mana":4,"duration":0,"cooldown":1,
+        "damage":5,"heal":5,"turn_damage":0,"turn_heal":0,
+        "buff":[0,0,0,0,0],"debuff":[]
+    },
+    "016":{
+        "name":"stone skin","class":"druid","type":"buff",
+        "lvl":5, "rate":20,"mana":4,"duration":5,"cooldown":1,
+        "damage":0,"heal":1,"turn_damage":0,"turn_heal":0,
+        "buff":[5,0,10,0,0],"debuff":[]
+    },
+    "017":{
+        "name":"wild form","class":"druid","type":"buff",
+        "lvl":10,"rate":10,"mana":6,"duration":5,"cooldown":5,
+        "damage":0,"heal":0,"turn_damage":0,"turn_heal":0,
+        "buff":[10,10,10,-5,-5],"debuff":[]
+    },
+    "018":{
+        "name":"rage","class":"barbarian","type":"buff",
+        "lvl":1, "rate":30,"mana":2,"duration":5,"cooldown":1,
+        "damage":0,"heal":0,"turn_damage":0,"turn_heal":0,
+        "buff":[10,5,0,-1,-1],"debuff":[]
+    },
+    "019":{
+        "name":"fatal blow","class":"barbarian","type":"offensive",
+        "lvl":5, "rate":20,"mana":2,"duration":0,"cooldown":2,
+        "damage":10,"heal":0,"turn_damage":0,"turn_heal":0,
+        "buff":[0,0,0,0,0],"debuff":[]
+    },
+    "020":{
+        "name":"insanity","class":"barbarian","type":"buff",
+        "lvl":10,"rate":10,"mana":10,"duration":3,"cooldown":5,
+        "damage":0,"heal":0,"turn_damage":0,"turn_heal":0,
+        "buff":[15,10,-5,-5,0],"debuff":[]
+    },
+    "021":{
+        "name":"curse","class":"witch","type":"offensive",
+        "lvl":1,"rate":30,"mana":2,"duration":3,"cooldown":1,
+        "damage":2,"heal":0,"turn_damage":3,"turn_heal":0,
+        "buff":[0,0,0,0,0],"debuff":[]
+    },
+    "022":{
+        "name":"poison","class":"witch","type":"offensive",
+        "lvl":5,"rate":20,"mana":6,"duration":4,"cooldown":3,
+        "damage":2,"heal":0,"turn_damage":5,"turn_heal":0,
+        "buff":[0,0,0,0,0],"debuff":[]
+    },
+    "023":{
+        "name":"disease","class":"witch","type":"offensive",
+        "lvl":10,"rate":10,"mana":10,"duration":5,"cooldown":6,
+        "damage":10,"heal":0,"turn_damage":10,"turn_heal":0,
+        "buff":[0,0,0,0,0],"debuff":[]
+    },
+    "024":{
+        "name":"cleansing","class":"shaman","type":"healing",
+        "lvl":1,"rate":30,"mana":2,"duration":3,"cooldown":1,
+        "damage":0,"heal":5,"turn_damage":0,"turn_heal":3,
+        "buff":[1,1,1,1,1],"debuff":[]
+    },
+    "025":{
+        "name":"hex","class":"shaman","type":"offensive",
+        "lvl":5, "rate":20,"mana":5,"duration":3,"cooldown":1,
+        "damage":0,"heal":0,"turn_damage":0,"turn_heal":3,
+        "buff":[0,0,0,0,0],"debuff":[]
+    },
+    "026":{
+        "name":"spark armor","class":"shaman","type":"buff",
+        "lvl":10,"rate":10,"mana":15,"duration":10,"cooldown":6,
+        "damage":10,"heal":0,"turn_damage":5,"turn_heal":3,
+        "buff":[0,0,10,5,5],"debuff":[]
+    }
         }   
