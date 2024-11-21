@@ -1,6 +1,7 @@
 from database import GameBase, GameRepository
 from .creatures_info import MonsterInfos, PlayerInfos, PlayerEquips, PlayerBuffs
 from .spells_core import ConjuringSpell
+from .itens_core import ItensCore
 import math
 import random
 
@@ -12,11 +13,8 @@ class GameCore(GameBase):
         self.locations_df = self.get_database_dataframe('locations_database.json')
         self.itens_df = self.get_database_dataframe('itens_database.json')
         self.conjuring_spell = ConjuringSpell()
+        self.itens_core = ItensCore()
         self.repository = GameRepository()
-        self.player = None
-        self.monster = None    
-        self.equips = None
-        self.buffs = None
 
     def _generate_character(self,char_data: tuple):
         player_race, player_class, player_str, player_agi, player_vit, player_int, player_cha, player_name, player_lvl, player_exp, player_inv, player_wear = char_data
@@ -88,29 +86,35 @@ class GameCore(GameBase):
     
     def generate_equipments(self,equips_tuple:tuple):
         max_life,max_mana,attack,attack_speed,defense = equips_tuple
-        self.equips = PlayerEquips(
+        equips = PlayerEquips(
             max_life=max_life,
             max_mana=max_mana,
             attack=attack,
             attack_speed=attack_speed,
             defense=defense
         )
+        self.repository.set_resource('Equips', equips)
 
     def update_character(self):
-        strength = self.player.strength + self.buffs.strength
-        agility = self.player.agility + self.buffs.agility
-        vitality = self.player.vitality + self.buffs.vitality
-        intelligence = self.player.intelligence + self.buffs.intelligence
-        charisma = self.player.intelligence + self.buffs.charisma
-        self.update_wearing_status()
-        self.player.attack = strength + agility/2 + intelligence/20 + charisma/50 + self.equips.attack
-        self.player.defense = vitality/2 + agility/10 + strength/10 + self.equips.defense
-        self.player.attack_speed = (100 / (22.2222 + agility)) + 0.5 + self.equips.attack_speed
-        self.player.max_life = int(math.ceil(100+(vitality*2 + strength)/2)) + self.equips.max_life
-        self.player.max_mana = int(math.ceil(10+(intelligence*2 + vitality)/2)) + self.equips.max_mana
-        self.player.spells = self.get_list_by_name_and_number(self.player.class_type,self.player.level,'class','lvl','name',self.df_spells)
-        self.player.atribute_cap = 13 + (self.player.level * 7)   
-        self.save_character(self.player)
+        self.itens_core.update_wearing_status()
+        player = self.repository.get_resource('Player')
+        equips = self.repository.get_resource('Equips')
+        buffs = self.repository.get_resource('Buffs')
+        strength = player.strength + buffs.strength
+        agility = player.agility + buffs.agility
+        vitality = player.vitality + buffs.vitality
+        intelligence = player.intelligence + buffs.intelligence
+        charisma = player.intelligence + buffs.charisma
+        player.attack = strength + agility/2 + intelligence/20 + charisma/50 + equips.attack
+        player.defense = vitality/2 + agility/10 + strength/10 + equips.defense
+        player.attack_speed = (100 / (22.2222 + agility)) + 0.5 + equips.attack_speed
+        player.max_life = int(math.ceil(100+(vitality*2 + strength)/2)) + equips.max_life
+        player.max_mana = int(math.ceil(10+(intelligence*2 + vitality)/2)) + equips.max_mana
+        player.spells = self.get_list_by_name_and_number(player.class_type,player.level,'class','lvl','name',self.df_spells)
+        player.atribute_cap = 13 + (player.level * 7)   
+        self.save_character(player)
+        self.repository.set_resource('Player', player)
+        
         
     def new_character(self, name:str, race:str, clas:str):
         inventory={}
@@ -134,35 +138,44 @@ class GameCore(GameBase):
         new_tuple = (name, 1, 0, inventory, wearing)
         class_info_tuple = class_info_tuple + new_tuple
         self._generate_character(class_info_tuple)
-        self.save_character(self.player)
+        player = self.repository.get_resource('Player')
+        self.save_character(player)
 
     def load_character(self,char_data:dict):
         print('Load saved character.')
-        self.player = PlayerInfos(**char_data)
-        self.buffs = PlayerBuffs(0, 0, 0, 0, 0)
+        player = PlayerInfos(**char_data)
+        buffs = PlayerBuffs(0, 0, 0, 0, 0)
+        self.repository.set_resource('Player', player)
+        self.repository.set_resource('Buffs', buffs)
         self.update_character()
 
     def show_character(self):
+        player = self.repository.get_resource('Player')
+        equips = self.repository.get_resource('Equips')
         print('You see yourself in the mirror:')
-        print(f'Your name is: {self.player.name}, you are an {self.player.race} {self.player.class_type}')
-        print(f'HP: {self.player.life:.2f}/{self.player.max_life}\nMANA: {self.player.mana}/{self.player.max_mana}')
-        print(f'You are level {self.player.level}, with {self.player.experience} of experience and your atributes are:\nStrength: {self.player.strength:.2f}\nAgility: {self.player.agility:.2f}\nVitality: {self.player.vitality:.2f}\nInteligence: {self.player.intelligence:.2f}\nCharisma: {self.player.charisma:.2f}')
-        print(f'Attack:{self.player.attack:.2f} Defense:{self.player.defense:.2f} attack speed:{self.player.attack_speed:.2f}')
-        print(f'Your list of spells: {self.player.spells}')
-        print(f'inventory:{self.player.inventory}')
-        print(f'Equipped itens:\nMax Life: {self.equips.max_life}\nMax Mana: {self.equips.max_mana}\nAttack: {self.equips.attack}\nAttack speed: {self.equips.attack_speed}\nDefense: {self.equips.defense}')
+        print(f'Your name is: {player.name}, you are an {player.race} {player.class_type}')
+        print(f'HP: {player.life:.2f}/{player.max_life}\nMANA: {player.mana}/{player.max_mana}')
+        print(f'You are level {player.level}, with {player.experience} of experience and your atributes are:\nStrength: {player.strength:.2f}\nAgility: {player.agility:.2f}\nVitality: {player.vitality:.2f}\nInteligence: {player.intelligence:.2f}\nCharisma: {player.charisma:.2f}')
+        print(f'Attack:{player.attack:.2f} Defense:{player.defense:.2f} attack speed:{player.attack_speed:.2f}')
+        print(f'Your list of spells: {player.spells}')
+        print(f'inventory:{player.inventory}')
+        print(f'Equipped itens:\nMax Life: {equips.max_life}\nMax Mana: {equips.max_mana}\nAttack: {equips.attack}\nAttack speed: {equips.attack_speed}\nDefense: {equips.defense}')
 
     def level_up_character(self):
-        self.player.level +=1
+        player = self.repository.get_resource('Player')
+        player.level +=1
+        self.repository.set_resource('Player', player)
         self.update_character()
 
     def verify_experience(self):
+        player = self.repository.get_resource('Player')
         level_up = {1:100,2:400,3:1000,4:1800,5:2800,6:4000,7:7500,8:10000}
-        if level_up[self.player.level] <= self.player.experience:
+        if level_up[player.level] <= player.experience:
             self.level_up_character()
 
     def locations_allowed(self)->list:
-        return self.get_list_by_number(self.player.level, 'min lvl', 'name', self.locations_df)
+        player = self.repository.get_resource('Player')
+        return self.get_list_by_number(player.level, 'min lvl', 'name', self.locations_df)
 
     def monster_reward(self):
         monster_exp = self.get_random_in_interval(self.monster.experience)
