@@ -1,10 +1,12 @@
-from core import GameCore
+from core import GameCore, BattleCore, ItensCore
 from graph import GraficMenus
 import keyboard
 
 class AppMenus():
     def __init__(self):
         self.game_core = GameCore()
+        self.battle_core = BattleCore()
+        self.itens_core = ItensCore()
         self.graph_menu = GraficMenus()
         
     def run_game(self):
@@ -91,7 +93,7 @@ class AppMenus():
             stop_battle = False
             while not stop_battle:
                 self.game_core.monster_encounter(loc_allowed[loc_choose])
-                stop_battle = self.game_core.battle_core()
+                stop_battle = self.battle_core.battle_status()
         
     def run_refuge_status(self):
         choice_text = 'Welcome to your home. What do you wish to do?'
@@ -122,15 +124,15 @@ class AppMenus():
                 break
             choice -= 1
             body_part_choose = choice_options[choice]
-            wearable_list = self.game_core.list_wering_equipment(body_part_choose)
+            wearable_list = self.itens_core.list_wering_equipment(body_part_choose)
             while True:
                 iten_choice = int(self.graph_menu.generate_menu(choice_text2,wearable_list))
                 if iten_choice == len(wearable_list)+1:
                     break
                 iten_choice -= 1
                 iten_choose = wearable_list[iten_choice]
-                self.game_core.equip_item(iten_choose, body_part_choose)
-                self.game_core.update_wearing_status()
+                self.itens_core.equip_item(iten_choose, body_part_choose)
+                self.itens_core.update_wearing_status()
                 break
             
     def run_sleep_status(self):

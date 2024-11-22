@@ -1,15 +1,43 @@
-from database import GameBase
-from core import ConjuringSpell, GameCore
+from database import GameBase, GameRepository
+from .spells_core import ConjuringSpell
+from .game_core import GameCore
 import time
 import random
 import threading
 
 class BattleCore(GameBase):
-    def __init__(self, player, monster):
-        self.player = player
-        self.monster = monster
+    def __init__(self):
         self.game_core = GameCore()
         self.conjuring_spell = ConjuringSpell()
+        self.repository = GameRepository()
+    
+    @property
+    def player(self):
+        return self.repository.get_resource('Player')    
+    @player.setter
+    def player(self, value):
+        self.repository.set_resource('Player', value)
+    
+    @property
+    def monster(self):
+        return self.repository.get_resource('Monster')
+    @monster.setter
+    def monster(self, value):
+        self.repository.set_resource('Monster', value)
+    
+    @property
+    def equips(self):
+        return self.repository.get_resource('Equips')
+    @equips.setter
+    def equips(self, value):
+        self.repository.set_resource('Equips', value)
+    
+    @property
+    def buffs(self):
+        return self.repository.get_resource('Buffs')
+    @buffs.setter
+    def buffs(self, value):
+        self.repository.set_resource('Buffs', value)
     
     def _damage_calculator(self,attack:float,defense:float,level:int)->float:
         damage = ((level * 5) / 10) + ((attack**2) / (attack + (2*defense)))
@@ -18,20 +46,9 @@ class BattleCore(GameBase):
         final_damage = random.uniform(min_damage, max_damage)
         return final_damage
     
-    def _apply_buff(self, buff: tuple, multiplier: int):
-        attributes = ['strength', 'agility', 'vitality', 'intelligence', 'charisma']
-        for attr, value in zip(attributes, buff):
-            setattr(self.buffs, attr, getattr(self.buffs, attr) + value * multiplier)
-
-    def remove_buff(self, buff_removed:tuple):
-        self._apply_buff(buff_removed, -1)
-    
-    def add_buff(self, buff_added:tuple):
-        self._apply_buff(buff_added, 1)
-    
     def player_battle_loop(self):
         while self.player.life > 0 and self.monster.life > 0:
-            self.conjuring_core(self.player.spells, self.player.intelligence, self.player.charisma)
+            self.conjuring_spell.conjuring_core(self.player.spells, self.player.intelligence, self.player.charisma)
             player_damage = self._damage_calculator(self.player.attack,self.monster.defense,self.player.level)
             self.monster.life = self.monster.life - player_damage
             time.sleep(self.player.attack_speed)
@@ -81,7 +98,8 @@ class BattleCore(GameBase):
             return True
         else:
             print('You kill the monster.')
-            self.monster_reward()
+            self.game_core.monster_reward()
+            self.game_core._generate_buffs()
             return False
         
         

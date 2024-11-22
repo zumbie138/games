@@ -1,10 +1,28 @@
-from database import GameBase
-from core import GameCore
+from database import GameBase, GameRepository
+from .creatures_info import PlayerEquips
 
 class ItensCore(GameBase):
     def __init__(self):
         self.itens_df = self.get_database_dataframe('itens_database.json')
-        self.game_core = GameCore()
+        self.repository = GameRepository()
+    
+    @property
+    def player(self):
+        return self.repository.get_resource('Player')    
+    @player.setter
+    def player(self, value):
+        self.repository.set_resource('Player', value)
+    
+    def generate_equipments(self,equips_tuple:tuple):
+        max_life,max_mana,attack,attack_speed,defense = equips_tuple
+        equips = PlayerEquips(
+            max_life=max_life,
+            max_mana=max_mana,
+            attack=attack,
+            attack_speed=attack_speed,
+            defense=defense
+        )
+        self.repository.set_resource('Equips', equips)
     
     def list_wering_equipment(self, body_part:str)->list:
         inventory_itens = self.get_keys_as_list(self.player.inventory)
@@ -21,7 +39,7 @@ class ItensCore(GameBase):
         attack_speed = df_equiped['attack_speed'].sum()
         defense = df_equiped['defense'].sum()
         summary_tuple = (max_hp, max_mana, attack, attack_speed, defense)
-        self.game_core.generate_equipments(summary_tuple)
+        self.generate_equipments(summary_tuple)
 
     def equip_item(self,iten_name:str,body_part:str):
         self.player.wearing[body_part] = iten_name

@@ -1,15 +1,18 @@
-class GameRepository():
-    
+class GameRepository:
     _instance = None
-    
-    def __new__(cls, *args, **kwargs):
-        if not cls._instance:
-            cls._instance = super(GameRepository, cls).__new__(cls, *args, **kwargs)
-            cls._instance._data = {}
-    
-    def set_resource(self, key: str, value):
-        self._data[key] = value
 
-    def get_resource(self, key: str):
-        return self._data.get(key)
+    def __new__(cls, *args, **kwargs):
+        if cls._instance is None:
+            cls._instance = super().__new__(cls)
+        return cls._instance
+
+    def __init__(self):
+        if not hasattr(self, "_data"):
+            self._data = {}
+
+    def get_resource(self, key, default=None):
+        return self._data.get(key, default)
+
+    def set_resource(self, key, value):
+        self._data[key] = value
 

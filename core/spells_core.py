@@ -1,13 +1,35 @@
-from database import GameBase
-from core import GameCore
+from database import GameBase, GameRepository
+from .game_core import GameCore
 
 class ConjuringSpell(GameBase):
     def __init__(self):
         self.df_spells = self.get_database_dataframe('spells_database.json')
         self.game_core = GameCore()
+        self.repository = GameRepository()
         self.spells_cooldown = {}
         self.spells_duration = {}
+    
+    @property
+    def player(self):
+        return self.repository.get_resource('Player')    
+    @player.setter
+    def player(self, value):
+        self.repository.set_resource('Player', value)
+    
+    @property
+    def monster(self):
+        return self.repository.get_resource('Monster')
+    @monster.setter
+    def monster(self, value):
+        self.repository.set_resource('Monster', value)
         
+    @property
+    def buffs(self):
+        return self.repository.get_resource('Buffs')
+    @buffs.setter
+    def buffs(self, value):
+        self.repository.set_resource('Buffs', value)
+    
     def add_spell_timers(self, name:str, cooldown:int, duration:int):
         self.spells_cooldown[name] = cooldown
         self.spells_duration[name] = duration
@@ -38,8 +60,19 @@ class ConjuringSpell(GameBase):
             buff_removed = self.get_info_by_name(effect_over,'name','buff',self.df_spells)
             print(buff_removed)
             print(self.buffs)
-            self.game_core.remove_buff(buff_removed)
+            self.remove_buff(buff_removed)
             self.game_core.update_character()
+    
+    def _apply_buff(self, buff: tuple, multiplier: int):
+        attributes = ['strength', 'agility', 'vitality', 'intelligence', 'charisma']
+        for attr, value in zip(attributes, buff):
+            setattr(self.buffs, attr, getattr(self.buffs, attr) + value * multiplier)
+
+    def remove_buff(self, buff_removed:tuple):
+        self._apply_buff(buff_removed, -1)
+    
+    def add_buff(self, buff_added:tuple):
+        self._apply_buff(buff_added, 1)
         
     def conjuring_core(self,spell_list:list,inteligence:float,charisma:float):
         for spell in reversed(spell_list):
@@ -66,15 +99,15 @@ class ConjuringSpell(GameBase):
         spell_cooldown = spell_info['cooldown'].item()
         spell_duration = spell_info['duration'].item()
         buff_tuple = spell_info['buff'].item()
-        self.conjuring_spell.add_spell_timers(spell_name, spell_cooldown, spell_duration)
+        self.add_spell_timers(spell_name, spell_cooldown, spell_duration)
         self.player.mana = self.player.mana - mana_spell
         if spell_info['type'].item() == 'passive' or spell_info['type'].item() == 'buff':
-            self._add_buff(buff_tuple)
+            self.add_buff(buff_tuple)
             print(buff_tuple)
             print(self.buffs)
-            self._update_character()
+            self.game_core.update_character()
         elif spell_info['type'].item() == 'offensive' or spell_info['type'].item() == 'healing':
-            spell_result = self.conjuring_spell.calculate_conjured_spell(damage_base,heal_base,self.player.vitality,self.player.intelligence,self.player.charisma)           
+            spell_result = self.calculate_conjured_spell(damage_base,heal_base,self.player.vitality,self.player.intelligence,self.player.charisma)           
             self.apply_magic_damage(*spell_result)
             
     def apply_magic_damage(self,magic_damage:float, healing_done:float):
