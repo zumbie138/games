@@ -1,6 +1,7 @@
 from database import GameBase, GameRepository
 from .creatures_info import MonsterInfos, PlayerInfos, PlayerBuffs
 from .itens_core import ItensCore
+import time
 import math
 import random
 
@@ -43,7 +44,7 @@ class GameCore(GameBase):
     
     def _generate_character(self,char_data: tuple):
         player_race, player_class, player_str, player_agi, player_vit, player_int, player_cha, player_name, player_lvl, player_exp, player_inv, player_wear = char_data
-        player_atk = player_str+player_agi/2+player_int/20+player_cha/50
+        player_atk = player_str+player_agi/5+player_int/20+player_cha/50
         player_def = player_vit/2+player_agi/10+player_str/10
         player_atk_spd = (100/(22.2222+player_agi))+0.5
         player_life = int(math.ceil(100+(player_vit*2+player_str)/2))
@@ -115,7 +116,7 @@ class GameCore(GameBase):
         vitality = self.player.vitality + self.buffs.vitality
         intelligence = self.player.intelligence + self.buffs.intelligence
         charisma = self.player.intelligence + self.buffs.charisma
-        self.player.attack = strength + agility/2 + intelligence/20 + charisma/50 + self.equips.attack
+        self.player.attack = strength + agility/5 + intelligence/20 + charisma/50 + self.equips.attack
         self.player.defense = vitality/2 + agility/10 + strength/10 + self.equips.defense
         self.player.attack_speed = (100 / (22.2222 + agility)) + 0.5 + self.equips.attack_speed
         self.player.max_life = int(math.ceil(100+(vitality*2 + strength)/2)) + self.equips.max_life
@@ -214,7 +215,7 @@ class GameCore(GameBase):
             if self.player.mana > self.player.max_mana:
                 self.player.mana = self.player.max_mana
             print(f'You heal {heal} points of life, HP: {self.player.life}/{self.player.max_life}')
-            # time.sleep(2.5)
+            time.sleep(2.5)
         
     def training_atributes(self,choice:str):
         while self.player.life > 0:
@@ -239,10 +240,10 @@ class GameCore(GameBase):
                 case '5':
                     text = 'charisma'
                     self.player.charisma = self.player.charisma + train 
-            # self.player.life = self.player.life - 10
-            # self.player.life = max(self.player.life, 0)
-            # time.sleep(1)
-            print(f'You train {train} points of {text}.')
+            self.player.life = self.player.life - 10
+            self.player.life = max(self.player.life, 0)
+            time.sleep(1)
+            print(f'You train {train:.2f} points of {text}.')
             self.update_character()
             
     

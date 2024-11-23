@@ -116,7 +116,7 @@ class AppMenus():
     
     def run_wardobe_status(self):
         choice_text = 'What part you want to equip a item?'
-        choice_text2 = 'What inten you want to equip ?'
+        choice_text2 = 'What iten you want to equip ?'
         choice_options = ['head','neck','torso','arms','right hand','left hand','waist','legs','foot','finger','wrist','ears','back']
         while True:
             choice = int(self.graph_menu.generate_menu(choice_text,choice_options))
@@ -125,9 +125,13 @@ class AppMenus():
             choice -= 1
             body_part_choose = choice_options[choice]
             wearable_list = self.itens_core.list_wering_equipment(body_part_choose)
+            wearable_list.append('Unequip')
             while True:
                 iten_choice = int(self.graph_menu.generate_menu(choice_text2,wearable_list))
-                if iten_choice == len(wearable_list)+1:
+                if iten_choice == len(wearable_list):
+                    self.itens_core.unequip_item(body_part_choose)
+                    break
+                elif iten_choice == len(wearable_list)+1:
                     break
                 iten_choice -= 1
                 iten_choose = wearable_list[iten_choice]

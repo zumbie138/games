@@ -6,6 +6,7 @@ class ConjuringSpell(GameBase):
         self.df_spells = self.get_database_dataframe('spells_database.json')
         self.game_core = GameCore()
         self.repository = GameRepository()
+        self.attributes = ['strength', 'agility', 'vitality', 'intelligence', 'charisma']
         self.spells_cooldown = {}
         self.spells_duration = {}
     
@@ -32,7 +33,8 @@ class ConjuringSpell(GameBase):
     
     def add_spell_timers(self, name:str, cooldown:int, duration:int):
         self.spells_cooldown[name] = cooldown
-        self.spells_duration[name] = duration
+        count = sum(1 for key in self.spells_duration if key.startswith(name))
+        self.spells_duration[f'{name}{count+1}'] = duration
     
     def _decrement_and_clean(self,spell_timer:dict):
         for spell in list(spell_timer.keys()):
@@ -42,7 +44,7 @@ class ConjuringSpell(GameBase):
         for spell in list(self.spells_duration.keys()):
             if self.spells_duration[spell] <= 0:
                 del self.spells_duration[spell]
-                return spell
+                return spell.rstrip("0123456789")
     
     def update_spell_timer(self):
         self._decrement_and_clean(self.spells_cooldown)
@@ -63,9 +65,14 @@ class ConjuringSpell(GameBase):
             self.remove_buff(buff_removed)
             self.game_core.update_character()
     
+    def reset_buffs(self):
+        self.spells_cooldown = {}
+        self.spells_duration = {}
+        for attr in self.attributes:
+            setattr(self.buffs, attr, 0)
+            
     def _apply_buff(self, buff: tuple, multiplier: int):
-        attributes = ['strength', 'agility', 'vitality', 'intelligence', 'charisma']
-        for attr, value in zip(attributes, buff):
+        for attr, value in zip(self.attributes, buff):
             setattr(self.buffs, attr, getattr(self.buffs, attr) + value * multiplier)
 
     def remove_buff(self, buff_removed:tuple):

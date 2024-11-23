@@ -92,14 +92,15 @@ class BattleCore(GameBase):
         monster_thread.join()
         turn_thread.join()
         print(f'HP:{self.player.life}/{self.player.max_life}')
-
+        self.game_core.update_character()
         if self.player.life <= 0:
             print('Youre defeated.')
+            self.conjuring_spell.reset_buffs()
             return True
         else:
             print('You kill the monster.')
+            self.conjuring_spell.reset_buffs()
             self.game_core.monster_reward()
-            self.game_core._generate_buffs()
             return False
         
         

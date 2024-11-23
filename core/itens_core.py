@@ -41,6 +41,18 @@ class ItensCore(GameBase):
         summary_tuple = (max_hp, max_mana, attack, attack_speed, defense)
         self.generate_equipments(summary_tuple)
 
+    def unequip_item(self, body_part:str):
+        item_name = self.player.wearing[body_part]
+        if item_name is not None:
+            self.player.wearing[body_part] = None
+            self.player.inventory[item_name] = self.player.inventory.get(item_name, 0)+1
+            print(f'You unequiped the item {item_name}')
+        else:
+            print('Theres nothing equiped already.')
+    
     def equip_item(self,iten_name:str,body_part:str):
         self.player.wearing[body_part] = iten_name
+        self.player.inventory[iten_name] -= 1
+        if self.player.inventor[iten_name] <= 0:
+            del self.player.inventory[iten_name]
         print(self.player.wearing)

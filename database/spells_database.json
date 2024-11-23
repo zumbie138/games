@@ -1,7 +1,7 @@
 {
     "000":{
         "name":"courage","class":"warrior","type":"passive",
-        "lvl":1, "rate":30,"mana":0,"duration":3,"cooldown":3,
+        "lvl":1, "rate":30,"mana":0,"duration":3,"cooldown":0,
         "damage":0,"heal":0,"turn_damage":0,"turn_heal":0,
         "buff":[3,3,3,0,0],"debuff":[]
     },
@@ -55,9 +55,9 @@
     },
     "009":{
         "name":"fast attack","class":"ranger","type":"buff",
-        "lvl":1, "rate":30,"mana":2,"duration":2,"cooldown":2,
+        "lvl":1, "rate":30,"mana":2,"duration":3,"cooldown":0,
         "damage":0,"heal":0,"turn_damage":0,"turn_heal":0,
-        "buff":[0,5,0,0,0],"debuff":[]
+        "buff":[0,3,0,0,0],"debuff":[]
     },
     "010":{
         "name":"agility","class":"ranger","type":"passive",
