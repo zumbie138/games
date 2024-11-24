@@ -214,7 +214,7 @@ class GameCore(GameBase):
                 self.player.life = self.player.max_life
             if self.player.mana > self.player.max_mana:
                 self.player.mana = self.player.max_mana
-            print(f'You heal {heal} points of life, HP: {self.player.life}/{self.player.max_life}')
+            print(f'You heal {heal:.2f} points of life, HP: {self.player.life:.2f}/{self.player.max_life}')
             time.sleep(2.5)
         
     def training_atributes(self,choice:str):

@@ -60,8 +60,8 @@ class ConjuringSpell(GameBase):
         effect_over = self.check_duration_spell()
         if effect_over is not None:
             buff_removed = self.get_info_by_name(effect_over,'name','buff',self.df_spells)
-            print(buff_removed)
-            print(self.buffs)
+            # print(buff_removed)
+            # print(self.buffs)
             self.remove_buff(buff_removed)
             self.game_core.update_character()
     
@@ -110,8 +110,8 @@ class ConjuringSpell(GameBase):
         self.player.mana = self.player.mana - mana_spell
         if spell_info['type'].item() == 'passive' or spell_info['type'].item() == 'buff':
             self.add_buff(buff_tuple)
-            print(buff_tuple)
-            print(self.buffs)
+            # print(buff_tuple)
+            # print(self.buffs)
             self.game_core.update_character()
         elif spell_info['type'].item() == 'offensive' or spell_info['type'].item() == 'healing':
             spell_result = self.calculate_conjured_spell(damage_base,heal_base,self.player.vitality,self.player.intelligence,self.player.charisma)           
