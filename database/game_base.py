@@ -75,6 +75,12 @@ class GameBase():
     
     def get_random_in_interval(self,interval_tuple:tuple)->int:
         return random.randint(*interval_tuple)
+    
+    def get_random_min_max(self,base_number:float)->float:
+        min_number = 0.7 * base_number
+        max_number = 1.3 * base_number
+        return random.uniform(min_number, max_number)
+    
 # wd = WorldDatabase()
 # classes_database = wd.classes_database
 # df_classe_database = pd.DataFrame.from_dict(classes_database, orient='index')

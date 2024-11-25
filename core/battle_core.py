@@ -41,9 +41,7 @@ class BattleCore(GameBase):
     
     def _damage_calculator(self,attack:float,defense:float,level:int)->float:
         damage = ((level * 5) / 10) + ((attack**2) / (attack + (2*defense)))
-        min_damage = damage * 0.7
-        max_damage = damage * 1.3
-        final_damage = random.uniform(min_damage, max_damage)
+        final_damage = self.get_random_min_max(damage)
         return final_damage
     
     def player_battle_loop(self):

@@ -20,7 +20,7 @@
     "003":{
         "name":"spark", "class":"wizard", "type":"offensive",
         "lvl":1, "rate":30,"mana":1,"duration":5,"cooldown":0,
-        "damage":5,"heal":0,"turn_damage":1,"turn_heal":0,
+        "damage":2,"heal":0,"turn_damage":1,"turn_heal":0,
         "buff":[0,0,0,0,0],"debuff":[]
     },
     "004":{
@@ -74,7 +74,7 @@
     "012":{
         "name":"fire arrow", "class":"sorcerer","type":"offensive",
         "lvl":1, "rate":30,"mana":5,"duration":0,"cooldown":2,
-        "damage":10,"heal":0,"turn_damage":0,"turn_heal":0,
+        "damage":5,"heal":0,"turn_damage":0,"turn_heal":0,
         "buff":[0,0,0,0,0],"debuff":[]
     },
     "013":{

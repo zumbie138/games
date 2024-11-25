@@ -51,9 +51,11 @@ class ConjuringSpell(GameBase):
         self._decrement_and_clean(self.spells_duration)
         
     def calculate_conjured_spell(self,damage_base:int, healing_base:int, vitality:float, intelligence:float, charisma:float):
-        spell_damage = damage_base * (1 + (((intelligence  +(charisma/2)) * 3) / 10)) 
+        spell_damage = damage_base * (1 + (((intelligence  +(charisma/2)) * 3) / 10))
         healing_done = healing_base * (1 + (((intelligence + (vitality/2) + (charisma/5)) * 3) / 10))
-        return spell_damage, healing_done
+        final_damage = self.get_random_min_max(spell_damage)
+        final_healing = self.get_random_min_max(healing_done)
+        return final_damage, final_healing
         
     def check_active_durations(self):
         self.update_spell_timer()
