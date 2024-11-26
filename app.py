@@ -92,6 +92,7 @@ class AppMenus():
             loc_choose -= 1
             stop_battle = False
             while not stop_battle:
+                self.battle_core.batte_active = True
                 self.game_core.monster_encounter(loc_allowed[loc_choose])
                 stop_battle = self.battle_core.battle_status()
         
@@ -130,6 +131,7 @@ class AppMenus():
                 iten_choice = int(self.graph_menu.generate_menu(choice_text2,wearable_list))
                 if iten_choice == len(wearable_list):
                     self.itens_core.unequip_item(body_part_choose)
+                    self.itens_core.update_wearing_status()
                     break
                 elif iten_choice == len(wearable_list)+1:
                     break
@@ -149,4 +151,5 @@ class AppMenus():
             train_choice = self.graph_menu.generate_menu(choice_text,choice_options)
             if int(train_choice) == len(choice_options)+1:
                 break
-            self.game_core.training_atributes(train_choice)
+            self.battle_core.batte_active = True
+            self.battle_core.training_core(train_choice)

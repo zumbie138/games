@@ -53,6 +53,6 @@ class ItensCore(GameBase):
     def equip_item(self,iten_name:str,body_part:str):
         self.player.wearing[body_part] = iten_name
         self.player.inventory[iten_name] -= 1
-        if self.player.inventor[iten_name] <= 0:
+        if self.player.inventory[iten_name] <= 0:
             del self.player.inventory[iten_name]
         print(self.player.wearing)

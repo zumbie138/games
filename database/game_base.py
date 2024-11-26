@@ -76,6 +76,9 @@ class GameBase():
     def get_random_in_interval(self,interval_tuple:tuple)->int:
         return random.randint(*interval_tuple)
     
+    def get_random_float_interval(self,interval_tuple:tuple)->float:
+        return random.uniform(*interval_tuple)
+    
     def get_random_min_max(self,base_number:float)->float:
         min_number = 0.7 * base_number
         max_number = 1.3 * base_number

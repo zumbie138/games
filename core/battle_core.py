@@ -2,7 +2,7 @@ from database import GameBase, GameRepository
 from .spells_core import ConjuringSpell
 from .game_core import GameCore
 import time
-import random
+import keyboard
 import threading
 
 class BattleCore(GameBase):
@@ -10,6 +10,7 @@ class BattleCore(GameBase):
         self.game_core = GameCore()
         self.conjuring_spell = ConjuringSpell()
         self.repository = GameRepository()
+        self.batte_active = True
     
     @property
     def player(self):
@@ -39,36 +40,66 @@ class BattleCore(GameBase):
     def buffs(self, value):
         self.repository.set_resource('Buffs', value)
     
+    def _stop_battle(self):
+        self.batte_active = False
+    
     def _damage_calculator(self,attack:float,defense:float,level:int)->float:
         damage = ((level * 5) / 10) + ((attack**2) / (attack + (2*defense)))
         final_damage = self.get_random_min_max(damage)
         return final_damage
     
     def player_battle_loop(self):
-        while self.player.life > 0 and self.monster.life > 0:
+        while self.batte_active:
             self.conjuring_spell.conjuring_core(self.player.spells, self.player.intelligence, self.player.charisma)
             player_damage = self._damage_calculator(self.player.attack,self.monster.defense,self.player.level)
             self.monster.life = self.monster.life - player_damage
             time.sleep(self.player.attack_speed)
             print(f'You deal {player_damage:.2f} damage.')
+            if self.player.life <= 0 or self.monster.life <= 0:
+                break
             
     def monster_battle_loop(self):
-        while self.monster.life > 0 and self.player.life > 0:
+        while self.batte_active:
             monster_damage = self._damage_calculator(self.monster.attack, self.player.defense, self.monster.level)
             self.player.life = self.player.life - monster_damage
             self.player.life = max(self.player.life, 0)
             time.sleep(self.monster.attack_speed)
             print(f'You take {monster_damage:.2f} damage.')
+            if self.monster.life <= 0 or self.player.life <= 0:
+                break
+    
+    def battle_healing(self):
+        while self.batte_active:
+            random_heal = self.get_random_in_interval((1,5))
+            heal = random_heal + (self.player.vitality/4)
+            mana_regen = random_heal + (self.player.intelligence/4)
+            self.player.life = self.player.life + heal
+            self.player.mana = self.player.mana + mana_regen
+            if self.player.life > self.player.max_life:
+                self.player.life = self.player.max_life
+            if self.player.mana > self.player.max_mana:
+                self.player.mana = self.player.max_mana
+            print(f'You heal {heal:.2f} points of life, HP: {self.player.life:.2f}/{self.player.max_life}')
+            print(f'You heal {mana_regen:.2f} points of mana, MANA: {self.player.mana:.2f}/{self.player.max_mana}')
+            time.sleep(2.5)
+            if self.player.life == self.player.max_life and self.player.mana == self.player.max_mana:
+                break
+    
+    def keyboard_control(self):
+        while self.batte_active:
+            if keyboard.is_pressed('r'):
+                self._stop_battle()
             
     def battle_turn_loop(self):
         turn = 1
-        while True:
+        while self.batte_active:
             if self.player.life <= 0:
                 break
             elif self.monster.life <= 0:
                 break
             else:
                 self.conjuring_spell.check_active_durations()
+                self._apply_turn_damage()
                 time.sleep(5)
                 print(f'Turn {turn} ends.')
                 turn +=1
@@ -82,23 +113,75 @@ class BattleCore(GameBase):
         player_thread = threading.Thread(target=self.player_battle_loop)
         monster_thread = threading.Thread(target=self.monster_battle_loop)
         turn_thread = threading.Thread(target=self.battle_turn_loop)
+        control_thread = threading.Thread(target=self.keyboard_control)
 
         player_thread.start()
         monster_thread.start()
         turn_thread.start()
+        control_thread.start()
+        
         player_thread.join()
         monster_thread.join()
         turn_thread.join()
-        print(f'HP:{self.player.life}/{self.player.max_life}')
+        
+        print(f'HP:{self.player.life:.2f}/{self.player.max_life}')
+        print(f'MANA:{self.player.mana:.2f}/{self.player.max_mana}')
+        
+        self.conjuring_spell.reset_buffs()
+        if self.monster.life <= 0:
+            print('You kill the monster.')
+            self.game_core.monster_reward()
         self.game_core.update_character()
         if self.player.life <= 0:
             print('Youre defeated.')
-            self.conjuring_spell.reset_buffs()
+            battle_heal = threading.Thread(target=self.battle_healing)
+            battle_heal.start()
+            battle_heal.join()
+        if not self.batte_active:
             return True
         else:
-            print('You kill the monster.')
-            self.conjuring_spell.reset_buffs()
-            self.game_core.monster_reward()
             return False
+    
+    def training_core(self,choice:str):
+        while self.batte_active:
+            train_thread = threading.Thread(target=self.training_atributes,args=choice)
+            keyboard_thread = threading.Thread(target=self.keyboard_control)
+            keyboard_thread.start()
+            train_thread.start()
+            train_thread.join()
+            if self.player.life <= 0:
+                battle_heal = threading.Thread(target=self.battle_healing)
+                battle_heal.start()
+                battle_heal.join()
         
-        
+    def training_atributes(self,choice:str):
+        while self.batte_active:
+            sum_atributes = self.player.strength+self.player.agility+self.player.vitality+self.player.intelligence+self.player.charisma
+            if sum_atributes >= self.player.atribute_cap:
+                print('You reach the training cap.')
+                self.batte_active = False
+                break
+            train = self.get_random_float_interval((0, 0.2))
+            match choice:
+                case '1':
+                    text = 'strength'
+                    self.player.strength = self.player.strength + train 
+                case '2':
+                    text = 'agility'
+                    self.player.agility = self.player.agility + train 
+                case '3':
+                    text = 'vitality'
+                    self.player.vitality = self.player.vitality + train 
+                case '4':
+                    text = 'intelligence'
+                    self.player.intelligence = self.player.intelligence + train 
+                case '5':
+                    text = 'charisma'
+                    self.player.charisma = self.player.charisma + train 
+            self.player.life = self.player.life - 10
+            self.player.life = max(self.player.life, 0)
+            if self.player.life <= 0:
+                break
+            time.sleep(1)
+            print(f'You train {train:.2f} points of {text}.')
+            self.game_core.update_character()

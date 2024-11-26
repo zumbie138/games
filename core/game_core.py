@@ -215,35 +215,9 @@ class GameCore(GameBase):
             if self.player.mana > self.player.max_mana:
                 self.player.mana = self.player.max_mana
             print(f'You heal {heal:.2f} points of life, HP: {self.player.life:.2f}/{self.player.max_life}')
-            time.sleep(2.5)
-        
-    def training_atributes(self,choice:str):
-        while self.player.life > 0:
-            sum_atributes = self.player.strength+self.player.agility+self.player.vitality+self.player.intelligence+self.player.charisma
-            if sum_atributes >= self.player.atribute_cap:
-                print('You reach the training cap.')
-                break
-            train = random.uniform(0, 0.2)
-            match choice:
-                case '1':
-                    text = 'strength'
-                    self.player.strength = self.player.strength + train 
-                case '2':
-                    text = 'agility'
-                    self.player.agility = self.player.agility + train 
-                case '3':
-                    text = 'vitality'
-                    self.player.vitality = self.player.vitality + train 
-                case '4':
-                    text = 'intelligence'
-                    self.player.intelligence = self.player.intelligence + train 
-                case '5':
-                    text = 'charisma'
-                    self.player.charisma = self.player.charisma + train 
-            self.player.life = self.player.life - 10
-            self.player.life = max(self.player.life, 0)
+            print(f'You heal {mana_regen:.2f} points of mana, MANA: {self.player.mana:.2f}/{self.player.max_mana}')
             time.sleep(1)
-            print(f'You train {train:.2f} points of {text}.')
-            self.update_character()
+        
+    
             
     
