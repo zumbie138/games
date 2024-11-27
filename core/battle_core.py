@@ -99,14 +99,11 @@ class BattleCore(GameBase):
                 break
             else:
                 self.conjuring_spell.check_active_durations()
-                self._apply_turn_damage()
+                self.conjuring_spell.apply_turn_damage()
                 time.sleep(5)
                 print(f'Turn {turn} ends.')
                 turn +=1
-                
-    def _apply_turn_damage(self):
-        self.conjuring_spell.spells_duration
-    
+
     def battle_status(self)->bool:
         print(f'You will battle a {self.monster.name}')
 

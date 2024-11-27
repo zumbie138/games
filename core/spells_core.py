@@ -118,6 +118,22 @@ class ConjuringSpell(GameBase):
         elif spell_info['type'].item() == 'offensive' or spell_info['type'].item() == 'healing':
             spell_result = self.calculate_conjured_spell(damage_base,heal_base,self.player.vitality,self.player.intelligence,self.player.charisma)           
             self.apply_magic_damage(*spell_result)
+    
+    def apply_turn_damage(self):
+        for key, item in self.spells_duration.items():
+            key = key.rstrip("0123456789")
+            spell = self.filter_dataframe_by_name(key, 'name', self.df_spells)
+            turn_damage_base = spell['turn_damage'].item()
+            turn_heal_base = spell['turn_heal'].item()
+            turn_damage, turn_heal = self.calculate_conjured_spell(turn_damage_base, turn_heal_base,
+                                                                   self.player.vitality, self.player.intelligence,
+                                                                   self.player.charisma)
+            if turn_damage > 0:
+                self.monster.life -= turn_damage
+                print(f'Your spell deal {turn_damage:.2f} hits points and will last {item} turns.')
+            if turn_heal > 0:
+                self.player.life -= turn_heal
+                print(f'Your spell heal {turn_heal:.2f} hits points and will last {item} turns.')
             
     def apply_magic_damage(self,magic_damage:float, healing_done:float):
         self.monster.life = self.monster.life - magic_damage

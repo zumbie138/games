@@ -25,8 +25,8 @@
     },
     "004":{
         "name":"thunder","class":"wizard","type":"offensive",
-        "lvl":5, "rate":20,"mana":5,"duration":5,"cooldown":2,
-        "damage":10,"heal":0,"turn_damage":2,"turn_heal":0,
+        "lvl":5, "rate":20,"mana":2,"duration":5,"cooldown":2,
+        "damage":4,"heal":0,"turn_damage":2,"turn_heal":0,
         "buff":[0,0,0,0,0],"debuff":[]
     },
     "005":{
