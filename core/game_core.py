@@ -158,7 +158,6 @@ class GameCore(GameBase):
         self.update_character()
 
     def show_character(self):
-
         print('You see yourself in the mirror:')
         print(f'Your name is: {self.player.name}, you are an {self.player.race} {self.player.class_type}')
         print(f'HP: {self.player.life:.2f}/{self.player.max_life}\nMANA: {self.player.mana}/{self.player.max_mana}')
