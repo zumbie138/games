@@ -1,12 +1,9 @@
-from core import GameCore, BattleCore, ItensCore
+from core import GameCore
 from graph import GraficMenus
-import keyboard
 
 class AppMenus():
     def __init__(self):
         self.game_core = GameCore()
-        self.battle_core = BattleCore()
-        self.itens_core = ItensCore()
         self.graph_menu = GraficMenus()
         
     def run_game(self):
@@ -20,7 +17,6 @@ class AppMenus():
             match choice:
                 case '1':
                     self.run_new_char()
-                    self.run_player_status()
                 case '2':
                     self.run_load_character()
                 case _:
@@ -28,8 +24,9 @@ class AppMenus():
     
     def run_new_char(self):
         character = self.graph_menu.new_character_menu()
-        self.game_core.new_character(*character)
-                
+        self.game_core.new_character_core(*character)
+        self.run_player_status()
+
     def run_load_character(self):
         text = 'What character want to load?'
         save_list = self.game_core.get_list_load_character()
@@ -38,8 +35,8 @@ class AppMenus():
             if choice == len(save_list) + 1:
                 break
             choice -= 1
-            char_data = self.game_core.get_char_from_json(save_list[choice])
-            self.game_core.load_character(char_data)
+            save_choose = save_list[choice]
+            self.game_core.load_character_core(save_choose)
             self.run_player_status()
             break
         
@@ -72,13 +69,13 @@ class AppMenus():
                 break
             match choice:
                 case '1':
-                    print('youre in tavern')
+                    self.game_core.city_core('youre in tavern')
                 case '2':
-                    print('youre in market')
+                    self.game_core.city_core('youre in market')
                 case '3':
-                    print('youre in temple')
+                    self.game_core.city_core('youre in temple')
                 case '4':
-                    print('youre in blacksmith')
+                    self.game_core.city_core('youre in blacksmith')
                 case _:
                     print('invalid choice.')
 
@@ -90,11 +87,8 @@ class AppMenus():
             if loc_choose == len(loc_allowed) + 1:
                 break
             loc_choose -= 1
-            stop_battle = False
-            while not stop_battle:
-                self.battle_core.batte_active = True
-                self.game_core.monster_encounter(loc_allowed[loc_choose])
-                stop_battle = self.battle_core.battle_status()
+            location = loc_allowed[loc_choose]
+            self.game_core.battle_status_core(location)
         
     def run_refuge_status(self):
         choice_text = 'Welcome to your home. What do you wish to do?'
@@ -142,7 +136,7 @@ class AppMenus():
                 break
             
     def run_sleep_status(self):
-        self.game_core.healing_sleeping()           
+        self.game_core.healing_sleeping_core()           
              
     def run_train_status(self):
         choice_text = 'what skill do you want to train?'
@@ -151,5 +145,4 @@ class AppMenus():
             train_choice = self.graph_menu.generate_menu(choice_text,choice_options)
             if int(train_choice) == len(choice_options)+1:
                 break
-            self.battle_core.batte_active = True
-            self.battle_core.training_core(train_choice)
+            self.game_core.training_core(train_choice)

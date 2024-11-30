@@ -13,16 +13,7 @@ class ItensCore(GameBase):
     def player(self, value):
         self.repository.set_resource('Player', value)
     
-    def generate_equipments(self,equips_tuple:tuple):
-        max_life,max_mana,attack,attack_speed,defense = equips_tuple
-        equips = PlayerEquips(
-            max_life=max_life,
-            max_mana=max_mana,
-            attack=attack,
-            attack_speed=attack_speed,
-            defense=defense
-        )
-        self.repository.set_resource('Equips', equips)
+    
     
     def list_wering_equipment(self, body_part:str)->list:
         inventory_itens = self.get_keys_as_list(self.player.inventory)
@@ -30,16 +21,7 @@ class ItensCore(GameBase):
         df_wearble = self.filter_dataframe_by_name(body_part,'wearing',df_inv_itens)
         return self.get_list_from_dataframe_columm('name',df_wearble)
     
-    def update_wearing_status(self):
-        equiped_list = self.get_values_as_list(self.player.wearing)
-        df_equiped = self.filter_dataframe_with_list_in_column(equiped_list,self.itens_df,'name')
-        max_hp = df_equiped['max_life'].sum()
-        max_mana = df_equiped['max_mana'].sum()
-        attack = df_equiped['attack'].sum()
-        attack_speed = df_equiped['attack_speed'].sum()
-        defense = df_equiped['defense'].sum()
-        summary_tuple = (max_hp, max_mana, attack, attack_speed, defense)
-        self.generate_equipments(summary_tuple)
+    
 
     def unequip_item(self, body_part:str):
         item_name = self.player.wearing[body_part]

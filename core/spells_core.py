@@ -1,11 +1,11 @@
 from database import GameBase, GameRepository
-from .game_core import GameCore
+from .generation_core import GenerationCore
 
 class ConjuringSpell(GameBase):
     def __init__(self):
         self.df_spells = self.get_database_dataframe('spells_database.json')
-        self.game_core = GameCore()
         self.repository = GameRepository()
+        self.generation = GenerationCore()
         self.attributes = ['strength', 'agility', 'vitality', 'intelligence', 'charisma']
         self.spells_cooldown = {}
         self.spells_duration = {}
@@ -65,7 +65,7 @@ class ConjuringSpell(GameBase):
             # print(buff_removed)
             # print(self.buffs)
             self.remove_buff(buff_removed)
-            self.game_core.update_character()
+            self.generation.update_character()
     
     def reset_buffs(self):
         self.spells_cooldown = {}
@@ -114,7 +114,7 @@ class ConjuringSpell(GameBase):
             self.add_buff(buff_tuple)
             # print(buff_tuple)
             # print(self.buffs)
-            self.game_core.update_character()
+            self.generation.update_character()
         elif spell_info['type'].item() == 'offensive' or spell_info['type'].item() == 'healing':
             spell_result = self.calculate_conjured_spell(damage_base,heal_base,self.player.vitality,self.player.intelligence,self.player.charisma)           
             self.apply_magic_damage(*spell_result)
