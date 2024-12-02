@@ -53,6 +53,9 @@ class GameCore(GameBase):
     def locations_allowed(self)->list:
         return self.get_list_by_number(self.player.level, 'min lvl', 'name', self.locations_df)
 
+    def itens_allowed(self, body_part:str)->list:
+        return self.itens_core.list_wearing_equipment(body_part)
+    
     def new_character_core(self, name:str, race:str, clas:str):
         inventory={}
         wearing={'head':None,
@@ -110,3 +113,10 @@ class GameCore(GameBase):
     def training_core(self, choice:str):
         self.loops_core.batte_active = True
         self.loops_core.training_loop(choice)
+        
+    def manage_equips_core(self, option:bool, item:str, body_part:str):
+        if option:
+            self.itens_core.equip_item(item, body_part)
+        else:
+            self.itens_core.unequip_item(body_part)
+        self.generation.update_wearing_status()

@@ -69,13 +69,13 @@ class AppMenus():
                 break
             match choice:
                 case '1':
-                    self.game_core.city_core('youre in tavern')
+                    self.game_core.city_status_core('youre in tavern')
                 case '2':
-                    self.game_core.city_core('youre in market')
+                    self.game_core.city_status_core('youre in market')
                 case '3':
-                    self.game_core.city_core('youre in temple')
+                    self.game_core.city_status_core('youre in temple')
                 case '4':
-                    self.game_core.city_core('youre in blacksmith')
+                    self.game_core.city_status_core('youre in blacksmith')
                 case _:
                     print('invalid choice.')
 
@@ -105,7 +105,7 @@ class AppMenus():
                 case '3':
                     self.run_wardobe_status()
                 case '4':
-                    self.game_core.show_character()
+                    self.game_core.show_character_core()
                 case _:
                     print('invalid choice.')
     
@@ -119,20 +119,18 @@ class AppMenus():
                 break
             choice -= 1
             body_part_choose = choice_options[choice]
-            wearable_list = self.itens_core.list_wering_equipment(body_part_choose)
+            wearable_list = self.game_core.itens_allowed(body_part_choose)
             wearable_list.append('Unequip')
             while True:
                 iten_choice = int(self.graph_menu.generate_menu(choice_text2,wearable_list))
                 if iten_choice == len(wearable_list):
-                    self.itens_core.unequip_item(body_part_choose)
-                    self.itens_core.update_wearing_status()
+                    self.game_core.manage_equips_core(False, '', body_part_choose) #True equip False unequip
                     break
                 elif iten_choice == len(wearable_list)+1:
                     break
                 iten_choice -= 1
                 iten_choose = wearable_list[iten_choice]
-                self.itens_core.equip_item(iten_choose, body_part_choose)
-                self.itens_core.update_wearing_status()
+                self.game_core.manage_equips_core(True, iten_choose, body_part_choose) #True equip False unequip
                 break
             
     def run_sleep_status(self):

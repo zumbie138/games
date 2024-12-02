@@ -164,12 +164,7 @@ class GameloopsCore(GameBase):
         
     def training_atributes_loop(self,choice:str):
         while self.batte_active:
-            sum_atributes = self.player.strength
-            + self.player.agility
-            + self.player.vitality
-            + self.player.intelligence
-            + self.player.charisma
-            
+            sum_atributes = self.player.strength + self.player.agility + self.player.vitality + self.player.intelligence + self.player.charisma
             if sum_atributes >= self.player.atribute_cap:
                 print('You reach the training cap.')
                 self.batte_active = False
