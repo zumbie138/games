@@ -1,7 +1,6 @@
 class EnText:
     
     '''NEW CHAR TEXTS'''
-    
     INIT_TEXT = '=+=+=+=+=+=+= DEMON EXODUS =+=+=+=+=+=+='
     NEW_GAME_TEXT = '!!CHARACTER CREATION!!'
     NAME_INPUT = 'Character name: '
@@ -12,8 +11,8 @@ class EnText:
     LOAD_CHAR = 'Load saved character.'
     
     
-    '''MIRROR TEXTS'''
     
+    '''MIRROR TEXTS'''
     MIRROR_TEXT = 'You see yourself in the mirror:'
     PLAYER_INFO = 'Your name is: {player_name}, you are an {player_race} {player_class_type}'
     PLAYER_HP_MANA = 'HP: {player_life:.2f}/{player_max_life}\nMANA: {player_mana}/{player_max_mana}'
@@ -24,12 +23,31 @@ class EnText:
     PLAYER_EQUIPMENTS = 'Equipped itens:\nMax Life: {equips_max_life}\nMax Mana: {equips_max_mana}\nAttack: {equips_attack}\nAttack speed: {equips_attack_speed}\nDefense: {equips_defense}'
     
     
-    '''BATTLE TEXTS'''
     
+    '''BATTLE TEXTS'''
+    MONSTER_ENCOUNTER = 'You will battle a {monster_name}'
     EXP_REWARD = 'You gain {monster_exp} experience.'
     ITEM_REWARD = 'you put on backpack: {quantity} x {item}'
     HEAL_HP = 'You heal {heal:.2f} points of life, HP: {player_life:.2f}/{player_max_life}'
     HEAL_MANA = 'You heal {mana_regen:.2f} points of mana, MANA: {player_mana:.2f}/{player_max_mana}'
+    PLAYER_DAMAGE = 'You deal {player_damage:.2f} damage.'
+    MONSTER_DAMAGE = 'You take {monster_damage:.2f} damage.'
+    TURN_END = 'Turn {turn} ends.'
+    MONSTER_DEFEATED = 'You kill the monster.'
+    PLAYER_DEFEATED = 'Youre defeated.'
+    
+    '''TRAINING TEXTS'''
+    TRAINING_CAP = 'You reach the training cap.'
+    TRAINING_TEXT = 'You train {train:.2f} points of {text}.'
+    
+    
+    '''SPELLS TEXTS'''
+    CONJURE_SPELL = 'You conjure {spell} !'
+    TURN_DAMAGE = 'Your spell deal {turn_damage:.2f} hits points and will last {item} turns.'
+    TURN_HEAL = 'Your spell heal {turn_heal:.2f} hits points and will last {item} turns.'
+    MAGIC_DAMAGE = 'Your magic deals {magic_damage:.2f} hit points.'
+    MAGIC_HEAL = 'You heal yourself {healing_done:.2f} hit points.'
+    
 
     
     

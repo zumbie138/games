@@ -1,0 +1,21 @@
+{
+    "001":{
+        "name":"Caron blacksmith",
+        "type":"blacksmith",
+        "city":"Great Meadow",
+        "craft":{"short sword":{"iron":5,"wood":100,"claw":200},"wooden shield":{"wood":200,"iron":50,"teeth":100}}
+    },
+    "002":{
+        "name":"Green Church",
+        "type":"temple",
+        "city":"Great Meadow",
+        "healing_cost":30
+    },
+    "003":{
+        "name":"Green goods",
+        "type":"store",
+        "city":"Great Meadow",
+        "buy_option":{},
+        "sell_option":{}
+    }
+}
