@@ -2,7 +2,9 @@
 **/build
 *.pyc
 *.spec
+*.psd
 ambiente/
 __pycache__/
 .vscode/
 save/
+images/

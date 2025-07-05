@@ -1,7 +1,7 @@
 from core import GameCore
 from graph import GraficMenus
 
-class AppMenus():
+class AppStatus():
     def __init__(self):
         self.game_core = GameCore()
         self.graph_menu = GraficMenus()

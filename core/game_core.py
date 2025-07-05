@@ -78,6 +78,7 @@ class GameCore(GameBase):
         new_tuple = (name, 1, 0, inventory, wearing)
         class_info_tuple = class_info_tuple + new_tuple
         self.generation.generate_character(class_info_tuple)
+        self.generation.update_wearing_status()
         self.save_character(self.player)
 
     def load_character_core(self, char_choose):

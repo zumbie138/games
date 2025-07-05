@@ -1,4 +1,5 @@
-from app import AppMenus
+from app import AppStatus
 
-app = AppMenus()
+app = AppStatus()
 app.run_game()
+
