@@ -1,10 +1,9 @@
-import tkinter as tk
+
 
 class GraficMenus():
     def __init__(self):
-        self.root = tk.Tk()
-        self.root.title('Demon Exodus')
-        
+        pass
+    
     def starting_animation(self):
         print('=+=+=+=+=+=+= DEMON EXODUS =+=+=+=+=+=+=')
 

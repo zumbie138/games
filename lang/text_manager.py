@@ -1,4 +1,4 @@
-from .game_texts import EnText
+from lang.en_text import EnText
 
 class LanguageManager:
     _current_language = EnText
