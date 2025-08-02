@@ -21,3 +21,6 @@ class Button():
     def handle_event(self, event):
         if event.type == pygame.MOUSEMOTION:
             self.current_color = self.hover_color if self.rect.collidepoint(event.pos) else self.normal_color
+        elif event.type == pygame.MOUSEBUTTONDOWN:
+            if event.type == 1 and self.rect.collidepoint(event.pos) and self.action:
+                self.action()
