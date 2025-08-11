@@ -1,44 +1,94 @@
+import pygame
+from gui import InitialScreen, NEWCHARscreen, LoadGameScreen, GamePlay
 from core import GameCore
 from graph import GraficMenus
 
 class AppStatus():
     def __init__(self):
+        #parametros de inicialização do pygame
+        pygame.init()
+        self.screen = pygame.display.set_mode((800, 600))
+        pygame.display.set_caption('Demon Exodus')
+        self.clock = pygame.time.Clock()
+        
+        #variaveis do app
+        self.current_screen = None
+        self.running = True
+        self.fps = 60
+        
+        #atribuição das classes
         self.game_core = GameCore()
         self.graph_menu = GraficMenus()
         
-    def run_game(self):
-        start_menu = ['New Game.', 'Load Game.']
-        start_text = '=+=+=+=+=+=+==+=+=+=+=+=+==+=+=+=+=+=+='
-        self.graph_menu.starting_animation()
-        while True:
-            choice = self.graph_menu.generate_menu(start_text,start_menu)
-            if int(choice) == len(start_menu) + 1:
-                break
-            match choice:
-                case '1':
-                    self.run_new_char()
-                case '2':
-                    self.run_load_character()
-                case _:
-                    print('invalid choice.')
+        #inicia com a tela padrao
+        self.change_screen('initial_screen')
     
-    def run_new_char(self):
-        character = self.graph_menu.new_character_menu()
-        self.game_core.new_character_core(*character)
-        self.run_player_status()
+    def change_screen(self, screen_name, *args):
+        screens = {
+            'initial_screen': InitialScreen,
+            'create_char':NEWCHARscreen,
+            'load_char': LoadGameScreen,
+            'start_game': GamePlay
+        }
+        if screen_name in screens:
+            self.current_screen = screens[screen_name](self.screen, self.change_screen, self)
+        
+    def run(self):
+        while self.running:
+            #processa eventos
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    self.running = False
+                    
+                #delega eventos para tela atual
+                if self.current_screen:
+                    self.current_screen.handle_events(event)
+            
+            #da update e desenha widgets
+            if self.current_screen:
+                self.current_screen.update()
+                self.current_screen.draw()
+            
+            pygame.display.flip()
+            self.clock.tick(self.fps)
+                        
+    # def run_game(self):
+    #     start_menu = ['New Game.', 'Load Game.']
+    #     start_text = '=+=+=+=+=+=+==+=+=+=+=+=+==+=+=+=+=+=+='
+    #     self.graph_menu.starting_animation()
+    #     while True:
+    #         choice = self.graph_menu.generate_menu(start_text,start_menu)
+    #         if int(choice) == len(start_menu) + 1:
+    #             break
+    #         match choice:
+    #             case '1':
+    #                 self.run_new_char()
+    #             case '2':
+    #                 self.run_load_character()
+    #             case _:
+    #                 print('invalid choice.')
+    
+    # def run_new_char(self):
+    #     character = self.graph_menu.new_character_menu()
+    #     self.game_core.new_character_core(*character)
+    #     self.run_player_status()
 
-    def run_load_character(self):
-        text = 'What character want to load?'
-        save_list = self.game_core.get_list_load_character()
-        while True:
-            choice = int(self.graph_menu.generate_menu(text, save_list))
-            if choice == len(save_list) + 1:
-                break
-            choice -= 1
-            save_choose = save_list[choice]
-            self.game_core.load_character_core(save_choose)
-            self.run_player_status()
-            break
+    def pass_new_char_data(self, name, race, class_id):
+        self.game_core.new_character_core(name, race, class_id)
+    
+    def list_load_character(self):
+        return self.game_core.get_list_load_character()
+        # while True:
+        #     choice = int(self.graph_menu.generate_menu(text, save_list))
+        #     if choice == len(save_list) + 1:
+        #         break
+        #     choice -= 1
+        #     save_choose = save_list[choice]
+        #     self.run_player_status()
+        #     break
+    
+    def run_load_character(self, save_choose):
+        self.game_core.load_character_core(save_choose)
         
     def run_player_status(self):
         choice_text = 'Welcome player, where you want to go?'
