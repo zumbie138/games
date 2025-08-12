@@ -28,12 +28,12 @@ class GamePlay(GuiBase):
         
         world_btn = Button(
             50, 300, 150, 50, 
-            'Refuge', action= lambda: self.change_screen('world_screen')
+            'World map', action= lambda: self.change_screen('world_screen')
             )
         
         adventure_btn = Button(
             50, 400, 150, 50, 
-            'adventure', action= lambda: self.change_screen('adventure_screen')
+            'Adventure', action= lambda: self.change_screen('adventure_screen')
             )
         
         return_button = Button(

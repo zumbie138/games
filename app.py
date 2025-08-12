@@ -1,5 +1,5 @@
 import pygame
-from gui import InitialScreen, NEWCHARscreen, LoadGameScreen, GamePlay
+from gui import InitialScreen, NEWCHARscreen, LoadGameScreen, GamePlay, CityScreen
 from core import GameCore
 from graph import GraficMenus
 
@@ -28,7 +28,8 @@ class AppStatus():
             'initial_screen': InitialScreen,
             'create_char':NEWCHARscreen,
             'load_char': LoadGameScreen,
-            'start_game': GamePlay
+            'start_game': GamePlay,
+            'city_screen': CityScreen
         }
         if screen_name in screens:
             self.current_screen = screens[screen_name](self.screen, self.change_screen, self)
