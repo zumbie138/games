@@ -1,5 +1,5 @@
 import pygame
-from gui import InitialScreen, NEWCHARscreen, LoadGameScreen, GamePlay, CityScreen
+from gui import InitialScreen, NEWCHARscreen, LoadGameScreen, GamePlay, CityScreen, RefugeScreen, Journal
 from core import GameCore
 from graph import GraficMenus
 
@@ -21,21 +21,52 @@ class AppStatus():
         self.graph_menu = GraficMenus()
         
         #inicia com a tela padrao
+        self._init_journal()
         self.change_screen('initial_screen')
     
+    def _init_journal(self):
+        self.journal = Journal(
+            x=0,
+            y=450,
+            width=600,
+            height=150,
+            max_lines=500,
+        )
+        self.journal.visible = False
+        from database.game_repository import MessageLog
+        MessageLog().journal = self.journal
+        
+    def enable_auto_journal(self):
+        self.journal.visible = True
+        if hasattr(self, 'journal_active'):
+            del self.journal_active
+    
+    def disable_auto_journal(self):
+        self.journal.visible = False
+      
     def change_screen(self, screen_name, *args):
         screens = {
             'initial_screen': InitialScreen,
             'create_char':NEWCHARscreen,
             'load_char': LoadGameScreen,
             'start_game': GamePlay,
-            'city_screen': CityScreen
+            'city_screen': CityScreen,
+            'refuge_screen': RefugeScreen
         }
+        if screen_name in ['start_game', 'city_screen', 'refuge_screen']: 
+            self.enable_auto_journal()
+        else:
+            self.disable_auto_journal()
+            
         if screen_name in screens:
             self.current_screen = screens[screen_name](self.screen, self.change_screen, self)
+            
+        if self.journal.visible and self.journal not in self.current_screen.widgets:
+            self.current_screen.widgets.append(self.journal)    
         
     def run(self):
         while self.running:
+            # print(f"Journal visible: {self.journal.visible}, in widgets: {self.journal in self.current_screen.widgets}")
             #processa eventos
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -53,6 +84,15 @@ class AppStatus():
             pygame.display.flip()
             self.clock.tick(self.fps)
                         
+    def pass_new_char_data(self, name, race, class_id):
+        self.game_core.new_character_core(name, race, class_id)
+    
+    def list_load_character(self):
+        return self.game_core.get_list_load_character()
+    
+    def run_load_character(self, save_choose):
+        self.game_core.load_character_core(save_choose)
+        
     # def run_game(self):
     #     start_menu = ['New Game.', 'Load Game.']
     #     start_text = '=+=+=+=+=+=+==+=+=+=+=+=+==+=+=+=+=+=+='
@@ -74,11 +114,6 @@ class AppStatus():
     #     self.game_core.new_character_core(*character)
     #     self.run_player_status()
 
-    def pass_new_char_data(self, name, race, class_id):
-        self.game_core.new_character_core(name, race, class_id)
-    
-    def list_load_character(self):
-        return self.game_core.get_list_load_character()
         # while True:
         #     choice = int(self.graph_menu.generate_menu(text, save_list))
         #     if choice == len(save_list) + 1:
@@ -88,47 +123,45 @@ class AppStatus():
         #     self.run_player_status()
         #     break
     
-    def run_load_character(self, save_choose):
-        self.game_core.load_character_core(save_choose)
         
-    def run_player_status(self):
-        choice_text = 'Welcome player, where you want to go?'
-        choice_options = ['City.','Adventure.','Refuge.','World Map.']
-        while True:
-            self.game_core.save_character(self.game_core.player)
-            choice = self.graph_menu.generate_menu(choice_text, choice_options)
-            if int(choice) == len(choice_options)+1:
-                break
-            match choice:
-                case '1':
-                    self.run_city_status()
-                case '2':
-                    self.run_adventure_status()
-                case '3':
-                    self.run_refuge_status()
-                case '4':
-                    print('not yet')
-                case _:
-                    print('invalid choice.')
+    # def run_player_status(self):
+    #     choice_text = 'Welcome player, where you want to go?'
+    #     choice_options = ['City.','Adventure.','Refuge.','World Map.']
+    #     while True:
+    #         self.game_core.save_character(self.game_core.player)
+    #         choice = self.graph_menu.generate_menu(choice_text, choice_options)
+    #         if int(choice) == len(choice_options)+1:
+    #             break
+    #         match choice:
+    #             case '1':
+    #                 self.run_city_status()
+    #             case '2':
+    #                 self.run_adventure_status()
+    #             case '3':
+    #                 self.run_refuge_status()
+    #             case '4':
+    #                 print('not yet')
+    #             case _:
+    #                 print('invalid choice.')
                     
-    def run_city_status(self):
-        choice_text = 'You are inside the city, where you like to go?'
-        choice_options = ['Tavern.','Market.','Temple.','Blacksmith.']
-        while True:
-            choice = self.graph_menu.generate_menu(choice_text, choice_options)
-            if int(choice) == len(choice_options)+1:
-                break
-            match choice:
-                case '1':
-                    self.game_core.city_status_core('youre in tavern')
-                case '2':
-                    self.game_core.city_status_core('youre in market')
-                case '3':
-                    self.game_core.city_status_core('youre in temple')
-                case '4':
-                    self.game_core.city_status_core('youre in blacksmith')
-                case _:
-                    print('invalid choice.')
+    # def run_city_status(self):
+    #     choice_text = 'You are inside the city, where you like to go?'
+    #     choice_options = ['Tavern.','Market.','Temple.','Blacksmith.']
+    #     while True:
+    #         choice = self.graph_menu.generate_menu(choice_text, choice_options)
+    #         if int(choice) == len(choice_options)+1:
+    #             break
+    #         match choice:
+    #             case '1':
+    #                 self.game_core.city_status_core('youre in tavern')
+    #             case '2':
+    #                 self.game_core.city_status_core('youre in market')
+    #             case '3':
+    #                 self.game_core.city_status_core('youre in temple')
+    #             case '4':
+    #                 self.game_core.city_status_core('youre in blacksmith')
+    #             case _:
+    #                 print('invalid choice.')
 
     def run_adventure_status(self):
         choice_text = 'Where you want to hunt?'
@@ -187,11 +220,11 @@ class AppStatus():
     def run_sleep_status(self):
         self.game_core.healing_sleeping_core()           
              
-    def run_train_status(self):
-        choice_text = 'what skill do you want to train?'
-        choice_options = ['Strenght.','Agility.','Vitality.','intelligence.','charisma.']
-        while True:
-            train_choice = self.graph_menu.generate_menu(choice_text,choice_options)
-            if int(train_choice) == len(choice_options)+1:
-                break
+    def run_train_status(self, train_choice):
+        # choice_text = 'what skill do you want to train?'
+        # choice_options = ['Strenght.','Agility.','Vitality.','intelligence.','charisma.']
+        # while True:
+        #     train_choice = self.graph_menu.generate_menu(choice_text,choice_options)
+        #     if int(train_choice) == len(choice_options)+1:
+        #         break
             self.game_core.training_core(train_choice)

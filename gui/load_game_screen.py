@@ -14,7 +14,7 @@ class LoadGameScreen(GuiBase):
         for i, save in enumerate(save_list):
             btn = Button(
                 300, 100 + i*50, 140, 40, save.strip('.json'),
-                action=lambda:self.start_game(save)
+                action=lambda s=save:self.start_game(s)
             )
             self.load_button.append(btn)
             self.widgets.append(btn)

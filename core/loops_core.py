@@ -1,4 +1,4 @@
-from database import GameBase, GameRepository
+from database import GameBase, GameRepository, MessageLog
 from .spells_core import ConjuringSpell
 from .generation_core import GenerationCore
 import time
@@ -49,12 +49,14 @@ class GameloopsCore(GameBase):
         monster_exp = self.get_random_in_interval(self.monster.experience)
         self.player.experience = self.player.experience + monster_exp
         print(f'You gain {monster_exp} experience.')       
+        MessageLog.add_message(f'You gain {monster_exp} experience.')       
         for item, (rate,min_qty,max_qty) in self.monster.loot.items():
             dice_roll = self.get_random_in_interval((0,100))
             quantity = self.get_random_in_interval((min_qty,max_qty))
             if rate >= dice_roll:
                 self.player.inventory[item]=self.player.inventory.get(item, 0)+quantity
                 print(f'you put on backpack: {quantity} x {item}')
+                MessageLog.add_message(f'you put on backpack: {quantity} x {item}')
         self.repository.set_resource('Player', self.player)
         self.generation.verify_experience()
         self.save_character(self.player)
@@ -66,6 +68,7 @@ class GameloopsCore(GameBase):
             self.monster.life = self.monster.life - player_damage
             time.sleep(self.player.attack_speed)
             print(f'You deal {player_damage:.2f} damage.')
+            MessageLog.add_message(f'You deal {player_damage:.2f} damage.')
             if self.player.life <= 0 or self.monster.life <= 0:
                 break
 
@@ -76,6 +79,7 @@ class GameloopsCore(GameBase):
             self.player.life = max(self.player.life, 0)
             time.sleep(self.monster.attack_speed)
             print(f'You take {monster_damage:.2f} damage.')
+            MessageLog.add_message(f'You take {monster_damage:.2f} damage.')
             if self.monster.life <= 0 or self.player.life <= 0:
                 break
 
@@ -92,6 +96,9 @@ class GameloopsCore(GameBase):
                 self.player.mana = self.player.max_mana
             print(f'You heal {heal:.2f} points of life, HP: {self.player.life:.2f}/{self.player.max_life}')
             print(f'You heal {mana_regen:.2f} points of mana, MANA: {self.player.mana:.2f}/{self.player.max_mana}')
+            
+            MessageLog.add_message(f'You heal {heal:.2f} points of life, HP: {self.player.life:.2f}/{self.player.max_life}')
+            MessageLog.add_message(f'You heal {mana_regen:.2f} points of mana, MANA: {self.player.mana:.2f}/{self.player.max_mana}')
             time.sleep(2.5)
             if self.player.life == self.player.max_life and self.player.mana == self.player.max_mana:
                 break
@@ -113,10 +120,12 @@ class GameloopsCore(GameBase):
                 self.conjuring_spell.apply_turn_damage()
                 time.sleep(5)
                 print(f'Turn {turn} ends.')
+                MessageLog.add_message(f'Turn {turn} ends.')
                 turn +=1
 
     def battle_loop_manage(self) -> bool:
         print(f'You will battle a {self.monster.name}')
+        MessageLog.add_message(f'You will battle a {self.monster.name}')
 
         player_thread = threading.Thread(target=self.player_battle_loop)
         monster_thread = threading.Thread(target=self.monster_battle_loop)
@@ -135,13 +144,18 @@ class GameloopsCore(GameBase):
         print(f'HP:{self.player.life:.2f}/{self.player.max_life}')
         print(f'MANA:{self.player.mana:.2f}/{self.player.max_mana}')
         
+        MessageLog.add_message(f'HP:{self.player.life:.2f}/{self.player.max_life}')
+        MessageLog.add_message(f'MANA:{self.player.mana:.2f}/{self.player.max_mana}')
+        
         self.conjuring_spell.reset_buffs()
         if self.monster.life <= 0:
             print('You kill the monster.')
+            MessageLog.add_message('You kill the monster.')
             self._monster_reward()
         self.generation.update_character()
         if self.player.life <= 0:
             print('Youre defeated.')
+            MessageLog.add_message('Youre defeated.')
             battle_heal = threading.Thread(target=self.battle_healing_loop)
             battle_heal.start()
             battle_heal.join()
@@ -152,7 +166,7 @@ class GameloopsCore(GameBase):
     
     def training_loop(self,choice:str):
         while self.batte_active:
-            train_thread = threading.Thread(target=self.training_atributes_loop,args=choice)
+            train_thread = threading.Thread(target=self.training_atributes_loop,args=(choice,))
             keyboard_thread = threading.Thread(target=self.keyboard_control)
             keyboard_thread.start()
             train_thread.start()
@@ -167,6 +181,7 @@ class GameloopsCore(GameBase):
             sum_atributes = self.player.strength + self.player.agility + self.player.vitality + self.player.intelligence + self.player.charisma
             if sum_atributes >= self.player.atribute_cap:
                 print('You reach the training cap.')
+                MessageLog.add_message('You reach the training cap.')
                 self.batte_active = False
                 break
             train = self.get_random_float_interval((0, 0.2))
@@ -192,9 +207,11 @@ class GameloopsCore(GameBase):
                 break
             time.sleep(1)
             print(f'You train {train:.2f} points of {text}.')
+            MessageLog.add_message(f'You train {train:.2f} points of {text}.')
             self.generation.update_character()
             
     def healing_sleep_loop(self):
+        print('runing sleeping loop')
         while self.player.life < self.player.max_life or self.player.mana < self.player.max_mana:
             random_heal = self.get_random_in_interval((1,5))
             heal = random_heal + (self.player.vitality/2)
@@ -207,4 +224,7 @@ class GameloopsCore(GameBase):
                 self.player.mana = self.player.max_mana
             print(f'You heal {heal:.2f} points of life, HP: {self.player.life:.2f}/{self.player.max_life}')
             print(f'You heal {mana_regen:.2f} points of mana, MANA: {self.player.mana:.2f}/{self.player.max_mana}')
+            MessageLog.add_message(f'You heal {heal:.2f} points of life, HP: {self.player.life:.2f}/{self.player.max_life}')
+            MessageLog.add_message(f'You heal {mana_regen:.2f} points of mana, MANA: {self.player.mana:.2f}/{self.player.max_mana}')
             time.sleep(1)
+        MessageLog.add_message(f'you are full life')

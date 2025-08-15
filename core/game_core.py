@@ -1,4 +1,4 @@
-from database import GameBase, GameRepository
+from database import GameBase, GameRepository, MessageLog
 from .itens_core import ItensCore
 from .spells_core import ConjuringSpell
 from .loops_core import GameloopsCore
@@ -107,8 +107,19 @@ class GameCore(GameBase):
         print(f'Your list of spells: {self.player.spells}')
         print(f'inventory:{self.player.inventory}')
         print(f'Equipped itens:\nMax Life: {self.equips.max_life}\nMax Mana: {self.equips.max_mana}\nAttack: {self.equips.attack}\nAttack speed: {self.equips.attack_speed}\nDefense: {self.equips.defense}')
+        
+        
+        MessageLog.add_message('You see yourself in the mirror:')
+        MessageLog.add_message(f'Your name is: {self.player.name}, you are an {self.player.race} {self.player.class_type}')
+        MessageLog.add_message(f'HP: {self.player.life:.2f}/{self.player.max_life}\nMANA: {self.player.mana}/{self.player.max_mana}')
+        MessageLog.add_message(f'You are level {self.player.level}, with {self.player.experience} of experience and your atributes are:\nStrength: {self.player.strength:.2f}\nAgility: {self.player.agility:.2f}\nVitality: {self.player.vitality:.2f}\nInteligence: {self.player.intelligence:.2f}\nCharisma: {self.player.charisma:.2f}')
+        MessageLog.add_message(f'Attack:{self.player.attack:.2f} Defense:{self.player.defense:.2f} attack speed:{self.player.attack_speed:.2f}')
+        MessageLog.add_message(f'Your list of spells: {self.player.spells}')
+        MessageLog.add_message(f'inventory:{self.player.inventory}')
+        MessageLog.add_message(f'Equipped itens:\nMax Life: {self.equips.max_life}\nMax Mana: {self.equips.max_mana}\nAttack: {self.equips.attack}\nAttack speed: {self.equips.attack_speed}\nDefense: {self.equips.defense}')
 
     def healing_sleeping_core(self):
+
         self.loops_core.healing_sleep_loop()
         
     def training_core(self, choice:str):

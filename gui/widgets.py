@@ -1,5 +1,6 @@
 import pygame
 from gui.widget_base import WidgetBase
+from typing import List, Tuple
 
 '''classe destinada a botoes em geral'''
 class Button(WidgetBase):
@@ -139,7 +140,8 @@ class Text(WidgetBase):
     
     def update(self):
         pass
-            
+               
+              
 '''classe destidana a imprimir o personagem nas telas'''
 class PlayerStatusDisplay(WidgetBase):
     def __init__(self, x, y, width, height, game_core=None):
@@ -188,4 +190,111 @@ class PlayerStatusDisplay(WidgetBase):
         pass
     
     def handle_event(self, event):
+        pass
+    
+
+'''Classe destinada a fazer um Journal de logs de mensagem de açoes no jogo'''
+class Journal(WidgetBase):
+    def __init__(self, x, y, width, height, max_lines=100, toggle_callback = None):
+        super().__init__(x, y, width, height)
+        self.messages: List[Tuple[str, tuple[int, int, int]]] = []
+        self.max_lines = max_lines
+        self.font = pygame.font.SysFont(None, 18)
+        self.scroll_offset = 0
+        self.line_height = 22
+        self.visible = False
+        self.background_color = (40, 40, 50, 220)
+        self.scroll_bar_color = (100, 100, 120)
+        self.scroll_bar_width = 10
+        self.toggle_callback = toggle_callback
+        
+    def add_entry(self, text: str, color=(255, 255, 255)):
+        self.messages.append((text, color))
+        if len(self.messages) > self.max_lines:
+            self.messages.pop(0)
+    
+    def handle_event(self, event):
+        if not self.visible:
+            return False
+
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            if event.button == 4:
+                self.scroll_offset = max(0, self.scroll_offset-1)
+                return True
+            elif event.button == 5:
+                max_offset = max(0, len(self.messages) - self.rect.height // self.line_height)
+                self.scroll_offset = min(max_offset, self.scroll_offset +1)
+                return True
+                
+        elif event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_UP:
+                self.scroll_offset = max(0, self.scroll_offset - 1)
+                return True
+            elif event.key == pygame.K_DOWN:
+                max_offset = max(0, len(self.messages) - self.rect.height // self.line_height)
+                self.scroll_offset = min(max_offset, self.scroll_offset +1)
+                return True
+        return False
+        
+    def draw(self, surface):
+        if not self.visible:
+            return
+        
+        bg_surface = pygame.Surface((self.rect.width, self.rect.height), pygame.SRCALPHA)
+        pygame.draw.rect(bg_surface, self.background_color, bg_surface.get_rect(), border_radius=5)
+        surface.blit(bg_surface, self.rect)
+        
+        text_area = pygame.Rect(
+            self.rect.x + 5,
+            self.rect.y + 5,
+            self.rect.width -15,
+            self.rect.height - 10
+        )
+        
+        old_clip = surface.get_clip()
+        surface.set_clip(text_area)
+        
+        visivible_lines = self.rect.height // self.line_height
+        start_idx = max(0, len(self.messages) - visivible_lines - self.scroll_offset)
+        
+        y_pos = self.rect.y + 5
+        for i in range(start_idx, len(self.messages)):
+            if y_pos > self.rect.y + self.rect.height:
+                break
+            
+            text, color = self.messages[i]
+            text_surface = self.font.render(text, True, color)
+            surface.blit(text_surface, (self.rect.x + 5, y_pos))
+            y_pos += self.line_height
+        
+        surface.set_clip(old_clip)
+        
+        self._draw_scrollbar(surface)
+        
+    def _draw_scrollbar(self, surface):
+        if len(self.messages) <= self.rect.height // self.line_height:
+            return
+        
+        total_lines = len(self.messages)
+        visible_lines = self.rect.height // self.line_height
+        scrollbar_height = max(20, (visible_lines / total_lines) * self.rect.height)
+        
+        scroll_ratio = self.scroll_offset / (total_lines - visible_lines)
+        scroll_y = self.rect.y + scroll_ratio * (self.rect.height - scrollbar_height)
+        
+        scroll_rect = pygame.Rect(
+            self.rect.right - self.scroll_bar_width - 2,
+            scroll_y,
+            self.scroll_bar_width,
+            scrollbar_height
+        )
+        
+        pygame.draw.rect(surface, self.scroll_bar_color, scroll_rect, border_radius=5)
+        
+    def toggle_visibility(self):
+        self.visible = not self.visible
+        if self.toggle_callback:
+            self.toggle_callback(self.visible)
+        
+    def update(self):
         pass

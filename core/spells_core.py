@@ -1,4 +1,4 @@
-from database import GameBase, GameRepository
+from database import GameBase, GameRepository, MessageLog
 from .generation_core import GenerationCore
 
 class ConjuringSpell(GameBase):
@@ -98,6 +98,7 @@ class ConjuringSpell(GameBase):
                     roll_dice = self.get_random_in_interval((0, 100))
                     if roll_dice <= final_rate:
                         print(f'You conjure {spell} !')
+                        MessageLog.add_message(f'You conjure {spell} !')
                         self.conjure_spell(spell, spell_info)
                         break
                 
@@ -131,9 +132,11 @@ class ConjuringSpell(GameBase):
             if turn_damage > 0:
                 self.monster.life -= turn_damage
                 print(f'Your spell deal {turn_damage:.2f} hits points and will last {item} turns.')
+                MessageLog.add_message(f'Your spell deal {turn_damage:.2f} hits points and will last {item} turns.')
             if turn_heal > 0:
                 self.player.life -= turn_heal
                 print(f'Your spell heal {turn_heal:.2f} hits points and will last {item} turns.')
+                MessageLog.add_message(f'Your spell heal {turn_heal:.2f} hits points and will last {item} turns.')
             
     def apply_magic_damage(self,magic_damage:float, healing_done:float):
         self.monster.life = self.monster.life - magic_damage
@@ -142,5 +145,7 @@ class ConjuringSpell(GameBase):
             self.player.life = self.player.max_life
         if magic_damage > 0:
             print(f'Your magic deals {magic_damage:.2f} hit points.')
+            MessageLog.add_message(f'Your magic deals {magic_damage:.2f} hit points.')
         if healing_done > 0:
             print(f'You heal yourself {healing_done:.2f} hit points.')
+            MessageLog.add_message(f'You heal yourself {healing_done:.2f} hit points.')

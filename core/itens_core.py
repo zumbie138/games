@@ -1,4 +1,4 @@
-from database import GameBase, GameRepository
+from database import GameBase, GameRepository, MessageLog
 from .creatures_info import PlayerEquips
 
 class ItensCore(GameBase):
@@ -25,8 +25,10 @@ class ItensCore(GameBase):
             self.player.wearing[body_part] = None
             self.player.inventory[item_name] = self.player.inventory.get(item_name, 0)+1
             print(f'You unequiped the item {item_name}')
+            MessageLog.add_message(f'You unequiped the item {item_name}')
         else:
             print('Theres nothing equiped already.')
+            MessageLog.add_message('Theres nothing equiped already.')
     
     def equip_item(self,iten_name:str,body_part:str):
         self.player.wearing[body_part] = iten_name

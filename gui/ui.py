@@ -5,7 +5,9 @@ class GuiBase():
     def __init__(self, screen, change_screen_callback, app=None):
         self.screen = screen
         self.change_screen = change_screen_callback
+        self.app = app
         self.widgets: list[WidgetBase] = []
+        
     
     def handle_events(self, event):
             for widget in self.widgets:
