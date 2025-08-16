@@ -7,9 +7,17 @@ import threading
 
 class GameloopsCore(GameBase):
     def __init__(self):
+        #instaciando classes
         self.conjuring_spell = ConjuringSpell()
         self.repository = GameRepository()
         self.generation = GenerationCore()
+        
+        #criando variaveis de controle
+        self.battle_timer = 0
+        self.training_timer = 0
+        self.healing_timer = 0
+        self.current_turn = 1
+        self.training_attribute = None
         self.batte_active = True
     
     @property
@@ -228,3 +236,4 @@ class GameloopsCore(GameBase):
             MessageLog.add_message(f'You heal {mana_regen:.2f} points of mana, MANA: {self.player.mana:.2f}/{self.player.max_mana}')
             time.sleep(1)
         MessageLog.add_message(f'you are full life')
+        
