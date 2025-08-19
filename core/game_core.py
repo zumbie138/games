@@ -7,15 +7,21 @@ import threading
 
 class GameCore(GameBase):
     def __init__(self):
-        self.df_classes = self.get_database_dataframe('class_database.json')
-        self.monster_df = self.get_database_dataframe('monster_database.json')
-        self.df_spells = self.get_database_dataframe('spells_database.json')
-        self.locations_df = self.get_database_dataframe('locations_database.json')
+        #estados de controle
+        MENU = 0
+        
+        #instaciando as classes
         self.itens_core = ItensCore()
         self.spells_core = ConjuringSpell()
         self.loops_core = GameloopsCore()
         self.generation = GenerationCore()
         self.repository = GameRepository()
+        
+        self.state = 0
+        self.df_classes = self.get_database_dataframe('class_database.json')
+        self.monster_df = self.get_database_dataframe('monster_database.json')
+        self.df_spells = self.get_database_dataframe('spells_database.json')
+        self.locations_df = self.get_database_dataframe('locations_database.json')
 
     @property
     def player(self):
@@ -132,3 +138,16 @@ class GameCore(GameBase):
         else:
             self.itens_core.unequip_item(body_part)
         self.generation.update_wearing_status()
+    
+    def update_states(self, dt):
+        if self.state == GameState.BATTLE:
+            self.battle_status_core()
+        if self.state == GameState.TRAINING:
+            self.training_core()
+            
+
+class GameState:
+    MENU = 0
+    BATTLE = 1
+    TRAINING = 2
+    HEALING = 3

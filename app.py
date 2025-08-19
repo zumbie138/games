@@ -65,10 +65,11 @@ class AppStatus():
             self.current_screen.widgets.append(self.journal)    
         
     def run(self):
+        clock = pygame.time.Clock()
         while self.running:
-            # print(f"Journal visible: {self.journal.visible}, in widgets: {self.journal in self.current_screen.widgets}")
-            #processa eventos
             for event in pygame.event.get():
+                dt = clock.tick(60) / 1000
+                
                 if event.type == pygame.QUIT:
                     self.running = False
                     
