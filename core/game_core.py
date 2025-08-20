@@ -7,8 +7,6 @@ import threading
 
 class GameCore(GameBase):
     def __init__(self):
-        #estados de controle
-        MENU = 0
         
         #instaciando as classes
         self.itens_core = ItensCore()
@@ -124,13 +122,18 @@ class GameCore(GameBase):
         MessageLog.add_message(f'inventory:{self.player.inventory}')
         MessageLog.add_message(f'Equipped itens:\nMax Life: {self.equips.max_life}\nMax Mana: {self.equips.max_mana}\nAttack: {self.equips.attack}\nAttack speed: {self.equips.attack_speed}\nDefense: {self.equips.defense}')
 
-    def healing_sleeping_core(self):
-
-        self.loops_core.healing_sleep_loop()
+    def start_healing_sleeping(self):
+        self.loops_core.healing_active = True
+        self.state = 3
         
-    def training_core(self, choice:str):
+    def start_training(self, choice:str):
+        self.loops_core.training_attribute = choice
+        self.loops_core.training_active = True
+        self.state = 2
+    
+    def start_battle(self):
         self.loops_core.batte_active = True
-        self.loops_core.training_loop(choice)
+        self.state = 1
         
     def manage_equips_core(self, option:bool, item:str, body_part:str):
         if option:
@@ -140,10 +143,16 @@ class GameCore(GameBase):
         self.generation.update_wearing_status()
     
     def update_states(self, dt):
+        print(f"\rCurrent state: {self.state}    ", end="", flush=True)
         if self.state == GameState.BATTLE:
-            self.battle_status_core()
+            self.loops_core.update_combat_loop(dt)
         if self.state == GameState.TRAINING:
-            self.training_core()
+            self.state = self.loops_core.update_training_loop(dt)
+        if self.state == GameState.HEALING:
+            self.state = self.loops_core.update_healing(dt,'active')
+        if self.state == GameState.MENU:
+            return
+            
             
 
 class GameState:

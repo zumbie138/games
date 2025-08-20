@@ -103,30 +103,30 @@ class GameloopsCore(GameBase):
             if self.monster.life <= 0 or self.player.life <= 0:
                 break
 
-    def battle_healing_loop(self):
-        while self.batte_active:
-            random_heal = self.get_random_in_interval((1,5))
-            heal = random_heal + (self.player.vitality/4)
-            mana_regen = random_heal + (self.player.intelligence/4)
-            self.player.life = self.player.life + heal
-            self.player.mana = self.player.mana + mana_regen
-            if self.player.life > self.player.max_life:
-                self.player.life = self.player.max_life
-            if self.player.mana > self.player.max_mana:
-                self.player.mana = self.player.max_mana
-            print(f'You heal {heal:.2f} points of life, HP: {self.player.life:.2f}/{self.player.max_life}')
-            print(f'You heal {mana_regen:.2f} points of mana, MANA: {self.player.mana:.2f}/{self.player.max_mana}')
+    # def battle_healing_loop(self):
+    #     while self.batte_active:
+    #         random_heal = self.get_random_in_interval((1,5))
+    #         heal = random_heal + (self.player.vitality/4)
+    #         mana_regen = random_heal + (self.player.intelligence/4)
+    #         self.player.life = self.player.life + heal
+    #         self.player.mana = self.player.mana + mana_regen
+    #         if self.player.life > self.player.max_life:
+    #             self.player.life = self.player.max_life
+    #         if self.player.mana > self.player.max_mana:
+    #             self.player.mana = self.player.max_mana
+    #         print(f'You heal {heal:.2f} points of life, HP: {self.player.life:.2f}/{self.player.max_life}')
+    #         print(f'You heal {mana_regen:.2f} points of mana, MANA: {self.player.mana:.2f}/{self.player.max_mana}')
             
-            MessageLog.add_message(f'You heal {heal:.2f} points of life, HP: {self.player.life:.2f}/{self.player.max_life}')
-            MessageLog.add_message(f'You heal {mana_regen:.2f} points of mana, MANA: {self.player.mana:.2f}/{self.player.max_mana}')
-            time.sleep(2.5)
-            if self.player.life == self.player.max_life and self.player.mana == self.player.max_mana:
-                break
+    #         MessageLog.add_message(f'You heal {heal:.2f} points of life, HP: {self.player.life:.2f}/{self.player.max_life}')
+    #         MessageLog.add_message(f'You heal {mana_regen:.2f} points of mana, MANA: {self.player.mana:.2f}/{self.player.max_mana}')
+    #         time.sleep(2.5)
+    #         if self.player.life == self.player.max_life and self.player.mana == self.player.max_mana:
+    #             break
 
-    def keyboard_control(self):
-        while self.batte_active:
-            if keyboard.is_pressed('r'):
-                self._stop_battle()
+    # def keyboard_control(self):
+    #     while self.batte_active:
+    #         if keyboard.is_pressed('r'):
+    #             self._stop_battle()
 
     def battle_turn_loop(self):
         turn = 1
@@ -184,70 +184,70 @@ class GameloopsCore(GameBase):
         else:
             return False
     
-    def training_loop(self,choice:str):
-        while self.batte_active:
-            train_thread = threading.Thread(target=self.training_atributes_loop,args=(choice,))
-            keyboard_thread = threading.Thread(target=self.keyboard_control)
-            keyboard_thread.start()
-            train_thread.start()
-            train_thread.join()
-            if self.player.life <= 0:
-                battle_heal = threading.Thread(target=self.battle_healing_loop)
-                battle_heal.start()
-                battle_heal.join()
+    # def training_loop(self,choice:str):
+    #     while self.batte_active:
+    #         train_thread = threading.Thread(target=self.training_atributes_loop,args=(choice,))
+    #         keyboard_thread = threading.Thread(target=self.keyboard_control)
+    #         keyboard_thread.start()
+    #         train_thread.start()
+    #         train_thread.join()
+    #         if self.player.life <= 0:
+    #             battle_heal = threading.Thread(target=self.battle_healing_loop)
+    #             battle_heal.start()
+    #             battle_heal.join()
         
-    def training_atributes_loop(self,choice:str):
-        while self.batte_active:
-            sum_atributes = self.player.strength + self.player.agility + self.player.vitality + self.player.intelligence + self.player.charisma
-            if sum_atributes >= self.player.atribute_cap:
-                print('You reach the training cap.')
-                MessageLog.add_message('You reach the training cap.')
-                self.batte_active = False
-                break
-            train = self.get_random_float_interval((0, 0.2))
-            match choice:
-                case '1':
-                    text = 'strength'
-                    self.player.strength = self.player.strength + train 
-                case '2':
-                    text = 'agility'
-                    self.player.agility = self.player.agility + train 
-                case '3':
-                    text = 'vitality'
-                    self.player.vitality = self.player.vitality + train 
-                case '4':
-                    text = 'intelligence'
-                    self.player.intelligence = self.player.intelligence + train 
-                case '5':
-                    text = 'charisma'
-                    self.player.charisma = self.player.charisma + train 
-            self.player.life = self.player.life - 10
-            self.player.life = max(self.player.life, 0)
-            if self.player.life <= 0:
-                break
-            time.sleep(1)
-            print(f'You train {train:.2f} points of {text}.')
-            MessageLog.add_message(f'You train {train:.2f} points of {text}.')
-            self.generation.update_character()
+    # def training_atributes_loop(self,choice:str):
+    #     while self.batte_active:
+    #         sum_atributes = self.player.strength + self.player.agility + self.player.vitality + self.player.intelligence + self.player.charisma
+    #         if sum_atributes >= self.player.atribute_cap:
+    #             print('You reach the training cap.')
+    #             MessageLog.add_message('You reach the training cap.')
+    #             self.batte_active = False
+    #             break
+    #         train = self.get_random_float_interval((0, 0.2))
+    #         match choice:
+    #             case '1':
+    #                 text = 'strength'
+    #                 self.player.strength = self.player.strength + train 
+    #             case '2':
+    #                 text = 'agility'
+    #                 self.player.agility = self.player.agility + train 
+    #             case '3':
+    #                 text = 'vitality'
+    #                 self.player.vitality = self.player.vitality + train 
+    #             case '4':
+    #                 text = 'intelligence'
+    #                 self.player.intelligence = self.player.intelligence + train 
+    #             case '5':
+    #                 text = 'charisma'
+    #                 self.player.charisma = self.player.charisma + train 
+    #         self.player.life = self.player.life - 10
+    #         self.player.life = max(self.player.life, 0)
+    #         if self.player.life <= 0:
+    #             break
+    #         time.sleep(1)
+    #         print(f'You train {train:.2f} points of {text}.')
+    #         MessageLog.add_message(f'You train {train:.2f} points of {text}.')
+    #         self.generation.update_character()
             
-    def healing_sleep_loop(self):
-        print('runing sleeping loop')
-        while self.player.life < self.player.max_life or self.player.mana < self.player.max_mana:
-            random_heal = self.get_random_in_interval((1,5))
-            heal = random_heal + (self.player.vitality/2)
-            mana_regen = random_heal / 10 + (self.player.intelligence/2)
-            self.player.life = self.player.life + heal
-            self.player.mana = self.player.mana + mana_regen
-            if self.player.life > self.player.max_life:
-                self.player.life = self.player.max_life
-            if self.player.mana > self.player.max_mana:
-                self.player.mana = self.player.max_mana
-            print(f'You heal {heal:.2f} points of life, HP: {self.player.life:.2f}/{self.player.max_life}')
-            print(f'You heal {mana_regen:.2f} points of mana, MANA: {self.player.mana:.2f}/{self.player.max_mana}')
-            MessageLog.add_message(f'You heal {heal:.2f} points of life, HP: {self.player.life:.2f}/{self.player.max_life}')
-            MessageLog.add_message(f'You heal {mana_regen:.2f} points of mana, MANA: {self.player.mana:.2f}/{self.player.max_mana}')
-            time.sleep(1)
-        MessageLog.add_message(f'you are full life')
+    # def healing_sleep_loop(self):
+    #     print('runing sleeping loop')
+    #     while self.player.life < self.player.max_life or self.player.mana < self.player.max_mana:
+    #         random_heal = self.get_random_in_interval((1,5))
+    #         heal = random_heal + (self.player.vitality/2)
+    #         mana_regen = random_heal / 10 + (self.player.intelligence/2)
+    #         self.player.life = self.player.life + heal
+    #         self.player.mana = self.player.mana + mana_regen
+    #         if self.player.life > self.player.max_life:
+    #             self.player.life = self.player.max_life
+    #         if self.player.mana > self.player.max_mana:
+    #             self.player.mana = self.player.max_mana
+    #         print(f'You heal {heal:.2f} points of life, HP: {self.player.life:.2f}/{self.player.max_life}')
+    #         print(f'You heal {mana_regen:.2f} points of mana, MANA: {self.player.mana:.2f}/{self.player.max_mana}')
+    #         MessageLog.add_message(f'You heal {heal:.2f} points of life, HP: {self.player.life:.2f}/{self.player.max_life}')
+    #         MessageLog.add_message(f'You heal {mana_regen:.2f} points of mana, MANA: {self.player.mana:.2f}/{self.player.max_mana}')
+    #         time.sleep(1)
+    #     MessageLog.add_message(f'you are full life')
         
 
     def _update_buffs(self):
@@ -262,7 +262,7 @@ class GameloopsCore(GameBase):
         )
         self.monster.life -= player_damage
         MessageLog.add_message(f'You deal {player_damage:.2f} damage.')
-    
+
     def _monster_attack(self):
         monster_damage = self._damage_calculator(
             self.monster.attack,
@@ -271,23 +271,23 @@ class GameloopsCore(GameBase):
         )
         self.player.life -= monster_damage
         MessageLog.add_message(f'You take {monster_damage:.2f} damage.')
-    
+
     def _check_combat_end(self):
         if self.player.life <= 0 or self.monster.life <=0:
             self._stop_battle()
-    
+
     def update_combat_loop(self, dt):
         if not self.battle_active:
             return
-        
+
         self.combat_timers['player'] += dt
         self.combat_timers['monster'] += dt
         self.combat_timers['buffs'] += dt
-        
+
         if self.combat_timers['player'] >= self.player.attack_speed:
             self._player_attack()
             self.combat_timers['player'] = 0
-            
+
         if self.combat_timers['monster'] >= self.monster.attack_speed:
             self._monster_attack()
             self.combat_timers['monster'] = 0
@@ -297,63 +297,70 @@ class GameloopsCore(GameBase):
             self.combat_timers['buffs'] = 0
             self.current_turn += 1
             MessageLog.add_message(f'Turn {self.current_turn} ends.')
-        
+
         self._check_combat_end()
-    
+
     def _healing_tick(self, divisor):
         random_heal = self.get_random_in_interval((1,5))
         heal = random_heal + (self.player.vitality/divisor)
         mana_regen = random_heal / 10 + (self.player.intelligence/divisor)
+
         self.player.life = min(self.player.max_life, self.player.life + heal)
         self.player.mana = min(self.player.max_mana, self.player.mana + mana_regen)
-    
-    def update_healing(self, dt, type:str):
-        match type:
-            case 'active':
-                time = 1
-                divisor = 2
-            case 'passive':
-                time = 2.5
-                divisor = 4
-                
-        if not self.healing_active:
-            return
-        
-        self.healing_timer += dt
-        
-        if self.healing_timer >= time:
-            self.healing_timer = 0
-            self._healing_tick(divisor)
 
-        if self.player.life == self.player.max_life:
+        MessageLog.add_message(f'You heal {heal:.2f} points of life, HP: {self.player.life:.2f}/{self.player.max_life}')
+        MessageLog.add_message(f'You heal {mana_regen:.2f} points of mana, MANA: {self.player.mana:.2f}/{self.player.max_mana}')
+
+    def update_healing(self, dt, type:str):
+        healing_settings = {
+            'active':{'time':1, 'divisor':2},
+            'passive':{'time':2.5, 'divisor':4}
+        }
+        settings = healing_settings[type]
+
+        if not self.healing_active:
+            return 0
+
+        self.healing_timer += dt
+
+        if self.healing_timer >= settings['time']:
+            self.healing_timer = 0
+            self._healing_tick(settings['divisor'])
+
+        if self.player.life == self.player.max_life and self.player.mana == self.player.max_mana:
+            MessageLog.add_message(f'Your health and mana are full')
             self.healing_active = False
-    
+            if type == 'active':
+                return 0
+        if type == 'active':
+            return 3
+        
     def _trainig_tick(self):
         train = self.get_random_float_interval((0, 0.2))
         setattr(self.player, self.training_attribute, 
                 getattr(self.player, self.training_attribute)  + train)
         self.player.life = max(self.player.life - 10, 0)
         MessageLog.add_message(f'You train {train:.2f} points of {self.training_attribute}.')  
-    
-    def start_training(self, attribute:str):
-        self.training_attribute = attribute
-        self.training_active = True
-        
+
     def update_training_loop(self, dt): 
         sum_attributes = self.player.strength + self.player.agility + self.player.vitality + self.player.intelligence + self.player.charisma
         if sum_attributes >= self.player.atribute_cap:
             MessageLog.add_message('You reach the training cap.')
             self.training_active = False
-            
+
         if not self.training_active:
-            return
-        
+            return 0
+
         if self.player.life <= 0:
             self.healing_active = True
-            self.update_healing(dt)
+        if self.healing_active:
+            self.update_healing(dt, 'passive')
             
         self.training_timer += dt
-        
-        if self.training_timer >= 1.0:
+
+        if self.training_timer >= 1.0 and not self.healing_active:
             self.training_timer = 0
             self._trainig_tick()
+            return 2
+        
+        return 2

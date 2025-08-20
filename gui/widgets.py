@@ -178,6 +178,7 @@ class PlayerStatusDisplay(WidgetBase):
             f"EXP: {player.experience}",
             f"Força: {player.strength:.2f} | Agilidade: {player.agility:.2f}",
             f"Vitalidade: {player.vitality:.2f} | Inteligência: {player.intelligence:.2f}",
+            f'Charisma: {player.charisma:.2f}',
             f"Ataque: {player.attack:.2f} | Defesa: {player.defense:.2f}"
         ]
         

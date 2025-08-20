@@ -67,9 +67,10 @@ class AppStatus():
     def run(self):
         clock = pygame.time.Clock()
         while self.running:
+            dt = clock.tick(60) / 1000
+            self.game_core.update_states(dt)
+            
             for event in pygame.event.get():
-                dt = clock.tick(60) / 1000
-                
                 if event.type == pygame.QUIT:
                     self.running = False
                     
@@ -178,6 +179,7 @@ class AppStatus():
     def run_refuge_status(self):
         choice_text = 'Welcome to your home. What do you wish to do?'
         choice_options = ['Sleep in bed.','Train.','Wardobe.','look in to the mirror.']
+        
         while True:
             refuge_choice = self.graph_menu.generate_menu(choice_text,choice_options)
             if int(refuge_choice) == len(choice_options)+1:
@@ -219,7 +221,7 @@ class AppStatus():
                 break
             
     def run_sleep_status(self):
-        self.game_core.healing_sleeping_core()           
+        self.game_core.start_healing_sleeping()           
              
     def run_train_status(self, train_choice):
         # choice_text = 'what skill do you want to train?'
@@ -228,4 +230,4 @@ class AppStatus():
         #     train_choice = self.graph_menu.generate_menu(choice_text,choice_options)
         #     if int(train_choice) == len(choice_options)+1:
         #         break
-            self.game_core.training_core(train_choice)
+            self.game_core.start_training(train_choice)
