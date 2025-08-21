@@ -39,6 +39,7 @@ class GameBase():
         save_path = f'{save_dirs}\\{name}.json'
         with open(save_path, 'w') as json_file:
             json.dump(save_char, json_file)
+        print('char saved')
     
     def get_keys_as_list(self,dictionary:dict)->list:
         return list(dictionary.keys())

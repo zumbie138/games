@@ -224,10 +224,10 @@ class AppStatus():
         self.game_core.start_healing_sleeping()           
              
     def run_train_status(self, train_choice):
+        self.game_core.start_training(train_choice)
         # choice_text = 'what skill do you want to train?'
         # choice_options = ['Strenght.','Agility.','Vitality.','intelligence.','charisma.']
         # while True:
         #     train_choice = self.graph_menu.generate_menu(choice_text,choice_options)
         #     if int(train_choice) == len(choice_options)+1:
         #         break
-            self.game_core.start_training(train_choice)

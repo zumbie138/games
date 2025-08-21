@@ -37,7 +37,7 @@ class GamePlay(GuiBase):
             )
         
         return_button = Button(
-            500, 500, 150, 50, 'Return',
+            600, 500, 150, 50, 'Return',
             action=lambda: self.change_screen('initial_screen')
         )
         

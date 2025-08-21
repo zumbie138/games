@@ -308,6 +308,7 @@ class GameloopsCore(GameBase):
         self.player.life = min(self.player.max_life, self.player.life + heal)
         self.player.mana = min(self.player.max_mana, self.player.mana + mana_regen)
 
+        self.generation.update_character()
         MessageLog.add_message(f'You heal {heal:.2f} points of life, HP: {self.player.life:.2f}/{self.player.max_life}')
         MessageLog.add_message(f'You heal {mana_regen:.2f} points of mana, MANA: {self.player.mana:.2f}/{self.player.max_mana}')
 
@@ -340,6 +341,7 @@ class GameloopsCore(GameBase):
         setattr(self.player, self.training_attribute, 
                 getattr(self.player, self.training_attribute)  + train)
         self.player.life = max(self.player.life - 10, 0)
+        self.generation.update_character()
         MessageLog.add_message(f'You train {train:.2f} points of {self.training_attribute}.')  
 
     def update_training_loop(self, dt): 

@@ -4,7 +4,7 @@ from gui.widgets import Button, Text, PlayerStatusDisplay
 class RefugeScreen(GuiBase):
     def __init__(self, screen, change_screen_callback, app=None):
         super().__init__(screen, change_screen_callback)
-        self.current_object = False
+        self.current_object = None
         self.app = app
         self.setup_ui()
         
@@ -15,68 +15,107 @@ class RefugeScreen(GuiBase):
                 'Welcome to your house, what you want to do'
                 )
         player_display = PlayerStatusDisplay(
-                400, 100, 280, 200,
+                500, 100, 280, 200,
                 game_core=self.app.game_core
             )
         bed_btn = Button(
                 100, 100, 150, 50, 'Sleep in bed',
-                action=lambda: self.app.run_sleep_status()
+                action=lambda: self.refuge_state('bed')
             )
         train_btn = Button(
                 100, 200, 150, 50, 'Train',
-                action=lambda: self.refuge_state()
+                action=lambda: self.refuge_state('training_choice')
             )
         wardobe_btn = Button(
                 100, 300, 150, 50, 'Wardobe',
-                action=lambda: self.app.run_wardobe_status()
+                action=lambda: self.refuge_state('wardobe')
             )
-        mirror_btn = Button(
-                100, 400, 150, 50, 'Mirror',
-                action=lambda: self.app.game_core.show_character_core()
-            )
+        # mirror_btn = Button(
+        #         100, 400, 150, 50, 'Mirror',
+        #         action=lambda: self.app.game_core.show_character_core()
+        #     )
         return_btn = Button(
-                500, 500, 150, 50, 'Return',
+                600, 500, 150, 50, 'Return',
                 action=lambda: self.change_screen('start_game')
             )
         
-        self.widgets.extend([refuge_text, player_display, bed_btn, train_btn, wardobe_btn, mirror_btn, return_btn])
-        self.init_training_objects()
+        self.widgets.extend([refuge_text, player_display, bed_btn, train_btn, wardobe_btn, return_btn])
+        self.init_objects()
         
         
-    def init_training_objects(self):
-        self.object_widgets = [
-            Button(
+    def init_objects(self):
+        self.object_widgets = {
+            'bed':[
+                Text(300, 150, 100, 50, "You're sleeping now."),
+                Button(300, 200, 150, 50, 'Stop sleeping',
+                       action=lambda: self.stop_action('bed'))
+            ],
+            'training_choice':[
+                Button(
                 260, 100, 100, 40, 'Strenght.',
-                action=lambda: self.app.run_train_status('strength')
+                action=lambda: self.refuge_state('training', 'strength')
                 ),
-            Button(
+                Button(
                 260, 150, 100, 40, 'Agility.',
-                action=lambda: self.app.run_train_status('agility')
+                action=lambda: self.refuge_state('training', 'agility')
                 ),
-            Button(
+                Button(
                 260, 200, 100, 40, 'Vitality.',
-                action=lambda: self.app.run_train_status('vitality')
+                action=lambda: self.refuge_state('training', 'vitality')
                 ),
-            Button(
+                Button(
                 260, 250, 100, 40, 'Intelligence.',
-                action=lambda: self.app.run_train_status('intelligence')
+                action=lambda: self.refuge_state('training', 'intelligence')
                 ),
-            Button(
+                Button(
                 260, 300, 100, 40, 'Charisma.',
-                action=lambda: self.app.run_train_status('charisma')
+                action=lambda: self.refuge_state('training', 'charisma')
                 ),
-        ]
-        for widget in self.object_widgets:
-            widget.visible = False
-        
-    def refuge_state(self):
-        if self.current_object:
-            for widget in self.object_widgets:
+                Button(
+                260, 350, 90, 30, 'go back.',
+                action=lambda: self.stop_action('train')
+                ),
+            ],
+            'training':[
+                Text(300, 50, 100, 50, "You're training now."),
+                Button(300, 200, 150, 50, 'Stop training',
+                       action=lambda: self.stop_action('train'))
+            ],
+            'wardobe':[
+                Text(300, 50, 100, 50, "This is your wardobe"),
+            ]
+        }
+        for object in self.object_widgets.values():
+            for widget in object:
                 widget.visible = False
-        self.current_object = True
         
-        for widget in self.object_widgets:
+    def refuge_state(self, object_text, train_type = None):
+        if self.current_object:
+            for widget in self.object_widgets[self.current_object]:
+                widget.visible = False
+                if widget in self.widgets:
+                    self.widgets.remove(widget)
+                    
+        self.current_object = object_text
+        if object_text == 'training':
+            self.app.run_train_status(train_type)
+        elif object_text == 'bed':
+            self.app.run_sleep_status()
+            
+        for widget in self.object_widgets[object_text]:
             widget.visible = True 
             if widget not in self.widgets:
                 self.widgets.append(widget)
+    
+    def stop_action(self, type):
+        match type:
+            case 'bed':
+                self.app.game_core.stop_sleeping()
+            case 'train':
+                self.app.game_core.stop_training()
         
+        if self.current_object:
+            for widget in self.object_widgets[self.current_object]:
+                widget.visible = False
+                if widget in self.widgets:
+                    self.widgets.remove(widget)

@@ -125,11 +125,19 @@ class GameCore(GameBase):
     def start_healing_sleeping(self):
         self.loops_core.healing_active = True
         self.state = 3
+    
+    def stop_sleeping(self):
+        self.loops_core.healing_active = False
+        self.state = 0
         
     def start_training(self, choice:str):
         self.loops_core.training_attribute = choice
         self.loops_core.training_active = True
         self.state = 2
+    
+    def stop_training(self):
+        self.loops_core.training_active = False
+        self.state = 0
     
     def start_battle(self):
         self.loops_core.batte_active = True

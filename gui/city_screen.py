@@ -32,7 +32,7 @@ class CityScreen(GuiBase):
             )
         
         return_btn = Button(
-            500, 500, 150, 50, 'Return',
+            600, 500, 150, 50, 'Return',
             action=lambda: self.change_screen('start_game')
         )
         
@@ -57,7 +57,7 @@ class CityScreen(GuiBase):
             'temple':[
                 Text(300, 50, 100, 50,'The sacred temple.'),
                 Button(300, 200, 150, 50, 'Pray',
-                       action=lambda: MessageLog.add_message("The Gods blesse you!"))
+                       action=lambda: MessageLog.add_message("The Gods blessed you!"))
             ],
             'blacksmith':[
                 Text(300, 50, 100, 50,'You enter the blacksmith store.'),
