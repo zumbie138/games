@@ -24,10 +24,15 @@ class GameloopsCore(GameBase):
             'player': 0,
             'monster': 0
         }
-        self.current_turn = 1
+        self.current_turn = 0
+        
+        #variaveis de constantes de escolhas
+        self.training_attribute = None
+        self.monster_location = None
+        self.monster_df = self.get_database_dataframe('monster_database.json')
+        self.locations_df = self.get_database_dataframe('locations_database.json')
         
         #criando variaveis de controle
-        self.training_attribute = None
         self.training_active = False
         self.battle_active = False
         self.healing_active = False
@@ -58,17 +63,27 @@ class GameloopsCore(GameBase):
         self.repository.set_resource('Buffs', value)
 
     def _stop_battle(self):
-        self.batte_active = False
+        self.battle_active = False
 
     def _damage_calculator(self,attack:float,defense:float,level:int)->float:
         damage = ((level * 5) / 10) + ((attack**2) / (attack + (2*defense)))
         final_damage = self.get_random_min_max(damage)
         return final_damage
 
+    def _monster_encounter(self):
+        monster_rate = self.get_info_by_name(self.monster_location,'name',
+                                                         'monsters',self.locations_df)
+        monster_name = self.get_name_by_rate_probability(monster_rate)
+        monster_info = self.monster_df[self.monster_df['name'] == monster_name]
+        monster_info_tuple = self.dataframe_to_tuple(monster_info)
+        self.generation.generate_monster(monster_info_tuple)
+        MessageLog.add_message(f'You will face a {self.monster.name}')
+        self.battle_active = True
+    
     def _monster_reward(self):
         monster_exp = self.get_random_in_interval(self.monster.experience)
         self.player.experience = self.player.experience + monster_exp
-        print(f'You gain {monster_exp} experience.')       
+        print(f'You gain {monster_exp} experience.')
         MessageLog.add_message(f'You gain {monster_exp} experience.')       
         for item, (rate,min_qty,max_qty) in self.monster.loot.items():
             dice_roll = self.get_random_in_interval((0,100))
@@ -273,18 +288,21 @@ class GameloopsCore(GameBase):
         MessageLog.add_message(f'You take {monster_damage:.2f} damage.')
 
     def _check_combat_end(self):
-        if self.player.life <= 0 or self.monster.life <=0:
-            self._stop_battle()
+        if self.monster.life <=0:
+            self._monster_reward()
+            self.battle_active = False
 
     def update_combat_loop(self, dt):
         if not self.battle_active:
-            return
+            self.current_turn = 0
+            self._monster_encounter()
 
         self.combat_timers['player'] += dt
         self.combat_timers['monster'] += dt
         self.combat_timers['buffs'] += dt
 
         if self.combat_timers['player'] >= self.player.attack_speed:
+            self.conjuring_spell.conjuring_core(self.player.spells, self.player.intelligence, self.player.charisma)
             self._player_attack()
             self.combat_timers['player'] = 0
 
@@ -299,7 +317,12 @@ class GameloopsCore(GameBase):
             MessageLog.add_message(f'Turn {self.current_turn} ends.')
 
         self._check_combat_end()
-
+        if self.player.life <= 0:
+            self.healing_active = True
+        if self.healing_active:
+            self.update_healing(dt, 'passive')
+            
+            
     def _healing_tick(self, divisor):
         random_heal = self.get_random_in_interval((1,5))
         heal = random_heal + (self.player.vitality/divisor)
@@ -335,7 +358,7 @@ class GameloopsCore(GameBase):
                 return 0
         if type == 'active':
             return 3
-        
+
     def _trainig_tick(self):
         train = self.get_random_float_interval((0, 0.2))
         setattr(self.player, self.training_attribute, 
@@ -357,7 +380,7 @@ class GameloopsCore(GameBase):
             self.healing_active = True
         if self.healing_active:
             self.update_healing(dt, 'passive')
-            
+
         self.training_timer += dt
 
         if self.training_timer >= 1.0 and not self.healing_active:

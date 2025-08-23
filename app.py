@@ -1,5 +1,5 @@
 import pygame
-from gui import InitialScreen, NEWCHARscreen, LoadGameScreen, GamePlay, CityScreen, RefugeScreen, Journal
+from gui import InitialScreen, NEWCHARscreen, LoadGameScreen, GamePlay, CityScreen, RefugeScreen, Journal, AdventureScreen
 from core import GameCore
 from graph import GraficMenus
 
@@ -45,18 +45,20 @@ class AppStatus():
         self.journal.visible = False
       
     def change_screen(self, screen_name, *args):
+        self.game_core.start_menu_state()
         screens = {
             'initial_screen': InitialScreen,
             'create_char':NEWCHARscreen,
             'load_char': LoadGameScreen,
             'start_game': GamePlay,
             'city_screen': CityScreen,
-            'refuge_screen': RefugeScreen
+            'refuge_screen': RefugeScreen,
+            'adventure_screen': AdventureScreen
         }
-        if screen_name in ['start_game', 'city_screen', 'refuge_screen']: 
-            self.enable_auto_journal()
-        else:
+        if screen_name in ['initial_screen', 'create_char', 'load_char']:
             self.disable_auto_journal()
+        else:
+            self.enable_auto_journal()
             
         if screen_name in screens:
             self.current_screen = screens[screen_name](self.screen, self.change_screen, self)
@@ -85,16 +87,16 @@ class AppStatus():
             
             pygame.display.flip()
             self.clock.tick(self.fps)
-                        
+
     def pass_new_char_data(self, name, race, class_id):
         self.game_core.new_character_core(name, race, class_id)
-    
+
     def list_load_character(self):
         return self.game_core.get_list_load_character()
-    
+
     def run_load_character(self, save_choose):
         self.game_core.load_character_core(save_choose)
-        
+
     # def run_game(self):
     #     start_menu = ['New Game.', 'Load Game.']
     #     start_text = '=+=+=+=+=+=+==+=+=+=+=+=+==+=+=+=+=+=+='
@@ -110,7 +112,7 @@ class AppStatus():
     #                 self.run_load_character()
     #             case _:
     #                 print('invalid choice.')
-    
+
     # def run_new_char(self):
     #     character = self.graph_menu.new_character_menu()
     #     self.game_core.new_character_core(*character)
@@ -124,8 +126,7 @@ class AppStatus():
         #     save_choose = save_list[choice]
         #     self.run_player_status()
         #     break
-    
-        
+
     # def run_player_status(self):
     #     choice_text = 'Welcome player, where you want to go?'
     #     choice_options = ['City.','Adventure.','Refuge.','World Map.']
@@ -145,7 +146,7 @@ class AppStatus():
     #                 print('not yet')
     #             case _:
     #                 print('invalid choice.')
-                    
+
     # def run_city_status(self):
     #     choice_text = 'You are inside the city, where you like to go?'
     #     choice_options = ['Tavern.','Market.','Temple.','Blacksmith.']
@@ -175,27 +176,27 @@ class AppStatus():
             loc_choose -= 1
             location = loc_allowed[loc_choose]
             self.game_core.battle_status_core(location)
+
+    # def run_refuge_status(self):
+    #     choice_text = 'Welcome to your home. What do you wish to do?'
+    #     choice_options = ['Sleep in bed.','Train.','Wardobe.','look in to the mirror.']
         
-    def run_refuge_status(self):
-        choice_text = 'Welcome to your home. What do you wish to do?'
-        choice_options = ['Sleep in bed.','Train.','Wardobe.','look in to the mirror.']
-        
-        while True:
-            refuge_choice = self.graph_menu.generate_menu(choice_text,choice_options)
-            if int(refuge_choice) == len(choice_options)+1:
-                break
-            match refuge_choice:
-                case '1':
-                    self.run_sleep_status()
-                case '2':
-                    self.run_train_status()
-                case '3':
-                    self.run_wardobe_status()
-                case '4':
-                    self.game_core.show_character_core()
-                case _:
-                    print('invalid choice.')
-    
+    #     while True:
+    #         refuge_choice = self.graph_menu.generate_menu(choice_text,choice_options)
+    #         if int(refuge_choice) == len(choice_options)+1:
+    #             break
+    #         match refuge_choice:
+    #             case '1':
+    #                 self.run_sleep_status()
+    #             case '2':
+    #                 self.run_train_status()
+    #             case '3':
+    #                 self.run_wardobe_status()
+    #             case '4':
+    #                 self.game_core.show_character_core()
+    #             case _:
+    #                 print('invalid choice.')
+
     def run_wardobe_status(self):
         choice_text = 'What part you want to equip a item?'
         choice_text2 = 'What iten you want to equip ?'
@@ -221,8 +222,8 @@ class AppStatus():
                 break
             
     def run_sleep_status(self):
-        self.game_core.start_healing_sleeping()           
-             
+        self.game_core.start_healing_sleeping()
+
     def run_train_status(self, train_choice):
         self.game_core.start_training(train_choice)
         # choice_text = 'what skill do you want to train?'

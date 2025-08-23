@@ -17,7 +17,6 @@ class GameCore(GameBase):
         
         self.state = 0
         self.df_classes = self.get_database_dataframe('class_database.json')
-        self.monster_df = self.get_database_dataframe('monster_database.json')
         self.df_spells = self.get_database_dataframe('spells_database.json')
         self.locations_df = self.get_database_dataframe('locations_database.json')
 
@@ -46,13 +45,6 @@ class GameCore(GameBase):
     def buffs(self, value):
         self.repository.set_resource('Buffs', value)
     
-    def _monster_encounter(self,location:str):
-        monster_rate = self.get_info_by_name(location,'name',
-                                                         'monsters',self.locations_df)
-        monster_name = self.get_name_by_rate_probability(monster_rate)
-        monster_info = self.monster_df[self.monster_df['name'] == monster_name]
-        monster_info_tuple = self.dataframe_to_tuple(monster_info)
-        self.generation.generate_monster(monster_info_tuple)
 
     def locations_allowed(self)->list:
         return self.get_list_by_number(self.player.level, 'min lvl', 'name', self.locations_df)
@@ -94,54 +86,62 @@ class GameCore(GameBase):
         print('Not working yet.')
     
     def battle_status_core(self, location:str):
-        stop_battle = False
-        control_thread = threading.Thread(target=self.loops_core.keyboard_control)
-        control_thread.start()
-        while not stop_battle:
-            self.loops_core.batte_active = True
+        # stop_battle = False
+        # control_thread = threading.Thread(target=self.loops_core.keyboard_control)
+        # control_thread.start()
+        # while not stop_battle:
+            # self.loops_core.batte_active = True
+        if not self.loops_core.battle_active:
             self._monster_encounter(location)
-            stop_battle = self.loops_core.battle_loop_manage()
+        stop_battle = self.loops_core.battle_loop_manage()
     
-    def show_character_core(self):
-        print('You see yourself in the mirror:')
-        print(f'Your name is: {self.player.name}, you are an {self.player.race} {self.player.class_type}')
-        print(f'HP: {self.player.life:.2f}/{self.player.max_life}\nMANA: {self.player.mana}/{self.player.max_mana}')
-        print(f'You are level {self.player.level}, with {self.player.experience} of experience and your atributes are:\nStrength: {self.player.strength:.2f}\nAgility: {self.player.agility:.2f}\nVitality: {self.player.vitality:.2f}\nInteligence: {self.player.intelligence:.2f}\nCharisma: {self.player.charisma:.2f}')
-        print(f'Attack:{self.player.attack:.2f} Defense:{self.player.defense:.2f} attack speed:{self.player.attack_speed:.2f}')
-        print(f'Your list of spells: {self.player.spells}')
-        print(f'inventory:{self.player.inventory}')
-        print(f'Equipped itens:\nMax Life: {self.equips.max_life}\nMax Mana: {self.equips.max_mana}\nAttack: {self.equips.attack}\nAttack speed: {self.equips.attack_speed}\nDefense: {self.equips.defense}')
+    # def show_character_core(self):
+    #     print('You see yourself in the mirror:')
+    #     print(f'Your name is: {self.player.name}, you are an {self.player.race} {self.player.class_type}')
+    #     print(f'HP: {self.player.life:.2f}/{self.player.max_life}\nMANA: {self.player.mana}/{self.player.max_mana}')
+    #     print(f'You are level {self.player.level}, with {self.player.experience} of experience and your atributes are:\nStrength: {self.player.strength:.2f}\nAgility: {self.player.agility:.2f}\nVitality: {self.player.vitality:.2f}\nInteligence: {self.player.intelligence:.2f}\nCharisma: {self.player.charisma:.2f}')
+    #     print(f'Attack:{self.player.attack:.2f} Defense:{self.player.defense:.2f} attack speed:{self.player.attack_speed:.2f}')
+    #     print(f'Your list of spells: {self.player.spells}')
+    #     print(f'inventory:{self.player.inventory}')
+    #     print(f'Equipped itens:\nMax Life: {self.equips.max_life}\nMax Mana: {self.equips.max_mana}\nAttack: {self.equips.attack}\nAttack speed: {self.equips.attack_speed}\nDefense: {self.equips.defense}')
         
         
-        MessageLog.add_message('You see yourself in the mirror:')
-        MessageLog.add_message(f'Your name is: {self.player.name}, you are an {self.player.race} {self.player.class_type}')
-        MessageLog.add_message(f'HP: {self.player.life:.2f}/{self.player.max_life}\nMANA: {self.player.mana}/{self.player.max_mana}')
-        MessageLog.add_message(f'You are level {self.player.level}, with {self.player.experience} of experience and your atributes are:\nStrength: {self.player.strength:.2f}\nAgility: {self.player.agility:.2f}\nVitality: {self.player.vitality:.2f}\nInteligence: {self.player.intelligence:.2f}\nCharisma: {self.player.charisma:.2f}')
-        MessageLog.add_message(f'Attack:{self.player.attack:.2f} Defense:{self.player.defense:.2f} attack speed:{self.player.attack_speed:.2f}')
-        MessageLog.add_message(f'Your list of spells: {self.player.spells}')
-        MessageLog.add_message(f'inventory:{self.player.inventory}')
-        MessageLog.add_message(f'Equipped itens:\nMax Life: {self.equips.max_life}\nMax Mana: {self.equips.max_mana}\nAttack: {self.equips.attack}\nAttack speed: {self.equips.attack_speed}\nDefense: {self.equips.defense}')
+    #     MessageLog.add_message('You see yourself in the mirror:')
+    #     MessageLog.add_message(f'Your name is: {self.player.name}, you are an {self.player.race} {self.player.class_type}')
+    #     MessageLog.add_message(f'HP: {self.player.life:.2f}/{self.player.max_life}\nMANA: {self.player.mana}/{self.player.max_mana}')
+    #     MessageLog.add_message(f'You are level {self.player.level}, with {self.player.experience} of experience and your atributes are:\nStrength: {self.player.strength:.2f}\nAgility: {self.player.agility:.2f}\nVitality: {self.player.vitality:.2f}\nInteligence: {self.player.intelligence:.2f}\nCharisma: {self.player.charisma:.2f}')
+    #     MessageLog.add_message(f'Attack:{self.player.attack:.2f} Defense:{self.player.defense:.2f} attack speed:{self.player.attack_speed:.2f}')
+    #     MessageLog.add_message(f'Your list of spells: {self.player.spells}')
+    #     MessageLog.add_message(f'inventory:{self.player.inventory}')
+    #     MessageLog.add_message(f'Equipped itens:\nMax Life: {self.equips.max_life}\nMax Mana: {self.equips.max_mana}\nAttack: {self.equips.attack}\nAttack speed: {self.equips.attack_speed}\nDefense: {self.equips.defense}')
 
     def start_healing_sleeping(self):
         self.loops_core.healing_active = True
-        self.state = 3
+        self.state = GameState.HEALING
     
     def stop_sleeping(self):
         self.loops_core.healing_active = False
-        self.state = 0
+        self.state = GameState.MENU
         
     def start_training(self, choice:str):
         self.loops_core.training_attribute = choice
         self.loops_core.training_active = True
-        self.state = 2
+        self.state = GameState.TRAINING
     
     def stop_training(self):
         self.loops_core.training_active = False
-        self.state = 0
+        self.state = GameState.MENU
     
-    def start_battle(self):
-        self.loops_core.batte_active = True
-        self.state = 1
+    def start_menu_state(self):
+        self.state = GameState.MENU
+    
+    def stop_battle(self):
+        self.state = GameState.MENU
+        self.loops_core.battle_active = False
+    
+    def start_battle(self, location:str):
+        self.loops_core.monster_location = location
+        self.state = GameState.BATTLE
         
     def manage_equips_core(self, option:bool, item:str, body_part:str):
         if option:
