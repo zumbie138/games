@@ -1,5 +1,5 @@
 from gui.ui import GuiBase
-from gui.widgets import Text, Button, PlayerStatusDisplay
+from gui.widgets import Text, Button, PlayerStatusDisplay, MonsterStatusDisplay
 
 class AdventureScreen(GuiBase):
     MODE_ADVENTURE = 1
@@ -39,8 +39,7 @@ class AdventureScreen(GuiBase):
             Text(100, 50, 300, 50, 'Battle in progress!'),
             Button(300, 300, 150, 50, 'Stop Battle', 
                action=self.stop_battle),
-            Text(100, 350, 300, 50, f'Monster: '),
-            Text(100, 400, 300, 50, f'HP: ')
+            MonsterStatusDisplay(200, 100, 180, 200, game_core=self.app.game_core)
         ]
     
     def start_battle(self, location):

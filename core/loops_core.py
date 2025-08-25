@@ -289,36 +289,41 @@ class GameloopsCore(GameBase):
 
     def _check_combat_end(self):
         if self.monster.life <=0:
+            MessageLog.add_message('You kill the monster.')
             self._monster_reward()
             self.battle_active = False
+        if self.player.life <= 0:
+            MessageLog.add_message('Youre defeated.')
+            self.battle_active = False
+            self.healing_active = True
+            self.conjuring_spell.reset_buffs()
 
     def update_combat_loop(self, dt):
-        if not self.battle_active:
+        if not self.battle_active and not self.healing_active:
             self.current_turn = 0
             self._monster_encounter()
 
-        self.combat_timers['player'] += dt
-        self.combat_timers['monster'] += dt
-        self.combat_timers['buffs'] += dt
+        if not self.healing_active:
+            self.combat_timers['player'] += dt
+            self.combat_timers['monster'] += dt
+            self.combat_timers['buffs'] += dt
 
-        if self.combat_timers['player'] >= self.player.attack_speed:
-            self.conjuring_spell.conjuring_core(self.player.spells, self.player.intelligence, self.player.charisma)
-            self._player_attack()
-            self.combat_timers['player'] = 0
+            if self.combat_timers['player'] >= self.player.attack_speed:
+                self.conjuring_spell.conjuring_core(self.player.spells, self.player.intelligence, self.player.charisma)
+                self._player_attack()
+                self.combat_timers['player'] = 0
 
-        if self.combat_timers['monster'] >= self.monster.attack_speed:
-            self._monster_attack()
-            self.combat_timers['monster'] = 0
+            if self.combat_timers['monster'] >= self.monster.attack_speed:
+                self._monster_attack()
+                self.combat_timers['monster'] = 0
 
-        if self.combat_timers['buffs'] >= 5.0:
-            self._update_buffs
-            self.combat_timers['buffs'] = 0
-            self.current_turn += 1
-            MessageLog.add_message(f'Turn {self.current_turn} ends.')
+            if self.combat_timers['buffs'] >= 5.0:
+                self._update_buffs()
+                self.combat_timers['buffs'] = 0
+                self.current_turn += 1
+                MessageLog.add_message(f'Turn {self.current_turn} ends.')
 
-        self._check_combat_end()
-        if self.player.life <= 0:
-            self.healing_active = True
+            self._check_combat_end()
         if self.healing_active:
             self.update_healing(dt, 'passive')
             

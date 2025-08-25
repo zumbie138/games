@@ -44,7 +44,6 @@ class Button(WidgetBase):
         #implementar alguma mudança de estado aqui
         pass
     
-    
 '''classe destinada a campos de texto input'''
 class TextInput(WidgetBase):
     def __init__(self, x, y, width, height, placeholder='', max_length=20, on_change=None):
@@ -120,8 +119,7 @@ class TextInput(WidgetBase):
     
     def update(self):
         pass
-    
-    
+       
 '''classe destinada a imprimir textos nas telas'''
 class Text(WidgetBase):
     def __init__(self, x, y, width, height, text, font_size=24, color=(255,255,255), font_name=None):
@@ -140,8 +138,7 @@ class Text(WidgetBase):
     
     def update(self):
         pass
-               
-              
+                   
 '''classe destidana a imprimir o personagem nas telas'''
 class PlayerStatusDisplay(WidgetBase):
     def __init__(self, x, y, width, height, game_core=None):
@@ -193,7 +190,52 @@ class PlayerStatusDisplay(WidgetBase):
     def handle_event(self, event):
         pass
     
-
+'''classe destinada a imprimir monstros na tela'''
+class MonsterStatusDisplay(WidgetBase):
+    def __init__(self, x, y, width, height, game_core=None):
+        super().__init__(x, y, width, height)
+        self.game_core = game_core
+        self.title_font = pygame.font.SysFont(None, 24)
+        self.font = pygame.font.SysFont(None, 20, bold=True)
+        self.color = (255,255,255)
+        self.bg_color = (50,50,50,150)
+        self.padding = 10
+        
+    def draw(self, surface:pygame.Surface):
+        if not hasattr(self.game_core, 'monster') or not self.game_core.monster:
+            return
+        
+        monster = self.game_core.monster
+        
+        bg_surface = pygame.Surface((self.rect.width, self.rect.height), pygame.SRCALPHA)
+        pygame.draw.rect(bg_surface, self.bg_color, bg_surface.get_rect(), border_radius=5)
+        surface.blit(bg_surface, self.rect)
+        
+        y_offset = self.padding
+        x_pos = self.rect.x + self.padding
+        
+        title = self.title_font.render(f'{monster.name} - Lvl :{monster.level}', True, (255, 215, 0))
+        surface.blit(title, (x_pos, self.rect.y + y_offset))
+        
+        y_offset += title.get_height() + 15
+        
+        attributes = [
+            f"Type: {monster.type} | Level: {monster.level}",
+            f"HP: {monster.life:.2f}/{monster.max_life}",
+            f"Ataque: {monster.attack:.2f} | Defesa: {monster.defense:.2f}"
+        ]
+        
+        for attr in attributes:
+            text = self.font.render(attr, True, self.color)
+            surface.blit(text, (x_pos, self.rect.y + y_offset))
+            y_offset += text.get_height() + 5
+            
+    def update(self):
+        pass
+    
+    def handle_event(self, event):
+        pass
+    
 '''Classe destinada a fazer um Journal de logs de mensagem de açoes no jogo'''
 class Journal(WidgetBase):
     def __init__(self, x, y, width, height, max_lines=100, toggle_callback = None):
@@ -299,3 +341,81 @@ class Journal(WidgetBase):
         
     def update(self):
         pass
+
+'''classe destinada a manusear inventario e equipamentos'''
+class EquipamentSlot(WidgetBase):
+    def __init__(self, x, y, size, slot_type):
+        super.__init__(x,y,size,size)
+        self.slot_type = slot_type
+        self.item = None
+        self.color = (70, 70, 90)
+        self.highlight_color = (100, 100, 120)
+        self.is_highlighted = False
+        
+    def draw(self, surface):
+        color = self.highlight_color if self.is_highlighted else self.color
+        pygame.draw.rect(surface, color, self.rect, border_radius=3)
+        
+        font = pygame.font.SysFont(None, 20)
+        text = font.render(self.slot_type, True, (255, 255, 255))
+        text_rect = text.get_rect(center=self.rect.center)
+        surface.blit(text, text_rect)
+        
+        if self.item:
+            item_rect = pygame.Rect(
+                self.rect.x + 5,
+                self.rect.y + 5,
+                self.rect.width - 10,
+                self.rect.height - 10
+            )
+        pygame.draw.rect(surface, (150,150,170), item_rect, border_radius=2)
+        
+        item_font = pygame.font.SysFont(None, 16)
+        item_text = item_font.render(self.item[:3], True, (255, 255, 255))
+        item_text_rect = item_text.get_rect(center=item_rect.center)
+        surface.blit(item_text, item_text_rect)
+    
+    def can_accept_item(self):
+        return True
+    
+    def handle_event(self, event):
+        if event.type == pygame.MOUSEMOTION:
+            self.is_highlighted = self.rect.collidepoint(event.pos)
+        
+        return False
+    
+    def update(self):
+        return super().update()
+    
+'''classe destinada a fazer o inventario'''
+class InventoryItem(WidgetBase):
+    def __init__(self, x, y, width, height, item_name):
+        super().__init__(x, y, width, height)
+        self.item_name = item_name
+        self.is_dragged = False
+        self.original_position = (x, y)
+        self.color = (120, 120, 140)
+    
+    def draw(self, surface):
+        pygame.draw.rect(surface, self.color, self.rect, border_radius=3)
+        
+        font = pygame.font.SysFont(None, 18)
+        text = font.render(self.item_name, True, (255, 255, 255))
+        text_rect = text.get_rect(center=self.rect.center)
+        surface.blit(text, text_rect)
+    
+    def handle_event(self, event):
+        if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+            if self.rect.collidepoint(event.pos):
+                self.is_dragged = True
+                return True
+        
+        elif event.type == pygame.MOUSEBUTTONUP and event.button == 1:
+            self.is_dragged = False
+            return True
+        
+        elif event.type == pygame.MOUSEMOTION and self.is_dragged:
+            self.rect.move_ip(event.rel)
+            return True
+            
+        return False
