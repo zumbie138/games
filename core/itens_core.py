@@ -18,7 +18,14 @@ class ItensCore(GameBase):
         df_inv_itens = self.filter_dataframe_with_list_in_column(inventory_itens, self.itens_df, 'name')
         df_wearble = self.filter_dataframe_by_name(body_part,'wearing',df_inv_itens)
         return self.get_list_from_dataframe_columm('name',df_wearble)
-
+    
+    def get_equippable_items(self)->list:
+        inventory_itens = self.get_keys_as_list(self.player.inventory)
+        df_inv_itens = self.filter_dataframe_with_list_in_column(inventory_itens, self.itens_df, 'name')
+        df_wearble = self.filter_dataframe_by_name('equipment','type',df_inv_itens)
+        return self.get_list_from_dataframe_columm('name',df_wearble)
+        
+        
     def unequip_item(self, body_part:str):
         item_name = self.player.wearing[body_part]
         if item_name is not None:

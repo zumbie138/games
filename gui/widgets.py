@@ -1,6 +1,7 @@
 import pygame
 from gui.widget_base import WidgetBase
 from typing import List, Tuple
+from database.game_repository import MessageLog
 
 '''classe destinada a botoes em geral'''
 class Button(WidgetBase):
@@ -342,60 +343,38 @@ class Journal(WidgetBase):
     def update(self):
         pass
 
-'''classe destinada a manusear inventario e equipamentos'''
-class EquipamentSlot(WidgetBase):
-    def __init__(self, x, y, size, slot_type):
-        super.__init__(x,y,size,size)
-        self.slot_type = slot_type
-        self.item = None
-        self.color = (70, 70, 90)
-        self.highlight_color = (100, 100, 120)
-        self.is_highlighted = False
-        
-    def draw(self, surface):
-        color = self.highlight_color if self.is_highlighted else self.color
-        pygame.draw.rect(surface, color, self.rect, border_radius=3)
-        
-        font = pygame.font.SysFont(None, 20)
-        text = font.render(self.slot_type, True, (255, 255, 255))
-        text_rect = text.get_rect(center=self.rect.center)
-        surface.blit(text, text_rect)
-        
-        if self.item:
-            item_rect = pygame.Rect(
-                self.rect.x + 5,
-                self.rect.y + 5,
-                self.rect.width - 10,
-                self.rect.height - 10
-            )
-        pygame.draw.rect(surface, (150,150,170), item_rect, border_radius=2)
-        
-        item_font = pygame.font.SysFont(None, 16)
-        item_text = item_font.render(self.item[:3], True, (255, 255, 255))
-        item_text_rect = item_text.get_rect(center=item_rect.center)
-        surface.blit(item_text, item_text_rect)
-    
-    def can_accept_item(self):
-        return True
-    
-    def handle_event(self, event):
-        if event.type == pygame.MOUSEMOTION:
-            self.is_highlighted = self.rect.collidepoint(event.pos)
-        
-        return False
-    
-    def update(self):
-        return super().update()
-    
 '''classe destinada a fazer o inventario'''
-class InventoryItem(WidgetBase):
-    def __init__(self, x, y, width, height, item_name):
+class InventoryWidget(WidgetBase):
+    def __init__(self, x, y, width, height, game_core):
         super().__init__(x, y, width, height)
-        self.item_name = item_name
-        self.is_dragged = False
-        self.original_position = (x, y)
-        self.color = (120, 120, 140)
-    
+        self.game_core = game_core
+        self.dragging_item = None
+        self.drag_offset = (0, 0)
+        self.slot_rects = {}
+        self.item_rects = {}
+        self.font = pygame.font.Font(None, 20)
+        self.title_font = pygame.font.Font(None, 24)
+        self.slot_size = (60, 60)
+        self.item_size = (50, 50)
+        self.spacing = 10
+        
+        self.slot_positions = {
+            'head': (x + 20, y + 50),
+            'neck': (x + 20, y + 120),
+            'torso': (x + 20, y + 190),
+            'arms': (x + 20, y + 260),
+            'right hand': (x + 20, y + 330),
+            'left hand': (x + 20, y + 400),
+            'waist': (x + 20, y + 470),
+            'legs': (x + 90, y + 50),
+            'foot': (x + 90, y + 120),
+            'finger': (x + 90, y + 190),
+            'wrist': (x + 90, y + 260),
+            'ears': (x + 90, y + 330),
+            'back': (x + 90, y + 400)
+        }
+        self.inventory_area = pygame.Rect(x + 200, y + 50, width - 220, height - 70)
+        
     def draw(self, surface):
         pygame.draw.rect(surface, self.color, self.rect, border_radius=3)
         
@@ -405,17 +384,143 @@ class InventoryItem(WidgetBase):
         surface.blit(text, text_rect)
     
     def handle_event(self, event):
+        if not self.visible:
+            return
+        
         if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-            if self.rect.collidepoint(event.pos):
-                self.is_dragged = True
-                return True
-        
-        elif event.type == pygame.MOUSEBUTTONUP and event.button == 1:
-            self.is_dragged = False
-            return True
-        
-        elif event.type == pygame.MOUSEMOTION and self.is_dragged:
-            self.rect.move_ip(event.rel)
-            return True
+            self.handle_mouse_down(event)
             
-        return False
+        elif event.type == pygame.MOUSEBUTTONUP and event.button == 1:
+            self.handle_mouse_up(event)
+                
+    def handle_mouse_down(self, event):
+        mouse_pos = pygame.mouse.get_pos()
+        
+        for item_name, rect in self.item_rects.items():
+            if rect.collidepoint(mouse_pos):
+                self.dragging_item = item_name
+                self.drag_offset = (mouse_pos[0] - rect.x, mouse_pos[1] - rect.y)
+                break
+    
+    def handle_mouse_up(self, event):
+        if not self.dragging_item:
+            return
+        
+        mouse_pos = pygame.mouse.get_pos()
+        
+        for slot_name, slot_rect in self.slot_rects.items():
+            if slot_rect.collidepoint(mouse_pos):
+                success = self.game_core.itens_core.equip_item(self.dragging_item, slot_name)
+                if success:
+                    MessageLog.add_message(f'Equiped {self.dragging_item} in {slot_name}')
+                else:
+                    MessageLog.add_message(f'Cannot equip {self.dragging_item} in {slot_name}')
+                break
+            
+        self.dragging_item = None
+        
+    def update(self):
+        self.update_item_rects()
+        self.update_slot_rects() 
+    
+    def update_item_rects(self):
+        self.item_rects.clear()
+        
+        x, y =self.inventory_area.x + 10, self.inventory_area.y +10
+        col, row = 0, 0
+        
+        equippable_item = self.game_core.itens_core.get_equippable_items()
+        
+        for item in equippable_item:
+            item_rect = pygame.Rect(x, y, self.item_size[0], self.item_size[1])
+            self.item_rects[item['name']] = item_rect
+            
+            x += self.item_size[0] + self.spacing
+            col += 1
+            
+            if col >= 4:
+                col = 0
+                x = self.inventory_area.x + 10
+                y += self.item_size[1] + self.spacing
+                row += 1
+                
+    def update_slot_rects(self):
+        self.slot_rects.clear()
+        for slot_name, pos in self.slot_positions.items():
+            slot_rect = pygame.Rect(pos[0], pos[1], self.slot_size[0], self.slot_size[1])
+            self.slot_rects[slot_name] = slot_rect
+    
+    def draw(self, surface:pygame.Surface):
+        if self.visible:
+            return
+        
+        pygame.draw.rect(surface, (40,40,40), self.rect)
+        pygame.draw.rect(surface, (80,80,80), self.rect, 2)
+        
+        title = self.title_font.render('Equipament & Inventory', True, (255,255,255))
+        surface.blit(title, (self.x + 10, self.y+10))
+        
+        self.draw_equipment_slot(surface)
+
+        pygame.draw.rect(surface, (30,30,30), self.inventory_area)
+        pygame.draw.rect(surface, (100,100,100), self.inventory_area, 2)
+        
+        self.draw_inventory_itens(surface)
+        
+        if self.dragging_item:
+            self.draw_dragging_item(surface)
+            
+    def draw_equipment_slot(self, surface:pygame.Surface):
+        for slot_name, rect in self.slot_rects.items():
+            pygame.draw.rect(surface, (40,40,40), rect)
+            pygame.draw.rect(surface, (80,80,80), rect, 2)
+            
+            slot_text = self.font.render(slot_name[:4], True, (255,255,255))
+            surface.blit(slot_text, (rect.x +5, rect.y + 5))
+            
+            equipped_item = self.game_core.player.wearing[slot_name]
+            if equipped_item:
+                item_color = (150, 200, 150)
+                pygame.draw.rect(surface, item_color,
+                                 pygame.Rect(rect.x +5, rect.y +5, 
+                                             self.item_size[0], self.item_size[1]))
+                
+                item_text = self.font.render(equipped_item[:3], True, (0,0,0))
+                surface.blit(item_text, (rect.x + 15, rect.y + 20))
+            
+    def draw_inventory_itens(self, surface:pygame.Surface):
+        equippable_items = self.game_core.itens_core.get_equippable_items()
+        
+        for item_name, rect in self.item_rects.items():
+            item_info = next((item for item in equippable_items if item['name'] == item_name), None)
+            if item_info:
+                slot_colors = {
+                    'head': (200, 150, 150),
+                    'torso': (150, 200, 150),
+                    'arms': (150, 150, 200),
+                    'legs': (200, 200, 150),
+                    'foot': (200, 150, 200),
+                    'default': (180, 180, 180)
+                }
+                
+                color = slot_colors.get(item_info['slot_type'], slot_colors['default'])
+                pygame.draw.rect(surface, color, rect)
+                pygame.draw.rect(surface, (100, 100, 100), rect, 1)
+                
+                name_text = self.font.render(item_name[:4], True, (0, 0, 0))
+                quant_text = self.font.render(str(item_info['quantity']), True, (255, 255, 255))
+                
+                surface.blit(name_text, (rect.x + 5, rect.y + 5))
+                surface.blit(quant_text, (rect.x + 35, rect.y + 35))
+                
+    def draw_dragging_item(self, surface:pygame.Surface):
+        mouse_x, mouse_y = pygame.mouse.get_pos()
+        item_rect = pygame.Rect(mouse_x - self.drag_offset[0], 
+                              mouse_y - self.drag_offset[1],
+                              self.item_size[0], self.item_size[1])
+        
+        pygame.draw.rect(surface, (255, 200, 100), item_rect)
+        pygame.draw.rect(surface, (200, 150, 50), item_rect, 2)
+        
+        name_text = self.font.render(self.dragging_item[:4], True, (0, 0, 0))
+        surface.blit(name_text, (item_rect.x + 5, item_rect.y + 5))

@@ -1,11 +1,12 @@
 from gui.ui import GuiBase
-from gui.widgets import Button, Text, PlayerStatusDisplay
+from gui.widgets import Button, Text, PlayerStatusDisplay, InventoryWidget
 
 class RefugeScreen(GuiBase):
     def __init__(self, screen, change_screen_callback, app=None):
         super().__init__(screen, change_screen_callback)
         self.current_object = None
         self.app = app
+        self.inventory_widget = None
         self.setup_ui()
         
     def setup_ui(self):
@@ -44,6 +45,11 @@ class RefugeScreen(GuiBase):
         
         
     def init_objects(self):
+        self.inventory_widget = InventoryWidget(
+            100, 100, 600, 400, self.app.game_core
+        )
+        self.inventory_widget.visible = False
+        
         self.object_widgets = {
             'bed':[
                 Text(300, 150, 100, 50, "You're sleeping now."),
@@ -83,11 +89,15 @@ class RefugeScreen(GuiBase):
             ],
             'wardobe':[
                 Text(300, 50, 100, 50, "This is your wardobe"),
+                Button(500, 500, 150, 50, 'Close wardobe',
+                       action=lambda: self.stop_action('wardobe'))
             ]
         }
+        
         for object in self.object_widgets.values():
             for widget in object:
                 widget.visible = False
+        self.widgets.append(self.inventory_widget)
         
     def refuge_state(self, object_text, train_type = None):
         if self.current_object:
@@ -97,6 +107,11 @@ class RefugeScreen(GuiBase):
                     self.widgets.remove(widget)
                     
         self.current_object = object_text
+        if object_text == 'wardobe':
+            self.inventory_widget.visible = True
+        else:
+            self.inventory_widget.visible = False
+            
         if object_text == 'training':
             self.app.run_train_status(train_type)
         elif object_text == 'bed':
@@ -113,9 +128,12 @@ class RefugeScreen(GuiBase):
                 self.app.game_core.stop_sleeping()
             case 'train':
                 self.app.game_core.stop_training()
+            case 'wardobe':
+                self.inventory_widget.visible = False
         
         if self.current_object:
             for widget in self.object_widgets[self.current_object]:
                 widget.visible = False
                 if widget in self.widgets:
                     self.widgets.remove(widget)
+            self.current_object = None

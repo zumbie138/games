@@ -6,4 +6,4 @@ from .city_screen import CityScreen
 from .refuge_screen import RefugeScreen
 from .adventure_screen import AdventureScreen
 from .ui import GuiBase
-from .widgets import Button, Text, TextInput, Journal, PlayerStatusDisplay
+from .widgets import Button, Text, TextInput, Journal, PlayerStatusDisplay, InventoryWidget, MonsterStatusDisplay
