@@ -81,40 +81,6 @@ class GameCore(GameBase):
         char_data = self.get_char_from_json(char_choose)
         self.generation.load_character(char_data)
 
-    def city_status_core(self, text:str):
-        print(text)
-        print('Not working yet.')
-    
-    def battle_status_core(self, location:str):
-        # stop_battle = False
-        # control_thread = threading.Thread(target=self.loops_core.keyboard_control)
-        # control_thread.start()
-        # while not stop_battle:
-            # self.loops_core.batte_active = True
-        if not self.loops_core.battle_active:
-            self._monster_encounter(location)
-        stop_battle = self.loops_core.battle_loop_manage()
-    
-    # def show_character_core(self):
-    #     print('You see yourself in the mirror:')
-    #     print(f'Your name is: {self.player.name}, you are an {self.player.race} {self.player.class_type}')
-    #     print(f'HP: {self.player.life:.2f}/{self.player.max_life}\nMANA: {self.player.mana}/{self.player.max_mana}')
-    #     print(f'You are level {self.player.level}, with {self.player.experience} of experience and your atributes are:\nStrength: {self.player.strength:.2f}\nAgility: {self.player.agility:.2f}\nVitality: {self.player.vitality:.2f}\nInteligence: {self.player.intelligence:.2f}\nCharisma: {self.player.charisma:.2f}')
-    #     print(f'Attack:{self.player.attack:.2f} Defense:{self.player.defense:.2f} attack speed:{self.player.attack_speed:.2f}')
-    #     print(f'Your list of spells: {self.player.spells}')
-    #     print(f'inventory:{self.player.inventory}')
-    #     print(f'Equipped itens:\nMax Life: {self.equips.max_life}\nMax Mana: {self.equips.max_mana}\nAttack: {self.equips.attack}\nAttack speed: {self.equips.attack_speed}\nDefense: {self.equips.defense}')
-        
-        
-    #     MessageLog.add_message('You see yourself in the mirror:')
-    #     MessageLog.add_message(f'Your name is: {self.player.name}, you are an {self.player.race} {self.player.class_type}')
-    #     MessageLog.add_message(f'HP: {self.player.life:.2f}/{self.player.max_life}\nMANA: {self.player.mana}/{self.player.max_mana}')
-    #     MessageLog.add_message(f'You are level {self.player.level}, with {self.player.experience} of experience and your atributes are:\nStrength: {self.player.strength:.2f}\nAgility: {self.player.agility:.2f}\nVitality: {self.player.vitality:.2f}\nInteligence: {self.player.intelligence:.2f}\nCharisma: {self.player.charisma:.2f}')
-    #     MessageLog.add_message(f'Attack:{self.player.attack:.2f} Defense:{self.player.defense:.2f} attack speed:{self.player.attack_speed:.2f}')
-    #     MessageLog.add_message(f'Your list of spells: {self.player.spells}')
-    #     MessageLog.add_message(f'inventory:{self.player.inventory}')
-    #     MessageLog.add_message(f'Equipped itens:\nMax Life: {self.equips.max_life}\nMax Mana: {self.equips.max_mana}\nAttack: {self.equips.attack}\nAttack speed: {self.equips.attack_speed}\nDefense: {self.equips.defense}')
-
     def start_healing_sleeping(self):
         self.loops_core.healing_active = True
         self.state = GameState.HEALING

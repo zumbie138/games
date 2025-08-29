@@ -97,6 +97,7 @@ class RefugeScreen(GuiBase):
         for object in self.object_widgets.values():
             for widget in object:
                 widget.visible = False
+
         self.widgets.append(self.inventory_widget)
         
     def refuge_state(self, object_text, train_type = None):
@@ -107,6 +108,7 @@ class RefugeScreen(GuiBase):
                     self.widgets.remove(widget)
                     
         self.current_object = object_text
+        
         if object_text == 'wardobe':
             self.inventory_widget.visible = True
         else:

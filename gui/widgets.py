@@ -251,11 +251,23 @@ class Journal(WidgetBase):
         self.scroll_bar_color = (100, 100, 120)
         self.scroll_bar_width = 10
         self.toggle_callback = toggle_callback
+        self.auto_scroll = True
         
     def add_entry(self, text: str, color=(255, 255, 255)):
         self.messages.append((text, color))
         if len(self.messages) > self.max_lines:
             self.messages.pop(0)
+            
+        if self.auto_scroll:
+            self.scroll_to_botton()
+    
+    def scroll_to_botton(self):
+        visivible_lines = self.rect.height // self.line_height
+        total_lines = len(self.messages)
+        self.scroll_offset = max(0, total_lines - visivible_lines)
+    
+    def scroll_to_top(self):
+        self.scroll_offset = 0
     
     def handle_event(self, event):
         if not self.visible:
@@ -264,19 +276,29 @@ class Journal(WidgetBase):
         if event.type == pygame.MOUSEBUTTONDOWN:
             if event.button == 4:
                 self.scroll_offset = max(0, self.scroll_offset-1)
+                self.auto_scroll = False
                 return True
             elif event.button == 5:
                 max_offset = max(0, len(self.messages) - self.rect.height // self.line_height)
                 self.scroll_offset = min(max_offset, self.scroll_offset +1)
+                
+                if self.scroll_offset >= max_offset:
+                    self.auto_scroll = True
+                    
                 return True
                 
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_UP:
                 self.scroll_offset = max(0, self.scroll_offset - 1)
+                self.auto_scroll = False
                 return True
             elif event.key == pygame.K_DOWN:
                 max_offset = max(0, len(self.messages) - self.rect.height // self.line_height)
                 self.scroll_offset = min(max_offset, self.scroll_offset +1)
+                
+                if self.scroll_offset >= max_offset:
+                    self.auto_scroll = True
+                    
                 return True
         return False
         
@@ -299,10 +321,11 @@ class Journal(WidgetBase):
         surface.set_clip(text_area)
         
         visivible_lines = self.rect.height // self.line_height
-        start_idx = max(0, len(self.messages) - visivible_lines - self.scroll_offset)
+        total_lines = len(self.messages)
         
         y_pos = self.rect.y + 5
-        for i in range(start_idx, len(self.messages)):
+        
+        for i in range(self.scroll_offset, min(self.scroll_offset + visivible_lines, total_lines)):
             if y_pos > self.rect.y + self.rect.height:
                 break
             
@@ -316,14 +339,15 @@ class Journal(WidgetBase):
         self._draw_scrollbar(surface)
         
     def _draw_scrollbar(self, surface):
-        if len(self.messages) <= self.rect.height // self.line_height:
-            return
-        
         total_lines = len(self.messages)
         visible_lines = self.rect.height // self.line_height
+        
+        if total_lines <= visible_lines:
+            return
+        
         scrollbar_height = max(20, (visible_lines / total_lines) * self.rect.height)
         
-        scroll_ratio = self.scroll_offset / (total_lines - visible_lines)
+        scroll_ratio = self.scroll_offset / max(1, total_lines - visible_lines)
         scroll_y = self.rect.y + scroll_ratio * (self.rect.height - scrollbar_height)
         
         scroll_rect = pygame.Rect(
@@ -337,11 +361,15 @@ class Journal(WidgetBase):
         
     def toggle_visibility(self):
         self.visible = not self.visible
+        if self.visible:
+            self.scroll_to_botton()
+            self.auto_scroll = True
         if self.toggle_callback:
             self.toggle_callback(self.visible)
         
     def update(self):
-        pass
+        if self.auto_scroll:
+            self.scroll_to_botton()
 
 '''classe destinada a fazer o inventario'''
 class InventoryWidget(WidgetBase):
@@ -350,8 +378,10 @@ class InventoryWidget(WidgetBase):
         self.game_core = game_core
         self.dragging_item = None
         self.drag_offset = (0, 0)
+        self.drag_from_slot = None
         self.slot_rects = {}
         self.item_rects = {}
+        self.equipped_rects = {}
         self.font = pygame.font.Font(None, 20)
         self.title_font = pygame.font.Font(None, 24)
         self.slot_size = (60, 60)
@@ -359,69 +389,104 @@ class InventoryWidget(WidgetBase):
         self.spacing = 10
         
         self.slot_positions = {
-            'head': (x + 20, y + 50),
-            'neck': (x + 20, y + 120),
-            'torso': (x + 20, y + 190),
-            'arms': (x + 20, y + 260),
-            'right hand': (x + 20, y + 330),
-            'left hand': (x + 20, y + 400),
-            'waist': (x + 20, y + 470),
-            'legs': (x + 90, y + 50),
-            'foot': (x + 90, y + 120),
-            'finger': (x + 90, y + 190),
-            'wrist': (x + 90, y + 260),
-            'ears': (x + 90, y + 330),
-            'back': (x + 90, y + 400)
+            'ears': (x + 20, y + 30),
+            'back': (x + 20, y + 100),
+            'left hand': (x + 20, y + 170),
+            'wrist': (x + 20, y + 240),
+            
+            'head': (x + 100, y + 30),
+            'torso': (x + 100, y + 100),
+            'waist': (x + 100, y + 170),
+            'legs': (x + 100, y + 240),
+            'foot': (x + 100, y + 320),
+            
+            'neck': (x + 180, y + 30),
+            'arms': (x + 180, y + 100),
+            'right hand': (x + 180, y + 170),
+            'finger': (x + 180, y + 240),
         }
-        self.inventory_area = pygame.Rect(x + 200, y + 50, width - 220, height - 70)
-        
-    def draw(self, surface):
-        pygame.draw.rect(surface, self.color, self.rect, border_radius=3)
-        
-        font = pygame.font.SysFont(None, 18)
-        text = font.render(self.item_name, True, (255, 255, 255))
-        text_rect = text.get_rect(center=self.rect.center)
-        surface.blit(text, text_rect)
+        self.inventory_area = pygame.Rect(x + 260, y + 50, width - 270, height - 70)
     
     def handle_event(self, event):
         if not self.visible:
-            return
+            return False
         
         if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
             self.handle_mouse_down(event)
             
         elif event.type == pygame.MOUSEBUTTONUP and event.button == 1:
             self.handle_mouse_up(event)
-                
+        
+        return False
+    
     def handle_mouse_down(self, event):
         mouse_pos = pygame.mouse.get_pos()
         
         for item_name, rect in self.item_rects.items():
             if rect.collidepoint(mouse_pos):
                 self.dragging_item = item_name
+                self.drag_from_slot = False
                 self.drag_offset = (mouse_pos[0] - rect.x, mouse_pos[1] - rect.y)
-                break
+                return True
+            
+        for slot_name, rect in self.equipped_rects.items():
+            if rect.collidepoint(mouse_pos):
+                equipped_item = self.game_core.player.wearing[slot_name]
+                if equipped_item:
+                    self.dragging_item = equipped_item
+                    self.drag_from_slot = slot_name
+                    self.drag_offset = (mouse_pos[0] - rect.x, mouse_pos[1] - rect.y)
+                    return True
+        
+        return False
     
     def handle_mouse_up(self, event):
         if not self.dragging_item:
-            return
-        
+            return False
+            
         mouse_pos = pygame.mouse.get_pos()
+        handled = False
         
         for slot_name, slot_rect in self.slot_rects.items():
             if slot_rect.collidepoint(mouse_pos):
-                success = self.game_core.itens_core.equip_item(self.dragging_item, slot_name)
-                if success:
-                    MessageLog.add_message(f'Equiped {self.dragging_item} in {slot_name}')
+                if self.drag_from_slot:
+                    success = self.game_core.itens_core.equip_item(self.dragging_item, slot_name)
+                    if success:
+                        MessageLog.add_message(f"Moved {self.dragging_item} to {slot_name}")
+                    else:
+                        MessageLog.add_message(f"Cannot equip {self.dragging_item} in {slot_name}")
                 else:
-                    MessageLog.add_message(f'Cannot equip {self.dragging_item} in {slot_name}')
+                    success = self.game_core.itens_core.equip_item(self.dragging_item, slot_name)
+                    if success:
+                        MessageLog.add_message(f"Equipped {self.dragging_item} in {slot_name}")
+                    else:
+                        MessageLog.add_message(f"Cannot equip {self.dragging_item} in {slot_name}")
+                handled = True
                 break
-            
+        
+        if not handled and self.inventory_area.collidepoint(mouse_pos) and self.drag_from_slot:
+            success = self.game_core.itens_core.unequip_item(self.drag_from_slot)
+            if success:
+                MessageLog.add_message(f"Unequipped {self.dragging_item}")
+            handled = True
+        
+        elif not handled and self.drag_from_slot:
+            success = self.game_core.itens_core.unequip_item(self.drag_from_slot)
+            if success:
+                MessageLog.add_message(f"Unequipped {self.dragging_item}")
+            handled = True
+        
+        elif not handled and not self.drag_from_slot:
+            handled = True
+        
         self.dragging_item = None
+        self.drag_from_slot = None
+        return handled
         
     def update(self):
         self.update_item_rects()
-        self.update_slot_rects() 
+        self.update_slot_rects()
+        self.update_equipped_rects()
     
     def update_item_rects(self):
         self.item_rects.clear()
@@ -449,9 +514,19 @@ class InventoryWidget(WidgetBase):
         for slot_name, pos in self.slot_positions.items():
             slot_rect = pygame.Rect(pos[0], pos[1], self.slot_size[0], self.slot_size[1])
             self.slot_rects[slot_name] = slot_rect
+            
+    def update_equipped_rects(self):
+        self.equipped_rects.clear()
+        for slot_name, rect in self.slot_rects.items():
+            equipped_item = self.game_core.itens_core.player.wearing[slot_name]
+            if equipped_item:
+                item_rect = pygame.Rect(rect.x + 5, rect.y + 5, 
+                                      self.item_size[0], self.item_size[1])
+                self.equipped_rects[slot_name] = item_rect
+    
     
     def draw(self, surface:pygame.Surface):
-        if self.visible:
+        if not self.visible:
             return
         
         pygame.draw.rect(surface, (40,40,40), self.rect)

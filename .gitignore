@@ -3,6 +3,7 @@
 *.pyc
 *.spec
 *.psd
+*.txt
 ambiente/
 __pycache__/
 .vscode/
