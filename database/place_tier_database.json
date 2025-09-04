@@ -1,0 +1,62 @@
+{
+    "001":{
+        "name":"Green Land",
+        "tier":"tier 1",
+        "city":"Great Meadow",
+        "min level": 1
+    },
+    "002":{
+        "name":"Dark Woods",
+        "tier":"tier 2",
+        "city":"elf city",
+        "min level": 5
+    },
+    "003":{
+        "name":"Salt Desert",
+        "tier":"tier 3",
+        "city":"orc city",
+        "min level": 10
+    },
+    "004":{
+        "name":"Mountain Wall",
+        "tier":"tier 4",
+        "city":"angel city",
+        "min level": 15
+    },
+    "005":{
+        "name":"Cursed Swamp",
+        "tier":"tier 5",
+        "city":"swamp city",
+        "min level": 20
+    },
+    "006":{
+        "name":"Heavy Plains",
+        "tier":"tier 6",
+        "city":"great capitol",
+        "min level": 25
+    },
+    "007":{
+        "name":"Moisty Caves",
+        "tier":"tier 7",
+        "city":"Tunnel city",
+        "min level": 30
+    },
+    "008":{
+        "name":"Swamp Forest",
+        "tier":"tier 8",
+        "city":"Great Meadow",
+        "min level": 35
+    },
+    "009":{
+        "name":"Tragedy fields",
+        "tier":"tier 9",
+        "city":"Great Meadow",
+        "min level": 40
+    },
+    "010":{
+        "name":"Great Volcano",
+        "tier":"tier 10",
+        "city":"Great Meadow",
+        "min level": 45
+    }
+}

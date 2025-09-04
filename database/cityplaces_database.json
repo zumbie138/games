@@ -15,7 +15,58 @@
         "name":"Green goods",
         "type":"store",
         "city":"Great Meadow",
-        "buy_option":{},
-        "sell_option":{}
+        "buy_option":{"minnor health potion":10,"minnor mana potion":10},
+        "sell_option":{"vampire teeth":2, "venom belly":5}
+    },
+    "004":{
+        "name":"Green Tavern",
+        "type":"tavern",
+        "city":"Great Meadow",
+        "mission":["rat plague", "deal with bandits","cross cut road"]
+    },
+    "006":{
+        "name":"The bowmaker",
+        "type":"blacksmith",
+        "city":"elf city",
+        "craft":{"bow":{"wood":1,"flax":1}}
+    },
+    "007":{
+        "name":"tree market",
+        "type":"store",
+        "city":"elf city",
+        "buy_option":{"health potion":20,"mana potion":20},
+        "sell_option":{"vampire teeth":2, "venom belly":5}
+    },
+    "008":{
+        "name":"alchemy lodge",
+        "type":"store",
+        "city":"elf city",
+        "buy_option":{"health potion":20,"mana potion":20},
+        "sell_option":{"vampire teeth":2, "venom belly":5}
+    },
+    "009":{
+        "name":"woods gossip",
+        "type":"tavern",
+        "city":"elf city",
+        "mission":["cut the tree", "harvrest fruits"]
+    },
+    "010":{
+        "name":"dark blacksmith",
+        "type":"blacksmith",
+        "city":"orc city",
+        "craft":{"heavy armor":{"dark metal": 2000,"hide":140}}
+    },
+    "011":{
+        "name":"desert store",
+        "type":"store",
+        "city":"orc city",
+        "buy_option":{"heavy leather gloves":2000},
+        "sell_option":{"leather gloves":15}
+    },
+    "012":{
+        "name":"dark blacksmith",
+        "type":"blacksmith",
+        "city":"orc city",
+        "healing_cost":30
     }
 }

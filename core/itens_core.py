@@ -69,3 +69,23 @@ class ItensCore(GameBase):
             self.generation.update_character()
             return True
         return False
+    
+class City(GameBase):
+    def __init__(self, places_df, city):
+        self.places_df = places_df
+        self.current_city = city
+        self.current_places = self.get_list_from_dataframe_columm('name', places_df)
+        self.places_type = self.get_list_from_dataframe_columm('type', places_df)
+        self.places_info = {}
+    
+    def _generate_places(self):
+        for i, row in self.places_df.iterrow():
+            self.places_info[row['name']] = {
+                'type':row['type'],
+                'craft':row['craft'],
+                'healing_cost':row['healing_cost'],
+                'buy_option':row['buy_option'],
+                'sell_option':row['sell_option'],
+                'mission':row['mission']
+            }
+            

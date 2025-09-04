@@ -3,7 +3,7 @@ from .itens_core import ItensCore
 from .spells_core import ConjuringSpell
 from .loops_core import GameloopsCore
 from .generation_core import GenerationCore
-import threading
+
 
 class GameCore(GameBase):
     def __init__(self):
@@ -15,14 +15,17 @@ class GameCore(GameBase):
         self.generation = GenerationCore()
         self.repository = GameRepository()
         
-        self.state = 0
+        self.current_tier = None
+        self.state = GameState.MENU
         self.df_classes = self.get_database_dataframe('class_database.json')
         self.df_spells = self.get_database_dataframe('spells_database.json')
         self.locations_df = self.get_database_dataframe('locations_database.json')
+        self.tiers_df = self.get_database_dataframe('place_tier_database.json')
+        self.city_places_df = self.get_database_dataframe('cityplaces_database.json')
 
     @property
     def player(self):
-        return self.repository.get_resource('Player')    
+        return self.repository.get_resource('Player')
     @player.setter
     def player(self, value):
         self.repository.set_resource('Player', value)
@@ -45,7 +48,15 @@ class GameCore(GameBase):
     def buffs(self, value):
         self.repository.set_resource('Buffs', value)
     
+    def set_place_tier(self, tier):
+        self.current_tier = tier
+        tier_df_filtred = self.filter_dataframe_by_name(tier, 'tier', self.tiers_df)
+        city = tier_df_filtred.iloc[0]['city']
+        tier_city_df = self.filter_dataframe_by_name(city, 'city', self.city_places_df)
 
+        
+        print(tier_city_df)
+    
     def locations_allowed(self)->list:
         return self.get_list_by_number(self.player.level, 'min lvl', 'name', self.locations_df)
 

@@ -1,5 +1,5 @@
 import pygame
-from gui import InitialScreen, NEWCHARscreen, LoadGameScreen, GamePlay, CityScreen, RefugeScreen, Journal, AdventureScreen
+from gui import InitialScreen, NEWCHARscreen, LoadGameScreen, GamePlay, CityScreen, RefugeScreen, Journal, AdventureScreen, WorldMap
 from core import GameCore
 from graph import GraficMenus
 
@@ -53,7 +53,8 @@ class AppStatus():
             'start_game': GamePlay,
             'city_screen': CityScreen,
             'refuge_screen': RefugeScreen,
-            'adventure_screen': AdventureScreen
+            'adventure_screen': AdventureScreen,
+            'world_screen': WorldMap
         }
         if screen_name in ['initial_screen', 'create_char', 'load_char']:
             self.disable_auto_journal()
