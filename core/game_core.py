@@ -16,6 +16,8 @@ class GameCore(GameBase):
         self.repository = GameRepository()
         
         self.current_tier = None
+        self.current_city = None
+        self.locations_list = None
         self.state = GameState.MENU
         self.df_classes = self.get_database_dataframe('class_database.json')
         self.df_spells = self.get_database_dataframe('spells_database.json')
@@ -49,16 +51,18 @@ class GameCore(GameBase):
         self.repository.set_resource('Buffs', value)
     
     def set_place_tier(self, tier):
-        self.current_tier = tier
         tier_df_filtred = self.filter_dataframe_by_name(tier, 'tier', self.tiers_df)
         city = tier_df_filtred.iloc[0]['city']
-        tier_city_df = self.filter_dataframe_by_name(city, 'city', self.city_places_df)
-
+        self.tier_city_df = self.filter_dataframe_by_name(city, 'city', self.city_places_df)
+        self.current_tier = tier
+        self.current_city = city
         
-        print(tier_city_df)
+        self.locations_list = self.filter_dataframe_by_name(tier, 'tier', self.locations_df)
+        # self.locations_list = self.get_list_from_dataframe_columm('name', tier_df_locations)
+
     
     def locations_allowed(self)->list:
-        return self.get_list_by_number(self.player.level, 'min lvl', 'name', self.locations_df)
+        return self.locations_list
 
     def itens_allowed(self, body_part:str)->list:
         return self.itens_core.list_wearing_equipment(body_part)
@@ -87,10 +91,12 @@ class GameCore(GameBase):
         self.generation.generate_character(class_info_tuple)
         self.generation.update_wearing_status()
         self.save_character(self.player)
+        self.set_place_tier('tier 1')
 
     def load_character_core(self, char_choose):
         char_data = self.get_char_from_json(char_choose)
         self.generation.load_character(char_data)
+        self.set_place_tier('tier 1')
 
     def start_healing_sleeping(self):
         self.loops_core.healing_active = True

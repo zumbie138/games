@@ -3,44 +3,85 @@
         "name":"Great Meadow",
         "type":"city",
         "min lvl":1,
-        "world":"tier 1",
+        "tier":"tier 1",
         "monsters":{"bandit":5,"rat":50,"bat":100}
     },
     "002":{
         "name":"grassland",
         "type":"open field",
         "min lvl":1,
-        "world":"tier 1",
+        "tier":"tier 1",
         "monsters":{"goblin":5,"troll":5,"rat":40,"snake":100}
     },
     "003":{
         "name":"forest",
         "type":"open field",
         "min lvl":2,
-        "world":"tier 1",
+        "tier":"tier 1",
         "monsters":{"bear":5,"snake":25,"spider":30,"wolf":100}
     },
     "004":{
         "name":"Great Meadow graveyard",
         "type":"open field",
         "min lvl":4,
-        "world":"tier 1",
+        "tier":"tier 1",
         "monsters":{"ghost": 10, "skeleton":20,"rat zombie":30,"bat":100}
     },
     "005":{
         "name":"cave",
         "type":"dungeon",
         "min lvl":5,
-        "world":"tier 1",
-        "monster":{}
-
+        "tier":"tier 1",
+        "monster":{"orc":5,"skeleton":10,"troll":15,"goblin":20,"scorpion":20,"bat":100}
     },
     "006":{
         "name":"cut road",
         "type":"open field",
         "min lvl":5,
-        "world":"tier 1",
-        "monster":{}
+        "tier":"tier 1",
+        "monster":{"bandit":25,"smuggler":20,"troll":25,"wolf":100}
+    },
+    "007":{
+        "name":"elf city",
+        "type":"city",
+        "min lvl":5,
+        "tier":"tier 2",
+        "monsters":{"elf":5,"snake":50,"whisp":100}
+    },
+    "008":{
+        "name":"dark wood",
+        "type":"open field",
+        "min lvl":6,
+        "tier":"tier 2",
+        "monsters":{"bear":20,"elf":10,"ghost":20,"plant monster":30,"snake":100}
+    },
+    "009":{
+        "name":"ancient forest",
+        "type":"open field",
+        "min lvl":7,
+        "tier":"tier 2",
+        "monsters":{"elf archer":25,"centaur":25,"dwarf":30,"plant monster":100}
+    },
+    "010":{
+        "name":"cursed woods",
+        "type":"open field",
+        "min lvl":9,
+        "tier":"tier 2",
+        "monsters":{"tormented soul": 10, "cursed tree":20,"ghost":30,"whisp":100}
+    },
+    "011":{
+        "name":"dwarfs treasury cave",
+        "type":"dungeon",
+        "min lvl":9,
+        "tier":"tier 2",
+        "monster":{"giant spider":15,"mineral golem":20,"dwarf warrior":20,"dwarf":100}
 
+    },
+    "012":{
+        "name":"the heart of dark woods",
+        "type":"open field",
+        "min lvl":10,
+        "tier":"tier 2",
+        "monster":{"elf sorcerer":20,"wooden golem":20,"cursed tree":25,"elf archer":100}
     }
 }

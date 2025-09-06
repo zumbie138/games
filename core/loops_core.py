@@ -121,6 +121,7 @@ class GameloopsCore(GameBase):
             MessageLog.add_message('You kill the monster.')
             self._monster_reward()
             self.battle_active = False
+            self.conjuring_spell.reset_buffs()
         if self.player.life <= 0:
             MessageLog.add_message('Youre defeated.')
             self.battle_active = False

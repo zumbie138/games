@@ -24,12 +24,18 @@ class AdventureScreen(GuiBase):
             Button(600, 500, 150, 50, 'Return',action=lambda: self.change_screen('start_game'))
         ]
         loc_allowed = self.app.game_core.locations_allowed()
-        for i, location in enumerate(loc_allowed):
+        loc_allowed = loc_allowed.reset_index(drop=True)
+        
+        for i, location in loc_allowed.iterrows():
             btn = Button(
                 200, 100 + i*60, 150, 50,
-                location, action=lambda l=location: self.start_battle(l)
+                location['name'], action=lambda l=location['name']: self.start_battle(l),
+                enable=False
                 )
             widgets.append(btn)
+            if location['min lvl'] <= self.app.game_core.player.level:
+                btn.enable = True
+            
             
         return widgets
     
