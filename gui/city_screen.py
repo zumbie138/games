@@ -93,7 +93,7 @@ class CityScreen(GuiBase):
             item_text = Text(120, y, 300, 25, req_text)
             craft_btn = Button(
                 500, y, 100, 25, "Craft",
-                action=lambda i=item_name, r=requirements: print(f'{i}, {r}')
+                action=lambda i=item_name, r=requirements: self.app.game_core.itens_core.craft_item(i, r)
             )
             widget_list.extend([item_text, craft_btn])
             y += 30
@@ -123,7 +123,7 @@ class CityScreen(GuiBase):
                 item_text = Text(250, y, 200, 25, f"{item}: {price} gold")
                 buy_btn = Button(
                     520, y, 80, 25, "Buy",
-                    action=lambda i=item, p=price: print(f'{i}, {p}')
+                    action=lambda i=item, p=price: self.app.game_core.itens_core.buy_item(i, p)
                 )
                 widget_list.extend([item_text, buy_btn])
                 y += 30
@@ -137,7 +137,7 @@ class CityScreen(GuiBase):
                 item_text = Text(250, y, 200, 25, f"{item}: {price} gold each")
                 sell_btn = Button(
                     520, y, 80, 25, "Sell",
-                    action=lambda i=item, p=price: print(f'{i}, {p}')
+                    action=lambda i=item, p=price: self.app.game_core.itens_core.sell_item(i, p)
                 )
                 widget_list.extend([item_text, sell_btn])
                 y += 30

@@ -18,7 +18,9 @@ class GameCore(GameBase):
         self.current_tier = None
         self.current_city = None
         self.locations_list = None
+        
         self.state = GameState.MENU
+        
         self.df_classes = self.get_database_dataframe('class_database.json')
         self.df_spells = self.get_database_dataframe('spells_database.json')
         self.locations_df = self.get_database_dataframe('locations_database.json')
@@ -121,6 +123,7 @@ class GameCore(GameBase):
     def stop_battle(self):
         self.state = GameState.MENU
         self.loops_core.battle_active = False
+        self.loops_core.healing_active = False
     
     def start_battle(self, location:str):
         self.loops_core.monster_location = location

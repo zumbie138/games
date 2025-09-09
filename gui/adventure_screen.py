@@ -40,12 +40,26 @@ class AdventureScreen(GuiBase):
         return widgets
     
     def _crerate_battle_ui(self):
+        life_potion = self.app.game_core.itens_core.verify_life_potion()
+        mana_potion = self.app.game_core.itens_core.verify_mana_potion()
+        
+        player_status = PlayerStatusDisplay(400, 100, 280, 200, game_core=self.app.game_core)
+        monster_status = MonsterStatusDisplay(200, 100, 180, 200, game_core=self.app.game_core)
+        text = Text(100, 50, 300, 50, 'Battle in progress!')
+        stop_button = Button(300, 300, 150, 50, 'Stop Battle', 
+               action=self.stop_battle)
+        life_button = Button(50, 300, 50, 50, 'life potion',
+                action=lambda lp=life_potion :self.app.game_core.itens_core.drink_life_potion(lp))
+        mana_button = Button(50, 360, 50, 50, 'mana potion',
+                action=lambda mp=mana_potion:self.app.game_core.itens_core.drink_mana_potion(mp))
+        
+        if not life_potion:
+            life_button.enable = False
+        if not mana_potion:
+            mana_button.enable = False
+            
         return [
-            PlayerStatusDisplay(400, 100, 280, 200, game_core=self.app.game_core),
-            Text(100, 50, 300, 50, 'Battle in progress!'),
-            Button(300, 300, 150, 50, 'Stop Battle', 
-               action=self.stop_battle),
-            MonsterStatusDisplay(200, 100, 180, 200, game_core=self.app.game_core)
+            player_status, monster_status, text, stop_button, life_button, mana_button
         ]
     
     def start_battle(self, location):

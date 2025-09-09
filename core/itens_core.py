@@ -38,11 +38,11 @@ class ItensCore(GameBase):
                     'slot_type': item_info['wearing']
                 })
         return equippable_items
-    
+
     def get_equippable_items_df(self):
         inventory_itens = self.get_keys_as_list(self.player.inventory)
         return self.filter_dataframe_with_list_in_column(inventory_itens, self.itens_df, 'name')
-        
+
     def unequip_item(self, body_part:str):
         item_name = self.player.wearing[body_part]
         if item_name is not None:
@@ -54,7 +54,7 @@ class ItensCore(GameBase):
         else:
             print('Theres nothing equiped already.')
             MessageLog.add_message('Theres nothing equiped already.')
-        
+
     def equip_item(self, item_name:str, body_part:str):
         item_info = self.get_item_info(item_name)
         if item_info and item_info['wearing'] == body_part:
@@ -69,23 +69,79 @@ class ItensCore(GameBase):
             self.generation.update_character()
             return True
         return False
-    
-class City(GameBase):
-    def __init__(self, places_df, city):
-        self.places_df = places_df
-        self.current_city = city
-        self.current_places = self.get_list_from_dataframe_columm('name', places_df)
-        self.places_type = self.get_list_from_dataframe_columm('type', places_df)
-        self.places_info = {}
-    
-    def _generate_places(self):
-        for i, row in self.places_df.iterrow():
-            self.places_info[row['name']] = {
-                'type':row['type'],
-                'craft':row['craft'],
-                'healing_cost':row['healing_cost'],
-                'buy_option':row['buy_option'],
-                'sell_option':row['sell_option'],
-                'mission':row['mission']
-            }
+
+    def craft_item(self, item_name, ingredients:dict):
+        ingredients_test = []
+        for key, values in ingredients.items():
+            if key in self.player.inventory and self.player.inventory[key] >= values:
+                condition = True
+            else:
+                condition = False
+            ingredients_test.append(condition)
+        craft_condition = tuple(ingredients_test)
+        if all(craft_condition):
+            for key, values in ingredients.items():
+                self.player.inventory[key] -= values
+                if self.player.inventory[key] <= 0:
+                    del self.player.inventory[key]
+            self.player.inventory.get(item_name, 0) + 1
+            MessageLog.add_message(f'You craft the item {item_name}.')
+        else:
+            MessageLog.add_message('You dont have enought material to craft.')
             
+            
+    def buy_item(self, item_name, item_price):
+        if item_price <= self.player.inventory['gold']:
+            self.player.inventory['gold'] -= item_price
+            if self.player.inventory['gold'] < 0:
+                del self.player.invetory['gold']
+            self.player.inventory[item_name] = self.player.inventory.get(item_name, 0) + 1
+            MessageLog.add_message(f'You bought one {item_name}.')
+        else:
+            MessageLog.add_message('You dont have enough gold.')
+
+    def sell_item(self, item_name, item_price):
+        if item_name in self.player.inventory:
+            self.player.inventory[item_name] -= 1
+            if self.player.inventory[item_name] <= 0:
+                del self.player.inventory[item_name]
+            self.player.inventory['gold'] += item_price
+            MessageLog.add_message(f'You sell one {item_name} and get {item_price} gold.')
+        else:
+            MessageLog.add_message(f'You dont have the item {item_name} in your inventory.')
+    
+    def verify_life_potion(self):
+        inventory_itens = self.player.inventory.keys()
+        filtred_df = self.filter_dataframe_with_list_in_column(inventory_itens, self.itens_df, 'name')
+        filtred_df = filtred_df[filtred_df['type'] == 'life potion']
+        if filtred_df.empty:
+            return False
+        else:
+            return filtred_df.iloc[0]['name']
+        
+    def verify_mana_potion(self):
+        inventory_itens = self.player.inventory.keys()
+        filtred_df = self.filter_dataframe_with_list_in_column(inventory_itens, self.itens_df, 'name')
+        filtred_df = filtred_df[filtred_df['type'] == 'mana potion']
+        if filtred_df.empty:
+            return False
+        else:
+            return filtred_df.iloc[0]['name']
+        
+    def drink_life_potion(self, potion_name):
+        self.player.inventory[potion_name] -= 1
+        if self.player.inventory[potion_name] <= 0:
+            del self.player.inventory[potion_name]
+        potion_row = self.itens_df[self.itens_df['name'] == potion_name]
+        healing_life = potion_row['heal_life'].values[0]
+        self.player.life = min(healing_life + self.player.life, self.player.max_life)
+        MessageLog.add_message(f'You heal {healing_life} life with potion')
+        
+    def drink_mana_potion(self, potion_name):
+        self.player.inventory[potion_name] -= 1
+        if self.player.inventory[potion_name] <= 0:
+            del self.player.inventory[potion_name]
+        potion_row = self.itens_df[self.itens_df['name'] == potion_name]
+        healing_mana = potion_row['heal_mana'].values[0]
+        self.player.mana = min(healing_mana + self.player.mana, self.player.max_mana)
+        MessageLog.add_message(f'You heal {healing_mana} mana with potion')

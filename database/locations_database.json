@@ -32,14 +32,14 @@
         "type":"dungeon",
         "min lvl":5,
         "tier":"tier 1",
-        "monster":{"orc":5,"skeleton":10,"troll":15,"goblin":20,"scorpion":20,"bat":100}
+        "monsters":{"orc":5,"skeleton":10,"troll":15,"goblin":20,"scorpion":20,"bat":100}
     },
     "006":{
         "name":"cut road",
         "type":"open field",
         "min lvl":5,
         "tier":"tier 1",
-        "monster":{"bandit":25,"smuggler":20,"troll":25,"wolf":100}
+        "monsters":{"bandit":25,"smuggler":20,"troll":25,"wolf":100}
     },
     "007":{
         "name":"elf city",
@@ -74,7 +74,7 @@
         "type":"dungeon",
         "min lvl":9,
         "tier":"tier 2",
-        "monster":{"giant spider":15,"mineral golem":20,"dwarf warrior":20,"dwarf":100}
+        "monsters":{"giant spider":15,"mineral golem":20,"dwarf warrior":20,"dwarf":100}
 
     },
     "012":{
@@ -82,6 +82,6 @@
         "type":"open field",
         "min lvl":10,
         "tier":"tier 2",
-        "monster":{"elf sorcerer":20,"wooden golem":20,"cursed tree":25,"elf archer":100}
+        "monsters":{"elf sorcerer":20,"wooden golem":20,"cursed tree":25,"elf archer":100}
     }
 }
