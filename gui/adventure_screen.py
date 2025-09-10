@@ -8,6 +8,8 @@ class AdventureScreen(GuiBase):
         super().__init__(screen, screen_callback, app)
         self.app = app
         self.current_mode = self.MODE_ADVENTURE
+        self.life_button = None
+        self.mana_button = None
         self.setup_ui()
     
     def setup_ui(self):
@@ -48,19 +50,38 @@ class AdventureScreen(GuiBase):
         text = Text(100, 50, 300, 50, 'Battle in progress!')
         stop_button = Button(300, 300, 150, 50, 'Stop Battle', 
                action=self.stop_battle)
-        life_button = Button(50, 300, 50, 50, 'life potion',
-                action=lambda lp=life_potion :self.app.game_core.itens_core.drink_life_potion(lp))
-        mana_button = Button(50, 360, 50, 50, 'mana potion',
-                action=lambda mp=mana_potion:self.app.game_core.itens_core.drink_mana_potion(mp))
+        self.life_button = Button(50, 300, 50, 50, 'life potion',
+                action=self.use_life_potion, condition_check=self.has_life_potion)
+        self.mana_button = Button(50, 360, 50, 50, 'mana potion',
+                action=self.use_mana_potion, condition_check=self.has_mana_potion)
         
-        if not life_potion:
-            life_button.enable = False
-        if not mana_potion:
-            mana_button.enable = False
-            
         return [
-            player_status, monster_status, text, stop_button, life_button, mana_button
+            player_status, monster_status, text, stop_button, self.life_button, self.mana_button
         ]
+    
+    def use_life_potion(self):
+        potion_name = self.app.game_core.itens_core.verify_life_potion()
+        if potion_name:
+            self.app.game_core.itens_core.drink_life_potion(potion_name)
+            
+    def use_mana_potion(self):
+        potion_name = self.app.game_core.itens_core.verify_mana_potion()
+        if potion_name:
+            self.app.game_core.itens_core.drink_mana_potion(potion_name)
+    
+    def has_life_potion(self):
+        return bool(self.app.game_core.itens_core.verify_life_potion())
+        
+    def has_mana_potion(self):
+        return bool(self.app.game_core.itens_core.verify_mana_potion())
+    
+    def update(self):
+        super().update()
+        
+        if self.life_button:
+            self.life_button.update()
+        if self.mana_button:
+            self.mana_button.update()
     
     def start_battle(self, location):
         self.current_mode = self.MODE_BATTLE

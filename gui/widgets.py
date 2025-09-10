@@ -5,11 +5,12 @@ from database.game_repository import MessageLog
 
 '''classe destinada a botoes em geral'''
 class Button(WidgetBase):
-    def __init__(self, x, y, width, height, text, action = None, enable=True):
+    def __init__(self, x, y, width, height, text, action = None, enable=True, condition_check = None):
         super().__init__(x,y,width, height)
         self.text = text
         self.action = action
         self.enable = enable
+        self.condition_check = condition_check
         
         self.normal_color = (255, 0, 0)
         self.hover_color = (255, 255, 0)
@@ -42,8 +43,8 @@ class Button(WidgetBase):
         surface.blit(text_surf, text_rect)
     
     def update(self) -> None:
-        #implementar alguma mudança de estado aqui
-        pass
+        if self.condition_check:
+            self.enable = self.condition_check()
     
 '''classe destinada a campos de texto input'''
 class TextInput(WidgetBase):
